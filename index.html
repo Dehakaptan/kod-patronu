@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b1626">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kod Patronu">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Kod Patronu – Yazılım Şirketi Simülasyonu</title>
+<style>
+:root{--bg:#0b1626;--panel:#12223a;--panel2:#182c48;--line:rgba(255,255,255,.08);--gold:#f5b83d;--gold2:#ffd77a;--txt:#e8eef8;--mut:#8fa3bf;--green:#34d399;--red:#f87171;--orange:#fb923c;--blue:#60a5fa}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:13px;overscroll-behavior:none;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input{-webkit-user-select:text;user-select:text}
+#app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#16294a 0%,var(--bg) 70%);overflow:hidden}
+@media (orientation:portrait){
+  #app{width:100vh;width:100dvh;height:100vw;left:100vw;transform:rotate(90deg);transform-origin:top left}
+}
+/* ---- üst bar ---- */
+header{display:flex;align-items:center;gap:6px;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.3);border-bottom:1px solid var(--line);flex-shrink:0}
+.logo{font-weight:900;color:var(--gold);font-size:14px;line-height:1;letter-spacing:.5px;margin-right:4px}
+.logo span{display:block;font-size:8px;color:var(--mut);letter-spacing:2px;font-weight:700}
+.hb{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;position:relative}
+.hb.glow{border-color:var(--gold);box-shadow:0 0 10px rgba(245,184,61,.6);animation:glow 1.2s infinite alternate}
+@keyframes glow{to{box-shadow:0 0 2px rgba(245,184,61,.2)}}
+.spacer{flex:1}
+.kasa{font-size:16px;font-weight:900;white-space:nowrap}
+.kasa small{font-size:9px;color:var(--green);font-weight:800;letter-spacing:1px;margin-right:4px}
+.kasa.neg b{color:var(--red)}
+.day{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px 8px;font-size:11px;font-weight:700;white-space:nowrap}
+/* ---- gövde ---- */
+#body{flex:1;display:flex;gap:10px;padding:8px max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));min-height:0}
+#left{width:46%;display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0}
+#right{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0}
+.dcard{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:8px 10px}
+.drow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.cname{font-size:15px;font-weight:900}
+.sub{font-size:11px;color:var(--mut);margin-top:1px}
+.gold{color:var(--gold)}.green{color:var(--green)}.red{color:var(--red)}.orange{color:var(--orange)}.blue{color:var(--blue)}
+.val{text-align:right;font-size:10px;color:var(--mut)}
+.val b{font-size:13px;color:var(--gold2)}
+.kbox{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:5px 10px 6px;margin-top:6px}
+.kbox>small{font-size:9px;color:var(--green);font-weight:800;letter-spacing:1px}
+.bigmoney{font-size:22px;font-weight:900;line-height:1.1}
+.bigmoney.neg{color:var(--red)}
+.k3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:3px}
+.k3 small{display:block;font-size:8.5px;color:var(--mut);font-weight:800;letter-spacing:.5px}
+.k3 b{font-size:12px}
+.strip{margin-top:6px;background:rgba(96,165,250,.1);border-left:3px solid var(--blue);border-radius:6px;padding:4px 8px;font-size:10.5px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex-shrink:0}
+.tile{position:relative;border:none;border-radius:12px;padding:5px 2px 4px;color:#fff;font-family:inherit;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 rgba(0,0,0,.35)}
+.tile:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 rgba(0,0,0,.35)}
+.tile .ti{font-size:19px;line-height:1.1;display:block}
+.tile b{display:block;font-size:11px;margin-top:1px}
+.tile small{display:block;font-size:9px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.dot{position:absolute;top:5px;right:6px;width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+.c-purple{background:linear-gradient(135deg,#8b5cf6,#5b21b6)}
+.c-teal{background:linear-gradient(135deg,#14b8a6,#115e59)}
+.c-orange{background:linear-gradient(135deg,#f97316,#9a3412)}
+.c-blue{background:linear-gradient(135deg,#3b82f6,#1e40af)}
+.c-pink{background:linear-gradient(135deg,#ec4899,#9d174d)}
+.c-yellow{background:linear-gradient(135deg,#eab308,#854d0e)}
+.c-green{background:linear-gradient(135deg,#22c55e,#166534)}
+.c-red{background:linear-gradient(135deg,#ef4444,#991b1b)}
+.cta2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ctile{display:flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:8px 10px;color:#fff;font-family:inherit;text-align:left;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 rgba(0,0,0,.35)}
+.ctile:active{transform:translateY(2px)}
+.ctile .ci{font-size:24px}
+.ctile b{display:block;font-size:13px}
+.ctile small{display:block;font-size:10px;opacity:.9}
+.sechead{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;margin-top:2px;padding:0 2px}
+.prow{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c,#60a5fa);border-radius:10px;padding:6px 8px}
+.prow.sel{background:var(--panel2);border-color:rgba(245,184,61,.5);border-left-color:var(--c)}
+.prow .pi{font-size:20px}
+.grow{flex:1;min-width:0}
+.prow b{font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:4px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--c,#60a5fa);border-radius:2px}
+.pill{font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;letter-spacing:.3px}
+.pill.blue{color:var(--blue);background:rgba(96,165,250,.12)}.pill.orange{color:var(--orange);background:rgba(251,146,60,.12)}.pill.green{color:var(--green);background:rgba(52,211,153,.12)}.pill.red{color:var(--red);background:rgba(248,113,113,.12)}.pill.gold{color:var(--gold);background:rgba(245,184,61,.12)}
+.prow.empty{border-style:dashed;border-left-width:1px;justify-content:center;color:var(--mut);font-size:11.5px;padding:9px}
+.tapper{border:none;font-family:inherit;color:#1c1405;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:14px;font-weight:900;box-shadow:0 4px 0 #a16207;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tapper:active{transform:translateY(3px);box-shadow:0 1px 0 #a16207}
+.tapper.bug{background:linear-gradient(90deg,#f97316,#fb7185);color:#fff;box-shadow:0 4px 0 #9a3412}
+.tapper.idle{background:linear-gradient(90deg,#475569,#64748b);color:#e2e8f0;box-shadow:0 4px 0 #1e293b}
+#tapBtn{width:100%;min-height:62px;margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:20px;flex-shrink:0}
+#tapBtn small{display:block;font-size:10.5px;font-weight:700;opacity:.8;text-align:left}
+#tapBtn .arrow{font-size:22px;background:rgba(0,0,0,.15);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+/* ---- sayfalar ---- */
+#page{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:40}
+#page.hidden,#modal.hidden{display:none}
+.phead{display:flex;align-items:center;gap:10px;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.3);border-bottom:1px solid var(--line);flex-shrink:0}
+.back{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:6px 12px;font-weight:800;font-family:inherit;font-size:12px}
+.ptitle{font-size:16px;font-weight:900;flex:1}
+#pBody{flex:1;overflow-y:auto;padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-bottom:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+h2{font-size:13px;margin:6px 2px 6px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
+h3{font-size:18px;margin-bottom:6px;text-align:center}
+p{line-height:1.45}
+.hint{font-size:11px;color:var(--mut);margin-top:6px}
+.btn{background:#3b82f6;color:#fff;border:none;border-radius:10px;padding:8px 12px;font-weight:800;font-size:12.5px;font-family:inherit;box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{background:#2a3a52;color:#6b7c95;box-shadow:none}
+.btn.green{background:#16a34a}.btn.red{background:#dc2626}.btn.gray{background:#475569}.btn.orange{background:#ea580c}.btn.goldb{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#1c1405}
+.btn.sm{padding:6px 9px;font-size:11.5px}.btn.block{width:100%;margin-top:8px}
+.row{display:flex;align-items:center;gap:8px}
+.big{font-size:28px;line-height:1}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+.chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#dde;border-radius:999px;padding:6px 10px;font-size:12px;font-family:inherit}
+.chip.on{background:#3b82f6;border-color:#93c5fd;color:#fff;font-weight:800}
+.chip.lock{opacity:.45}
+.lbl{display:flex;justify-content:space-between;font-size:12px;margin:6px 0 3px}
+.bar{height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:5px}
+.skill{display:inline-block;height:5px;width:56px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;vertical-align:middle}
+.skill>i{display:block;height:100%;background:linear-gradient(90deg,#facc15,#34d399)}
+.badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10.5px;font-weight:800}
+.q1{background:#7f1d1d}.q2{background:#92400e}.q3{background:#3f6212}.q4{background:#15803d}.q5{background:linear-gradient(90deg,#a16207,#eab308);color:#111}
+input[type=text]{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #3b82f6;background:#08101d;color:#fff;font-size:16px;font-family:inherit}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.kv{background:rgba(0,0,0,.22);border-radius:10px;padding:7px}
+.kv b{display:block;font-size:14px}
+.kv span{font-size:10px;color:var(--mut)}
+.empty-msg{text-align:center;color:var(--mut);padding:18px 8px;font-size:13px}
+.office{border-radius:14px;padding:10px;border:1px solid var(--line);margin-bottom:8px}
+.office.l0{background:linear-gradient(160deg,#57534e,#292524)}
+.office.l1{background:linear-gradient(160deg,#0e7490,#164e63)}
+.office.l2{background:linear-gradient(160deg,#4338ca,#1e1b4b)}
+.office.l3{background:linear-gradient(160deg,#7e22ce,#3b0764)}
+.office.l4{background:linear-gradient(160deg,#0f172a,#1e3a8a 60%,#b45309)}
+.otitle{display:flex;justify-content:space-between;font-weight:900;margin-bottom:8px;font-size:15px}
+.otitle span{font-weight:600;font-size:11px;opacity:.85}
+.desks{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:5px}
+.desk{background:rgba(0,0,0,.28);border-radius:9px;text-align:center;padding:5px 2px 3px}
+.desk .e{font-size:24px;display:block;line-height:1.15}
+.desk .n{font-size:9.5px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.desk.empty .e{opacity:.3}
+.busy .desk:not(.empty) .e{animation:bob .5s infinite alternate}
+.busy .desk:nth-child(2n) .e{animation-delay:.2s}
+@keyframes bob{to{transform:translateY(-4px)}}
+.rank{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:5px}
+.rank.me{border-color:var(--gold);background:rgba(245,184,61,.12)}
+.rank .no{width:30px;text-align:center;font-weight:900;font-size:15px}
+.days7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:10px 0}
+.days7 div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 0;text-align:center;font-size:10px}
+.days7 div.got{background:rgba(52,211,153,.15);border-color:var(--green)}
+.days7 div.now{background:rgba(245,184,61,.2);border-color:var(--gold)}
+.days7 b{display:block;font-size:16px}
+.toggle{width:46px;height:26px;border-radius:13px;background:#475569;position:relative;border:none}
+.toggle.on{background:#16a34a}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.toggle.on::after{left:23px}
+/* ---- modal / bildirim ---- */
+#modal{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;padding:12px}
+.mbox{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--gold);border-radius:16px;padding:14px 16px;max-width:440px;width:100%;max-height:94%;overflow-y:auto;animation:pop .2s ease-out}
+.mbox .ev{font-size:40px;text-align:center}
+.mbox p{margin-bottom:6px;font-size:13px}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+#toasts{position:absolute;top:46px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:90}
+.toast{background:rgba(11,22,38,.96);border:1px solid var(--gold);padding:6px 12px;border-radius:10px;font-size:12px;max-width:80%;animation:tin .2s ease-out,tout .4s 2.4s forwards;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+@keyframes tin{from{transform:translateY(-8px);opacity:0}}
+@keyframes tout{to{opacity:0}}
+.float{position:fixed;pointer-events:none;font-weight:900;font-size:17px;color:#fde68a;text-shadow:0 2px 4px #000;animation:fl .9s ease-out forwards;z-index:200;transform:translate(-50%,0)}
+@keyframes fl{to{margin-top:-60px;opacity:0}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">KOD PATRONU<span>YAZILIM ŞİRKETİ</span></div>
+    <button class="hb" id="dailyBtn" data-act="daily">🎁 Günlük</button>
+    <button class="hb" data-act="page" data-v="sirala">🏆 Sıralama</button>
+    <button class="hb" data-act="page" data-v="ayarlar">⚙️</button>
+    <div class="spacer"></div>
+    <div class="kasa" id="hKasa"><small>KASA</small><b id="hMoney">₺0</b></div>
+    <div class="day" id="hDate">📅</div>
+  </header>
+  <div id="body">
+    <section id="left">
+      <div id="dash"></div>
+      <div id="tiles" class="tiles"></div>
+    </section>
+    <section id="right">
+      <div class="cta2">
+        <button class="ctile c-blue" data-act="page" data-v="isler"><span class="ci">👔</span><div><b>Müşteri İşleri</b><small id="offCount"></small></div></button>
+        <button class="ctile c-green" data-act="page" data-v="yeni"><span class="ci">🛠️</span><div><b>Yeni Ürün</b><small>Kendi ürününü çıkar</small></div></button>
+      </div>
+      <div class="sechead"><span>Devam eden projeler</span><span class="gold" id="slotInfo"></span></div>
+      <div id="projList" style="display:flex;flex-direction:column;gap:5px"></div>
+      <button id="tapBtn" class="tapper"></button>
+    </section>
+  </div>
+  <div id="page" class="hidden">
+    <div class="phead"><button class="back" data-act="home">‹ Ana ekran</button><div class="ptitle" id="pTitle"></div><div class="kasa"><small>KASA</small><b id="pMoney"></b></div></div>
+    <div id="pBody"><div id="pInner"></div></div>
+  </div>
+  <div id="modal" class="hidden"></div>
+  <div id="toasts"></div>
+</div>
+
+<script>
+'use strict';
+/* ================= SABİTLER ================= */
+const SAVE_KEY = 'kodPatronu_v1';
+const BACKUP_KEY = 'kodPatronu_yedek';
+const DAY_SEC = 3;
+const MONTH_DAYS = 30;
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const WEEKDAYS = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+
+const TYPES = {
+  web:   {ad:'Web Sitesi',     ikon:'🌐', kod:60,  tas:30,  users:3000,  arpu:0.10, fiyat:0,      rep:0,   tier:1},
+  mobil: {ad:'Mobil Uygulama', ikon:'📱', kod:120, tas:80,  users:6000,  arpu:0.12, fiyat:15000,  rep:10,  tier:1.5},
+  oyun:  {ad:'Oyun',           ikon:'🎮', kod:220, tas:200, users:12000, arpu:0.14, fiyat:60000,  rep:35,  tier:2},
+  ai:    {ad:'Yapay Zekâ',     ikon:'🤖', kod:550, tas:150, users:25000, arpu:0.25, fiyat:400000, rep:100, tier:3},
+};
+const SIZES = {kucuk:{ad:'Küçük',m:1,rep:0}, orta:{ad:'Orta',m:3,rep:12}, buyuk:{ad:'Büyük',m:8,rep:45}};
+const FOCUS = {
+  hizli:   {ad:'⚡ Hızlı',   work:0.7, bug:1.5, q:-5, acik:'Çabuk biter ama hata çok olur'},
+  dengeli: {ad:'⚖️ Dengeli', work:1,   bug:1,   q:0,  acik:'Normal hız, normal kalite'},
+  kaliteli:{ad:'💎 Kaliteli', work:1.4, bug:0.6, q:6,  acik:'Uzun sürer ama daha kaliteli'},
+};
+const OFFICES = [
+  {ad:'Garaj',       ikon:'🏚️', kap:2,  slot:1, fiyat:0,       kira:0},
+  {ad:'Küçük Ofis',  ikon:'🏠', kap:5,  slot:2, fiyat:25000,   kira:1500},
+  {ad:'Plaza Katı',  ikon:'🏢', kap:10, slot:3, fiyat:150000,  kira:6000},
+  {ad:'Kendi Binan', ikon:'🏬', kap:20, slot:4, fiyat:1000000, kira:20000},
+  {ad:'Gökdelen',    ikon:'🌆', kap:40, slot:5, fiyat:8000000, kira:80000},
+];
+const ROLES = {
+  prog:{ad:'Programcı', emo:['👨‍💻','👩‍💻'], acik:'Kod yazar'},
+  tas: {ad:'Tasarımcı', emo:['👨‍🎨','👩‍🎨'], acik:'Tasarım yapar'},
+  test:{ad:'Testçi',    emo:['🕵️‍♂️','🕵️‍♀️'], acik:'Hata düzeltir'},
+};
+const UPGRADES = [
+  {id:'klavye',   ikon:'⌨️', ad:'Mekanik Klavye',       acik:'Her dokunuşun +1 daha fazla iş üretir', max:10, fiyat:l=>Math.round(400*Math.pow(2.2,l)/10)*10},
+  {id:'kurs',     ikon:'📚', ad:'Kendini Geliştir',     acik:'Kurucu yeteneğin +1', max:7, fiyat:l=>Math.round(2000*Math.pow(2.5,l)/10)*10},
+  {id:'kahve',    ikon:'☕', ad:'Kahve Makinesi',        acik:'Ekip %15 daha hızlı', max:1, fiyat:()=>3000},
+  {id:'sandalye', ikon:'🪑', ad:'Ergonomik Sandalyeler', acik:'Ekip %10 daha hızlı', max:1, fiyat:()=>9000},
+  {id:'otest',    ikon:'🧪', ad:'Otomatik Test Sistemi', acik:'Hata düzeltme %40 hızlı, %20 az hata', max:1, fiyat:()=>25000},
+  {id:'ekran',    ikon:'🖥️', ad:'Çift Monitör',          acik:'Ekip %20 daha hızlı', max:1, fiyat:()=>40000},
+  {id:'bulut',    ikon:'☁️', ad:'Bulut Sunucular',       acik:'Ürün gelirleri +%25', max:1, fiyat:()=>60000},
+  {id:'pazarlama',ikon:'📣', ad:'Pazarlama Ekibi',       acik:'Yeni ürünlere %30 daha çok kullanıcı', max:1, fiyat:()=>100000},
+  {id:'arge',     ikon:'🔬', ad:'Ar-Ge Laboratuvarı',    acik:'Yeni ürünlerin kalitesi +8', max:1, fiyat:()=>300000},
+];
+const BIZ = [
+  {id:'kafe',     ikon:'☕', ad:'Kahve Dükkânı',          acik:'Ofisinin altında kahve dükkânı. Çalışanların da müşterin!', fiyat:20000,   gelir:250,   rep:0},
+  {id:'spor',     ikon:'🏋️', ad:'Spor Salonu',            acik:'Üyelik satan modern bir spor salonu.', fiyat:80000,   gelir:900,   rep:15},
+  {id:'dondurma', ikon:'🍦', ad:'Dondurma Fabrikası',     acik:'Yazın satışlar patlar (x2,5), kışın düşer!', fiyat:250000,  gelir:2700,  rep:40, mevsim:true},
+  {id:'netkafe',  ikon:'🕹️', ad:'İnternet Kafe & E-spor', acik:'Turnuva düzenle, e-spor takımı kur.', fiyat:700000,  gelir:6500,  rep:80},
+  {id:'muzik',    ikon:'🎵', ad:'Müzik Şirketi',          acik:'Şarkıcı keşfet, hit şarkılar çıkar.', fiyat:2500000, gelir:22000, rep:150},
+];
+const BIZ_MAX = 100;
+const RIVALS = [
+  {n:'Bit Yazılım', b:30000, g:0.004}, {n:'Piksel Soft', b:120000, g:0.006}, {n:'Mavi Ekran Teknoloji', b:400000, g:0.006},
+  {n:'Kuantum Bilişim', b:1.5e6, g:0.007}, {n:'Bulut Yazılım A.Ş.', b:5e6, g:0.007}, {n:'Zirve Dijital', b:15e6, g:0.008},
+  {n:'Atom Labs', b:50e6, g:0.008}, {n:'Nova Teknoloji', b:150e6, g:0.009}, {n:'Mega Kod Holding', b:500e6, g:0.01},
+];
+const TITLES = [[0,'Garaj Girişimi'],[15,'Yerel Firma'],[50,'Tanınan Şirket'],[150,'Sektör Lideri'],[400,'Teknoloji Devi'],[1000,'Dünya Efsanesi']];
+const FIRST = ['Ahmet','Mehmet','Ayşe','Fatma','Can','Ece','Emre','Zeynep','Burak','Elif','Mert','Selin','Kerem','Deniz','Oğuz','Merve','Barış','İrem','Kaan','Buse','Arda','Derya','Tolga','Gizem','Onur','Esra','Yusuf','Nazlı','Serkan','Ceren','Eren','Damla','Furkan','Melis','Hakan','Sude'];
+const LAST_I = 'ABÇDEFGHIKLMNOÖPRSŞTUÜVYZ';
+const CLIENTS = ['Kardeşler Mobilya','Yıldız Market','Anadolu Lojistik','Mavi Turizm','Demir Hukuk Bürosu','Lezzet Lokantası','Güneş Eczanesi','Ekin Tarım','Atlas Sigorta','Kuzey Otomotiv','Bulut Kafe','Marmara Emlak','Çınar Okulları','Deniz Balıkçılık','Altın Kuyumculuk','Zirve Spor Salonu','Kardelen Çiçekçilik','Ufuk Kargo','Toros Un Fabrikası','Lale Kuaför','Belediye Bilgi İşlem','Vali Konağı Müzesi'];
+const NAMES = {
+  web:  [['Hızlı','Akıllı','Kolay','Süper','Mega','Pratik','Yeni','Net'],['Site','Blog','Mağaza','Rehber','Portal','Pazar','Forum','İlan']],
+  mobil:[['Cep','Mini','Akıllı','Hızlı','Kolay','Gün','Mavi','Pratik'],['Not','Takvim','Fit','Cüzdan','Harita','Sohbet','Tarif','Alarm']],
+  oyun: [['Ejder','Uzay','Kedi','Zombi','Ninja','Korsan','Robot','Şövalye'],['Macerası','Savaşları','Koşusu','Bulmacası','Adası','Kalesi','Efsanesi','Avı']],
+  ai:   [['Akıl','Zeka','Beyin','Robo','Dahi','Bilge','Neo','Kuantum'],['Asistan','Çizer','Yazar','Çevirmen','Doktor','Öğretmen','Analiz','Müzisyen']],
+};
+const GOALS = [
+  {t:'İlk müşteri işini teslim et', c:()=>S.stats.done>=1, r:1000},
+  {t:'İlk çalışanını işe al (Personel)', c:()=>S.emps.length>=1, r:1500},
+  {t:'Kendi ürününü geliştirip yayınla', c:()=>S.stats.prodsDone>=1, r:2000},
+  {t:'Mobil Uygulama teknolojisini aç', c:()=>S.tech.mobil, r:3000},
+  {t:'Küçük Ofis\'e taşın', c:()=>S.office>=1, r:5000},
+  {t:'Aynı anda 2 proje yürüt', c:()=>S.projs.length>=2, r:4000},
+  {t:'İlk yatırımını yap: Kahve Dükkânı', c:()=>(S.biz.kafe||0)>=1, r:5000},
+  {t:'Toplam 8 proje tamamla', c:()=>S.stats.done+S.stats.prodsDone>=8, r:6000},
+  {t:'70+ kaliteli bir ürün çıkar', c:()=>S.stats.best>=70, r:10000},
+  {t:'Oyun teknolojisini aç', c:()=>S.tech.oyun, r:15000},
+  {t:'5 çalışana ulaş', c:()=>S.emps.length>=5, r:15000},
+  {t:'Plaza Katı\'na taşın', c:()=>S.office>=2, r:40000},
+  {t:'Bir işletmeyi 10. seviyeye çıkar', c:()=>BIZ.some(b=>(S.biz[b.id]||0)>=10), r:40000},
+  {t:'Toplam ₺1 milyon kazan', c:()=>S.stats.earned>=1e6, r:60000},
+  {t:'Yapay Zekâ teknolojisini aç', c:()=>S.tech.ai, r:100000},
+  {t:'90+ kaliteli efsane bir ürün çıkar', c:()=>S.stats.best>=90, r:150000},
+  {t:'Kendi binana taşın', c:()=>S.office>=3, r:300000},
+  {t:'Sıralamada ilk 3\'e gir', c:()=>myRank()<=3, r:500000},
+  {t:'Gökdelene taşın', c:()=>S.office>=4, r:1000000},
+  {t:'Teknoloji Devi ol (400 itibar)', c:()=>S.rep>=400, r:2000000},
+];
+
+/* ================= YARDIMCILAR ================= */
+const $ = id => document.getElementById(id);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fmt(n){
+  const neg = n<0; n = Math.abs(n); let s;
+  if (n < 10000) s = Math.round(n).toLocaleString('tr-TR');
+  else if (n < 1e6) s = (n/1e3).toLocaleString('tr-TR',{maximumFractionDigits:1})+' B';
+  else if (n < 1e9) s = (n/1e6).toLocaleString('tr-TR',{maximumFractionDigits:2})+' Mn';
+  else s = (n/1e9).toLocaleString('tr-TR',{maximumFractionDigits:2})+' Mr';
+  return (neg?'-':'')+s;
+}
+const tl = n => '₺'+fmt(n);
+const tlFull = n => '₺'+Math.round(n).toLocaleString('tr-TR');
+const round10 = n => Math.round(n/10)*10;
+const r1 = n => (Math.round(n*10)/10).toLocaleString('tr-TR');
+function qClass(q){ return q>=85?'q5':q>=70?'q4':q>=50?'q3':q>=30?'q2':'q1'; }
+function qWord(q){ return q>=85?'Efsane! 🏆':q>=70?'Harika! 🌟':q>=50?'İyi 👍':q>=30?'Vasat 😐':'Kötü 👎'; }
+function qBadge(q){ return `<span class="badge ${qClass(q)}">${q} · ${qWord(q)}</span>`; }
+
+/* ================= DURUM ================= */
+let S = null;
+let paused = false;
+let curChoices = [];
+let page = null, pageArg = null;
+let form = {type:'web', size:'kucuk', focus:'dengeli', name:''};
+let bankForm = {pct:0.5, term:12};
+let bizMul = 1;
+
+function newState(name){
+  return {
+    v:2, name, money:5000, rep:0, day:1, dayFrac:0, office:0, ownership:100,
+    emps:[], cands:[], offers:[], projs:[], sel:null, prods:[], upg:{}, tech:{web:true},
+    biz:{}, loans:[], score:600, sound:true, lastDaily:'', streak:0,
+    stats:{earned:0, done:0, prodsDone:0, best:0}, goal:0, boost:0,
+    nextEvent:30, lastDayInc:0, lastSeen:Date.now(), idSeq:1,
+  };
+}
+
+/* ================= HESAPLAR ================= */
+const cap = () => OFFICES[S.office].kap;
+const slots = () => OFFICES[S.office].slot;
+const founderSkill = () => 3 + (S.upg.kurs||0);
+const tapPower = () => (2 + (S.upg.klavye||0)) * (1 + (founderSkill()-3)*0.1);
+function teamSpeed(){
+  let m = 1;
+  if (S.upg.kahve) m *= 1.15;
+  if (S.upg.sandalye) m *= 1.10;
+  if (S.upg.ekran) m *= 1.20;
+  if (S.boost > 0) m *= 1.20;
+  return m;
+}
+const bugRate = s => Math.max(0.005, (11-s)*0.01) * (S.upg.otest?0.8:1);
+const testMult = () => S.upg.otest ? 1.4 : 1;
+const debt = () => S.loans.reduce((a,l)=>a+l.remaining,0);
+const monthlyCost = () => S.emps.reduce((a,e)=>a+e.salary,0) + OFFICES[S.office].kira + S.loans.reduce((a,l)=>a+l.inst,0);
+const devDone = p => p.kod >= p.kodReq - 1e-6 && p.tas >= p.tasReq - 1e-6;
+const needsWork = p => !devDone(p) || p.bugs > 0.001;
+const monthIdx = () => Math.floor((S.day-1)/30)%12;
+function title(){ let t = TITLES[0][1]; for (const [r,n] of TITLES) if (S.rep >= r) t = n; return t; }
+function calcQuality(p){
+  const avg = p.pts > 0 ? p.skillPts/p.pts : founderSkill();
+  const total = p.kodReq + p.tasReq;
+  const q = 25 + avg*6.5 + FOCUS[p.focus].q + (S.upg.arge?8:0) - (p.bugs/total)*200;
+  return Math.round(clamp(q,1,100));
+}
+function salaryFor(skill){ return skill*skill*60 + skill*300; }
+function randName(){ return pick(FIRST)+' '+pick(LAST_I)+'.'; }
+function randProdName(type){ const [a,b] = NAMES[type]; return pick(a)+' '+pick(b); }
+function bizMult(l){ return (l>=10?2:1)*(l>=25?2:1)*(l>=50?2:1)*(l>=100?2:1); }
+function seasonMult(){ const m = monthIdx(); return (m>=5&&m<=7) ? 2.5 : (m===11||m<=1) ? 0.3 : 1; }
+function bizIncome(b, l){ if (!l) return 0; let v = b.gelir*l*bizMult(l); if (b.mevsim) v *= seasonMult(); return v; }
+function bizCost(b, l){ return l===0 ? b.fiyat : Math.round(b.fiyat*0.3*Math.pow(1.13,l-1)/10)*10; }
+function bizBulk(b, l, mul){
+  let n = 0, cost = 0, money = S.money;
+  const want = mul==='max' ? BIZ_MAX : mul;
+  while (n < want && l+n < BIZ_MAX){
+    const c = bizCost(b, l+n);
+    if (mul==='max' && cost + c > money) break;
+    cost += c; n++;
+  }
+  return {n, cost};
+}
+function bizSpent(b){ let c = 0; const l = S.biz[b.id]||0; for (let i=0;i<l;i++) c += bizCost(b,i); return c; }
+function valuation(){
+  let v = Math.max(0, S.money - debt());
+  v += S.lastDayInc*90;
+  for (const b of BIZ) v += bizSpent(b)*0.8;
+  v += OFFICES[S.office].fiyat*0.6;
+  for (const k in S.tech) v += TYPES[k].fiyat*0.5;
+  v += S.rep*2000 + S.emps.length*5000;
+  return Math.round(v);
+}
+const rivalVal = r => r.b*(1+(S.day-1)*r.g);
+function myRank(){ const me = valuation(); return 1 + RIVALS.filter(r=>rivalVal(r)>me).length; }
+function scoreWord(s){ return s<500?'Kötü':s<600?'Orta':s<700?'İyi':s<800?'Çok iyi':'Mükemmel'; }
+function loanLimit(){ return Math.max(5000, Math.round(((S.score-300)/600)*(30000 + valuation()*0.4)/1000)*1000); }
+function loanRate(){ return clamp(0.45 - (S.score-300)/600*0.35, 0.10, 0.45); }
+function todayStr(off=0){ const d = new Date(Date.now()+off*864e5); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+const dailyReady = () => S.lastDaily !== todayStr();
+function dailyAmount(streak){ return Math.round((1000 + valuation()*0.005)*streak/100)*100; }
+
+/* ================= OLUŞTURUCULAR ================= */
+function genCand(){
+  const role = pick(['prog','prog','tas','tas','test']);
+  const maxS = Math.min(10, 2.5 + S.office*1.6 + S.rep/40);
+  const skill = clamp(Math.round(1 + Math.random()*(maxS-1)), 1, 10);
+  const salary = round10(salaryFor(skill)*(0.9 + Math.random()*0.25));
+  return {id:S.idSeq++, name:randName(), role, skill, salary, emo:pick(ROLES[role].emo)};
+}
+function genOffer(){
+  const types = Object.keys(TYPES).filter(t=>S.tech[t]);
+  const type = pick(types.concat(types.slice(-1)));
+  const sizes = Object.keys(SIZES).filter(k=>S.rep>=SIZES[k].rep);
+  const size = pick(sizes);
+  const T = TYPES[type], sm = SIZES[size].m;
+  const work = (T.kod+T.tas)*sm;
+  const minQ = pick([0,0,30,40,50,60].filter(x => x <= 30 + S.rep*0.5));
+  const pay = Math.round(work*28*(1+S.rep/150)*(1+minQ/120)*(0.9+Math.random()*0.3)/50)*50;
+  const days = Math.round(work/8) + 15;
+  return {id:S.idSeq++, client:pick(CLIENTS), type, size, minQ, pay, days};
+}
+function refreshOffers(){ S.offers = [genOffer(), genOffer(), genOffer(), genOffer()]; }
+function refreshCands(){ S.cands = [genCand(), genCand(), genCand(), genCand()]; }
+function makeProj(kind, type, size, focus, name, extra){
+  const T = TYPES[type], m = SIZES[size].m * FOCUS[focus].work;
+  return Object.assign({
+    id:S.idSeq++, kind, type, size, focus, name,
+    kodReq:Math.round(T.kod*m), tasReq:Math.round(T.tas*m),
+    kod:0, tas:0, bugs:0, pts:0, skillPts:0, start:S.day
+  }, extra||{});
+}
+
+/* ================= SES ================= */
+let actx = null;
+function snd(type){
+  if (!S || !S.sound) return;
+  try {
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const N = {
+      tap:   [[1200,0.025,'square',0.025,0],[700,0.02,'square',0.02,0.01]],
+      click: [[520,0.03,'sine',0.05,0]],
+      cash:  [[1318,0.09,'sine',0.12,0],[1760,0.16,'sine',0.12,0.07]],
+      ok:    [[523,0.1,'triangle',0.14,0],[659,0.1,'triangle',0.14,0.09],[784,0.1,'triangle',0.14,0.18],[1046,0.22,'triangle',0.14,0.27]],
+      bad:   [[220,0.22,'sawtooth',0.06,0],[165,0.25,'sawtooth',0.06,0.12]],
+      event: [[880,0.08,'sine',0.1,0],[660,0.08,'sine',0.1,0.1],[990,0.15,'sine',0.1,0.2]],
+    }[type];
+    const t0 = actx.currentTime;
+    for (const [f,d,w,v,dl] of N){
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = w; o.frequency.value = f;
+      g.gain.setValueAtTime(v, t0+dl); g.gain.exponentialRampToValueAtTime(0.0001, t0+dl+d);
+      o.connect(g); g.connect(actx.destination); o.start(t0+dl); o.stop(t0+dl+d+0.02);
+    }
+  } catch(e){}
+}
+
+/* ================= ÇALIŞMA ================= */
+function give(p, part, amt, skill){
+  const room = p[part+'Req'] - p[part];
+  const a = Math.min(amt, room);
+  if (a <= 0) return 0;
+  p[part] += a; p.pts += a; p.skillPts += a*skill;
+  p.bugs += a * bugRate(skill) * FOCUS[p.focus].bug;
+  return a;
+}
+function fixBugs(p, amt){ p.bugs = Math.max(0, p.bugs - amt); }
+function workOn(p, part, amt, skill){
+  const other = part==='kod' ? 'tas' : 'kod';
+  if (p[part] < p[part+'Req']) give(p, part, amt, skill);
+  else if (p[other] < p[other+'Req']) give(p, other, amt*0.3, skill);
+  else fixBugs(p, amt*0.1);
+}
+function lowerPart(p){ return p.kod/p.kodReq <= p.tas/p.tasReq ? 'kod' : 'tas'; }
+function workTick(dt){
+  const need = S.projs.filter(needsWork);
+  if (!need.length) return;
+  const n = need.length, sp = teamSpeed(), fs = founderSkill();
+  const fa = 0.25*fs*sp*dt/n;
+  for (const p of need){
+    if (!devDone(p)) give(p, lowerPart(p), fa, fs); else fixBugs(p, fa*0.15);
+  }
+  for (const e of S.emps){
+    const amt = e.skill*0.6*sp*dt/n;
+    for (const p of need){
+      if (e.role==='prog') workOn(p, 'kod', amt, e.skill);
+      else if (e.role==='tas') workOn(p, 'tas', amt, e.skill);
+      else fixBugs(p, e.skill*0.15*testMult()*sp*dt/n);
+    }
+  }
+}
+function selProj(){
+  let p = S.projs.find(x=>x.id===S.sel);
+  if (!p) p = S.projs.find(needsWork) || S.projs[0] || null;
+  S.sel = p ? p.id : null;
+  return p;
+}
+function tapWork(p){
+  const amt = tapPower();
+  if (!devDone(p)){
+    const part = lowerPart(p);
+    give(p, part, amt, founderSkill());
+    return '+'+r1(amt)+(part==='kod'?' 💻':' 🎨');
+  }
+  if (p.bugs <= 0.001) return '✔️ Hazır';
+  fixBugs(p, amt*0.25);
+  return '-'+r1(amt*0.25)+' 🐞';
+}
+function doTap(el, ev){
+  const id = +el.dataset.id;
+  if (id) S.sel = id;
+  const p = selProj();
+  if (!p){ toast('📋 Önce bir müşteri işi al ya da yeni ürün başlat!'); snd('bad'); return; }
+  const r = tapWork(p);
+  floatText(r, ev.clientX, ev.clientY - 18);
+  snd('tap');
+  if (navigator.vibrate) navigator.vibrate(6);
+  updateHome(); renderPage(false);
+}
+
+/* ================= ZAMAN ================= */
+function newDay(){
+  S.day++;
+  if (S.boost > 0) S.boost--;
+  let inc = 0;
+  for (const pr of S.prods) if (pr.active) inc += prodDay(pr);
+  for (const b of BIZ) inc += bizIncome(b, S.biz[b.id]||0);
+  S.lastDayInc = inc;
+  if (inc > 0){ S.money += inc; S.stats.earned += inc; floatMoney(inc); }
+  for (const p of S.projs) if (p.kind==='is' && S.day===p.deadline) toast(`⏰ ${esc(p.client)} işinin teslim günü bugün!`);
+  if ((S.day-1) % MONTH_DAYS === 0) monthEnd();
+  if (!S) return;
+  S.nextEvent--;
+  if (S.nextEvent <= 0 && !paused){ S.nextEvent = 25 + Math.floor(Math.random()*35); triggerEvent(); }
+  checkGoals();
+}
+function prodDay(pr){
+  pr.age++;
+  const f = pr.age <= 8 ? pr.age/8 : Math.exp(-(pr.age-8)/pr.life);
+  if (pr.viral > 0) pr.viral--;
+  pr.users = Math.round(pr.peak * f * (pr.ad?1.3:1) * (pr.viral>0?2:1));
+  const rev = pr.users * TYPES[pr.type].arpu * (S.upg.bulut?1.25:1) * S.ownership/100;
+  pr.earned += rev;
+  if (pr.age > 8 && f < 0.03){ pr.active = false; pr.users = 0; toast(`📴 ${esc(pr.name)} kapandı. Yeni ürün zamanı!`); }
+  return rev;
+}
+function monthEnd(){
+  const salaries = S.emps.reduce((a,e)=>a+e.salary,0) + OFFICES[S.office].kira;
+  S.money -= salaries;
+  let inst = 0;
+  for (const l of S.loans){
+    const pay = Math.min(l.inst, l.remaining);
+    S.money -= pay; inst += pay; l.remaining -= pay; l.months--;
+    if (S.money < 0) S.score = clamp(S.score-25, 300, 900); else S.score = clamp(S.score+8, 300, 900);
+  }
+  const closed = S.loans.filter(l=>l.remaining<=1 || l.months<=0);
+  if (closed.length){ S.score = clamp(S.score+20*closed.length, 300, 900); toast('🏦 Kredin tamamen kapandı! Kredi puanın yükseldi.'); }
+  S.loans = S.loans.filter(l=>!closed.includes(l));
+  const total = salaries + inst;
+  if (total > 0) toast(`💸 Ay sonu ödemeleri: ${tl(total)}`);
+  refreshOffers(); refreshCands();
+  if (S.money < -20000){ gameOver(); return; }
+  if (S.money < 0) toast('⚠️ Kasa eksiye düştü! ₺-20.000 altında iflas edersin.');
+}
+
+/* ================= OLAYLAR ================= */
+const EVENTS = [
+  () => { const a = S.prods.filter(p=>p.active); if (!a.length) return null; const p = pick(a);
+    return {ikon:'🔥', title:'Viral Oldu!', text:`<b>${esc(p.name)}</b> sosyal medyada patladı! 15 gün boyunca kullanıcı sayısı <b>2 katına</b> çıkacak.`,
+      choices:[{label:'Harika! 🎉', cls:'green', fn:()=>{ p.viral = 15; }}]}; },
+  () => { if (S.day < 45 || S.ownership <= 40) return null;
+    const amt = Math.round(Math.max(20000, valuation()*0.12)/1000)*1000;
+    return {ikon:'💼', title:'Yatırımcı Teklifi', text:`Bir yatırımcı şirketinin <b>%10</b> hissesi için <b>${tl(amt)}</b> teklif ediyor. Kabul edersen ürün gelirlerinden daha az pay alırsın. (Şu anki payın: %${S.ownership})`,
+      choices:[{label:`Kabul et (+${tl(amt)})`, cls:'green', fn:()=>{ S.money += amt; S.ownership -= 10; toast(`💼 ${tl(amt)} yatırım aldın!`); snd('cash'); }},
+               {label:'Reddet, şirket benim!', cls:'gray'}]}; },
+  () => { const c = S.emps.filter(e=>e.skill>=4); if (!c.length) return null; const e = pick(c); const raise = round10(e.salary*0.25);
+    return {ikon:'🕴️', title:'Transfer Girişimi', text:`Rakip bir şirket <b>${esc(e.name)}</b> (${ROLES[e.role].ad}, yetenek ${e.skill}) adlı çalışanına daha yüksek maaş teklif etti!`,
+      choices:[{label:`Zam yap (+${tl(raise)}/ay)`, cls:'green', fn:()=>{ e.salary += raise; toast(`😊 ${esc(e.name)} kalmaya karar verdi.`); }},
+               {label:'Gitmesine izin ver', cls:'red', fn:()=>{ S.emps = S.emps.filter(x=>x.id!==e.id); toast(`👋 ${esc(e.name)} şirketten ayrıldı.`); }}]}; },
+  () => { const a = S.prods.filter(p=>p.active && p.users>100); if (!a.length) return null; const p = pick(a);
+    const cost = Math.round(Math.max(1000, p.users*TYPES[p.type].arpu*3)/100)*100;
+    return {ikon:'🖥️', title:'Sunucu Çöktü!', text:`<b>${esc(p.name)}</b> sunucuları çöktü! Acil ekip çağırırsan ${tl(cost)} tutacak. Çağırmazsan kullanıcıların %35'i kaçacak.`,
+      choices:[{label:`Acil ekip çağır (${tl(cost)})`, cls:'orange', fn:()=>{ S.money -= cost; toast('🛠️ Sunucular düzeldi.'); }},
+               {label:'Bekle, kendiliğinden düzelir', cls:'gray', fn:()=>{ p.peak *= 0.65; toast(`📉 ${esc(p.name)} kullanıcı kaybetti.`); }}]}; },
+  () => { if (S.day < 20) return null; const cost = Math.round((2000+S.rep*150)/100)*100; const gain = 3 + Math.floor(Math.random()*6);
+    return {ikon:'🎪', title:'Teknoloji Fuarı', text:`Büyük teknoloji fuarına stand açabilirsin. Maliyeti ${tl(cost)}. Şirketin daha çok tanınır.`,
+      choices:[{label:`Katıl (${tl(cost)}, +${gain} ⭐)`, fn:()=>{ S.money -= cost; S.rep += gain; toast(`⭐ Fuarda çok ilgi gördün! +${gain} itibar`); }},
+               {label:'Bu sefer geç', cls:'gray'}]}; },
+  () => { const amt = Math.round((1000+S.rep*100)*(0.5+Math.random())/100)*100;
+    return {ikon:'🏆', title:'Hackathon Ödülü', text:`Ekibin hafta sonu katıldığı hackathonda birinci oldu! Ödül: <b>${tl(amt)}</b>`,
+      choices:[{label:'Ödülü al 💰', cls:'green', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
+  () => { const a = S.projs.filter(p=>!devDone(p)); if (!a.length) return null; const p = pick(a);
+    return {ikon:'⚡', title:'Elektrik Kesintisi', text:`Mahallede elektrikler kesildi! <b>${esc(p.name)}</b> projesinde kaydedilmemiş işler kayboldu (%10).`,
+      choices:[{label:'Of ya... 😩', cls:'gray', fn:()=>{ p.kod*=0.9; p.tas*=0.9; }}]}; },
+  () => { if (S.emps.length >= cap()) return null;
+    return {ikon:'🎓', title:'Stajyer Başvurusu', text:'Üniversiteden hevesli bir öğrenci staj yapmak istiyor. Yeteneği düşük ama maaşı çok az (₺300/ay).',
+      choices:[{label:'Kabul et', cls:'green', fn:()=>{ const e = genCand(); e.skill = Math.random()<.4?2:1; e.salary = 300; e.name += ' (Stajyer)'; S.emps.push(e); toast('🎓 Stajyer ekibe katıldı!'); }},
+               {label:'Teşekkürler, gerek yok', cls:'gray'}]}; },
+  () => { if (S.rep < 20) return null;
+    return {ikon:'🥇', title:'Yılın Girişimi Ödülü', text:'Şirketin "Yılın Girişimi" ödülünü kazandı! Herkes seni konuşuyor.',
+      choices:[{label:'Teşekkürler! (+6 ⭐)', cls:'green', fn:()=>{ S.rep += 6; snd('ok'); }}]}; },
+  () => { if (S.emps.length < 2) return null; const cost = round10(150*(S.emps.length+1));
+    return {ikon:'🍕', title:'Ekip Yemeği', text:`Ekip çok yoruldu. Herkesi yemeğe çıkarırsan ${tl(cost)} tutar ama 20 gün boyunca herkes <b>%20 daha hızlı</b> çalışır.`,
+      choices:[{label:`Yemeğe çıkar (${tl(cost)})`, cls:'green', fn:()=>{ S.money -= cost; S.boost = 20; toast('🍕 Ekip motive oldu!'); }},
+               {label:'Şimdi olmaz', cls:'gray'}]}; },
+  () => { const owned = BIZ.filter(b=>(S.biz[b.id]||0)>0); if (!owned.length) return null; const b = pick(owned); const amt = Math.round(bizIncome(b,S.biz[b.id])*5/100)*100;
+    return {ikon:b.ikon, title:'Yoğun Gün!', text:`<b>${b.ad}</b> bugün çok kalabalıktı! Ekstra kazanç: <b>${tl(amt)}</b>`,
+      choices:[{label:'Süper! 💰', cls:'green', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
+];
+function triggerEvent(){
+  const pool = EVENTS.map(f=>f()).filter(Boolean);
+  if (!pool.length) return;
+  const ev = pick(pool);
+  curChoices = ev.choices.map(c=>c.fn);
+  snd('event');
+  showModal(`<div class="ev">${ev.ikon}</div><h3>${ev.title}</h3><p>${ev.text}</p>` +
+    `<div class="grid2">${ev.choices.map((c,i)=>`<button class="btn ${c.cls||''} block" data-act="choice" data-i="${i}">${c.label}</button>`).join('')}</div>`);
+}
+function checkGoals(){
+  while (S && S.goal < GOALS.length && GOALS[S.goal].c()){
+    const g = GOALS[S.goal];
+    S.money += g.r; S.goal++;
+    toast(`🎯 Hedef tamamlandı! +${tl(g.r)}`); snd('ok');
+  }
+}
+
+/* ================= EYLEMLER ================= */
+function release(id){
+  const p = S.projs.find(x=>x.id===id); if (!p || !devDone(p)) return;
+  const q = calcQuality(p);
+  const T = TYPES[p.type], sm = SIZES[p.size].m;
+  S.projs = S.projs.filter(x=>x!==p);
+  S.stats.best = Math.max(S.stats.best, q);
+  closePage();
+  if (p.kind === 'is'){
+    let pay = p.pay*(0.7 + q/100*0.6);
+    let rep = Math.ceil(sm*1.5*T.tier*q/60);
+    const notes = [];
+    if (q < p.minQ){ pay *= 0.5; rep = -2; notes.push(`😠 Müşteri kaliteyi beğenmedi (en az ${p.minQ} istiyordu). Ödemenin yarısını aldın.`); }
+    if (S.day > p.deadline){ pay *= 0.6; rep -= 3; notes.push(`⏰ Teslim ${S.day-p.deadline} gün gecikti. Ödemeden %40 kesildi.`); }
+    pay = Math.round(pay);
+    S.money += pay; S.stats.earned += pay; S.rep = Math.max(0, S.rep+rep); S.stats.done++;
+    snd(notes.length ? 'bad' : 'cash');
+    showModal(`<div class="ev">📦</div><h3>İş Teslim Edildi!</h3>
+      <p style="text-align:center" class="sub">${esc(p.client)}</p>
+      <div class="lbl"><span>Kalite</span>${qBadge(q)}</div>
+      <div class="lbl"><span>Ödeme</span><b class="green">+${tlFull(pay)}</b></div>
+      <div class="lbl"><span>İtibar</span><b>${rep>=0?'+':''}${rep} ⭐</b></div>
+      ${notes.map(n=>`<p class="sub">${n}</p>`).join('')}
+      <button class="btn green block" data-act="close">Devam</button>`);
+  } else {
+    const peak = Math.round(T.users*sm*Math.pow(q/100,2)*(1+S.rep/150)*(S.upg.pazarlama?1.3:1)*(0.8+Math.random()*0.45));
+    const pr = {id:S.idSeq++, name:p.name, type:p.type, size:p.size, q, peak, life:30+q*0.9, age:0, users:0, earned:0, ad:false, upd:0, viral:0, active:true, day:S.day};
+    S.prods.unshift(pr);
+    const rep = Math.max(-3, Math.round(q/25*Math.sqrt(sm)*T.tier) - (q<30?3:0));
+    S.rep = Math.max(0, S.rep+rep); S.stats.prodsDone++;
+    snd('ok');
+    showModal(`<div class="ev">🚀</div><h3>${esc(p.name)} Yayında!</h3>
+      <div class="lbl"><span>Kalite</span>${qBadge(q)}</div>
+      <div class="lbl"><span>Beklenen zirve</span><b>~${fmt(peak)} kullanıcı</b></div>
+      <div class="lbl"><span>İtibar</span><b>${rep>=0?'+':''}${rep} ⭐</b></div>
+      <p class="sub">Ürünün her gün para kazandıracak. Zamanla ilgi azalır; reklam ve güncellemeyle canlı tut, yeni ürünler çıkar!</p>
+      <button class="btn green block" data-act="close">Süper!</button>`);
+  }
+  checkGoals();
+}
+function gameOver(){
+  curChoices = [()=>{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); showWelcome(); }];
+  snd('bad');
+  showModal(`<div class="ev">💸</div><h3>İflas Ettin!</h3>
+    <p>Şirketin borçlarını ödeyemedi. Ama her büyük girişimci en az bir kez batar!</p>
+    <div class="grid4" style="margin:8px 0">
+      <div class="kv"><b>${S.day}</b><span>Gün</span></div>
+      <div class="kv"><b>${tl(S.stats.earned)}</b><span>Toplam kazanç</span></div>
+      <div class="kv"><b>${S.stats.done+S.stats.prodsDone}</b><span>Proje</span></div>
+      <div class="kv"><b>${S.stats.best}</b><span>En iyi kalite</span></div>
+    </div>
+    <button class="btn green block" data-act="choice" data-i="0">🔄 Yeniden Başla</button>`);
+}
+function confirmBox(ikon, titleTxt, text, yesLabel, yesFn){
+  curChoices = [yesFn, null];
+  showModal(`<div class="ev">${ikon}</div><h3>${titleTxt}</h3><p>${text}</p>
+    <div class="grid2"><button class="btn gray block" data-act="choice" data-i="1">Vazgeç</button><button class="btn red block" data-act="choice" data-i="0">${yesLabel}</button></div>`);
+}
+
+const trainCost = e => round10(e.skill*e.skill*250 + 500);
+const adCost = p => Math.round(Math.max(800, p.peak*TYPES[p.type].arpu*4)/100)*100;
+const updCost = p => Math.round(Math.max(1500, p.peak*TYPES[p.type].arpu*8*(1+p.upd*0.5))/100)*100;
+
+const ACTIONS = {
+  page: el => openPage(el.dataset.v, el.dataset.id ? +el.dataset.id : null),
+  home: () => closePage(),
+  close: () => { closeModal(); },
+  choice: el => { const fn = curChoices[+el.dataset.i]; closeModal(); if (fn) fn(); if (S) checkGoals(); },
+  begin: () => {
+    const n = ($('cname').value || '').trim() || 'Garaj Yazılım';
+    S = newState(n.slice(0,24)); refreshOffers(); refreshCands();
+    closeModal(); save();
+    toast('👋 Hoş geldin patron! "Müşteri İşleri"nden ilk işini al.');
+  },
+  proj: el => { S.sel = +el.dataset.id; openPage('proje', +el.dataset.id); },
+  daily: () => {
+    if (!dailyReady()){ toast('🎁 Bugünkü ödülünü aldın. Yarın tekrar gel!'); return; }
+    const streak = S.lastDaily === todayStr(-1) ? Math.min(7, S.streak+1) : 1;
+    const amt = dailyAmount(streak);
+    let row = '';
+    for (let i=1;i<=7;i++) row += `<div class="${i<streak?'got':i===streak?'now':''}">${i}. gün<b>${i<streak?'✅':i===streak?'🎁':'🔒'}</b></div>`;
+    curChoices = [()=>{ S.lastDaily = todayStr(); S.streak = streak; S.money += amt; S.stats.earned += amt; snd('cash'); toast(`🎁 +${tlFull(amt)} günlük ödül!`); }];
+    showModal(`<div class="ev">🎁</div><h3>Günlük Ödül</h3><p style="text-align:center">Her gün gir, ödülün büyüsün! 7 gün üst üste gelirsen 7 kat ödül.</p>
+      <div class="days7">${row}</div><p style="text-align:center;font-size:22px;font-weight:900" class="green">+${tlFull(amt)}</p>
+      <button class="btn goldb block" data-act="choice" data-i="0">Ödülü Al</button>`);
+  },
+  sound: () => { S.sound = !S.sound; snd('click'); },
+  'f-type': el => { const t = el.dataset.v; if (!S.tech[t]){ toast(`🔒 ${TYPES[t].ad} teknolojisini 🧬 Teknoloji'den açmalısın.`); return; } form.type = t; form.name=''; renderPage(true); },
+  'f-size': el => { const k = el.dataset.v; if (S.rep < SIZES[k].rep){ toast(`🔒 ${SIZES[k].ad} ürün için ${SIZES[k].rep} itibar gerekir.`); return; } form.size = k; renderPage(true); },
+  'f-focus': el => { form.focus = el.dataset.v; renderPage(true); },
+  'f-dice': () => { form.name = randProdName(form.type); const i=$('pname'); if (i) i.value = form.name; },
+  'start-prod': () => {
+    if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu! Büyük ofise taşınarak slot aç.'); snd('bad'); return; }
+    const name = (form.name||'').trim() || randProdName(form.type);
+    const p = makeProj('urun', form.type, form.size, form.focus, name.slice(0,28));
+    S.projs.push(p); S.sel = p.id; form.name = '';
+    toast(`🛠️ ${esc(p.name)} geliştirilmeye başlandı!`); closePage(); checkGoals();
+  },
+  'take-offer': el => {
+    if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu! Önce bir projeyi bitir.'); snd('bad'); return; }
+    const o = S.offers.find(x=>x.id===+el.dataset.id); if (!o) return;
+    S.offers = S.offers.filter(x=>x!==o);
+    const p = makeProj('is', o.type, o.size, 'dengeli', `${o.client}`, {client:o.client, pay:o.pay, minQ:o.minQ, deadline:S.day+o.days});
+    S.projs.push(p); S.sel = p.id;
+    toast(`🤝 ${esc(o.client)} ile anlaştın!`); closePage(); checkGoals();
+  },
+  'refresh-offers': () => { if (S.money < 300) return; S.money -= 300; refreshOffers(); },
+  release: el => release(+el.dataset.id),
+  cancel: el => {
+    const p = S.projs.find(x=>x.id===+el.dataset.id); if (!p) return;
+    confirmBox('🗑️','Proje iptal edilsin mi?', p.kind==='is' ? 'Müşteri işini yarıda bırakırsan <b>-3 itibar</b> kaybedersin.' : 'Bu üründe yapılan tüm çalışma çöpe gider.', 'İptal et', ()=>{
+      S.projs = S.projs.filter(x=>x!==p); if (p.kind==='is') S.rep = Math.max(0, S.rep-3); closePage(); toast('🗑️ Proje iptal edildi.');
+    });
+  },
+  hire: el => {
+    const c = S.cands.find(x=>x.id===+el.dataset.id); if (!c) return;
+    if (S.emps.length >= cap()){ toast('🪑 Ofiste yer yok! Ofisim\'den büyük ofise taşın.'); return; }
+    const cost = round10(c.salary*0.5);
+    if (S.money < cost){ toast('💸 Yeterli paran yok.'); return; }
+    S.money -= cost; S.cands = S.cands.filter(x=>x!==c); S.emps.push(c);
+    toast(`🤝 ${esc(c.name)} ekibe katıldı!`); snd('ok'); checkGoals();
+  },
+  fire: el => {
+    const e = S.emps.find(x=>x.id===+el.dataset.id); if (!e) return;
+    confirmBox('😬','Emin misin?', `<b>${esc(e.name)}</b> işten çıkarılacak. Tazminat olarak 1 maaş (${tl(e.salary)}) ödersin.`, 'Evet, çıkar', ()=>{
+      S.money -= e.salary; S.emps = S.emps.filter(x=>x!==e); toast(`👋 ${esc(e.name)} işten çıkarıldı.`);
+    });
+  },
+  train: el => {
+    const e = S.emps.find(x=>x.id===+el.dataset.id); if (!e || e.skill>=10) return;
+    const cost = trainCost(e); if (S.money < cost) return;
+    S.money -= cost;
+    e.salary = round10(e.salary * salaryFor(e.skill+1)/salaryFor(e.skill));
+    e.skill++;
+    toast(`📚 ${esc(e.name)} eğitimi bitirdi! Yetenek ${e.skill}`);
+  },
+  'refresh-cands': () => { if (S.money < 500) return; S.money -= 500; refreshCands(); },
+  'office-up': () => {
+    const n = OFFICES[S.office+1]; if (!n || S.money < n.fiyat) return;
+    S.money -= n.fiyat; S.office++;
+    toast(`${n.ikon} ${n.ad}'e taşındın! ${n.kap} çalışan, ${n.slot} proje slotu.`); snd('ok'); checkGoals();
+  },
+  tech: el => {
+    const t = el.dataset.v, T = TYPES[t];
+    if (S.tech[t] || S.money < T.fiyat || S.rep < T.rep) return;
+    S.money -= T.fiyat; S.tech[t] = true;
+    toast(`${T.ikon} ${T.ad} teknolojisi açıldı!`); snd('ok'); checkGoals();
+  },
+  upg: el => {
+    const u = UPGRADES.find(x=>x.id===el.dataset.v); const l = S.upg[u.id]||0;
+    if (l >= u.max) return; const f = u.fiyat(l); if (S.money < f) return;
+    S.money -= f; S.upg[u.id] = l+1;
+    toast(`${u.ikon} ${u.ad} alındı!`); snd('ok');
+  },
+  ad: el => {
+    const p = S.prods.find(x=>x.id===+el.dataset.id); if (!p || p.ad) return;
+    const c = adCost(p); if (S.money < c) return;
+    S.money -= c; p.ad = true; toast(`📣 ${esc(p.name)} reklamı başladı! (+%30 kullanıcı)`);
+  },
+  update: el => {
+    const p = S.prods.find(x=>x.id===+el.dataset.id); if (!p || p.upd>=3) return;
+    const c = updCost(p); if (S.money < c) return;
+    S.money -= c; p.upd++; p.age = Math.max(8, Math.round(p.age - p.life*0.6));
+    toast(`🔧 ${esc(p.name)} güncellendi! Kullanıcılar geri dönüyor.`);
+  },
+  'bank-pct': el => { bankForm.pct = +el.dataset.v; },
+  'bank-term': el => { bankForm.term = +el.dataset.v; },
+  loan: () => {
+    if (S.loans.length >= 3){ toast('🏦 En fazla 3 kredin olabilir.'); return; }
+    const amount = Math.round(loanLimit()*bankForm.pct/1000)*1000;
+    const total = Math.round(amount*(1+loanRate()*bankForm.term/12));
+    const inst = Math.ceil(total/bankForm.term);
+    S.loans.push({id:S.idSeq++, amount, remaining:total, inst, months:bankForm.term});
+    S.money += amount;
+    toast(`🏦 ${tlFull(amount)} kredi hesabına yattı.`); snd('cash');
+  },
+  payoff: el => {
+    const l = S.loans.find(x=>x.id===+el.dataset.id); if (!l) return;
+    const c = Math.round(l.remaining*0.95); if (S.money < c) return;
+    S.money -= c; S.loans = S.loans.filter(x=>x!==l); S.score = clamp(S.score+25, 300, 900);
+    toast('🏦 Kredi erken kapatıldı (%5 indirim). Kredi puanın arttı!'); snd('ok');
+  },
+  'biz-mul': el => { bizMul = el.dataset.v==='max' ? 'max' : +el.dataset.v; },
+  biz: el => {
+    const b = BIZ.find(x=>x.id===el.dataset.v); const l = S.biz[b.id]||0;
+    if (S.rep < b.rep || l >= BIZ_MAX) return;
+    const {n, cost} = l===0 ? {n:1, cost:b.fiyat} : bizBulk(b, l, bizMul);
+    if (n<=0 || S.money < cost) return;
+    S.money -= cost; S.biz[b.id] = l+n;
+    toast(l===0 ? `${b.ikon} ${b.ad} açıldı!` : `${b.ikon} ${b.ad} → Sv. ${l+n}`); snd(l===0?'ok':'cash'); checkGoals();
+  },
+  reset: () => confirmBox('⚠️','Baştan başlansın mı?','Tüm ilerlemen silinecek. Bu geri alınamaz!','Evet, sıfırla', ()=>{
+    localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); showWelcome();
+  }),
+};
+
+/* ---- dokunma yönetimi: kaydırırken basılmasın, yeniden çizimde tık kaybolmasın ---- */
+let downX = 0, downY = 0;
+document.addEventListener('pointerdown', e => {
+  downX = e.clientX; downY = e.clientY;
+  const t = e.target.closest('.tapper');
+  if (t && S && !paused){ e.preventDefault(); doTap(t, e); }
+});
+document.addEventListener('pointerup', e => {
+  if (Math.hypot(e.clientX-downX, e.clientY-downY) > 12) return;
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  if (!S && el.dataset.act !== 'begin') return;
+  const fn = ACTIONS[el.dataset.act];
+  if (!fn) return;
+  if (!['choice','daily','begin'].includes(el.dataset.act)) snd('click');
+  fn(el);
+  updateAll(true);
+});
+document.addEventListener('input', e => { if (e.target.id === 'pname') form.name = e.target.value; });
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+/* ================= ARAYÜZ ================= */
+function setHTML(el, html){ if (el && el._h !== html){ el.innerHTML = html; el._h = html; } }
+function updateAll(force){ if (!S) return; updateHeader(); updateHome(); renderPage(force); }
+function updateHeader(){
+  const k = $('hKasa'); $('hMoney').textContent = tlFull(S.money); k.classList.toggle('neg', S.money<0);
+  $('pMoney').textContent = tl(S.money);
+  const d = S.day-1;
+  $('hDate').textContent = `📅 Gün ${S.day} · ${MONTHS[Math.floor(d/30)%12]} · ${WEEKDAYS[d%7]}`;
+  $('dailyBtn').classList.toggle('glow', dailyReady());
+}
+function updateHome(){
+  const inc = S.lastDayInc, dbt = debt(), g = GOALS[S.goal];
+  const loanInfo = S.loans.length ? `🏦 ${S.loans.length} aktif kredi · aylık taksit ${tl(S.loans.reduce((a,l)=>a+l.inst,0))}` : '';
+  setHTML($('dash'), `<div class="dcard">
+    <div class="drow"><div><div class="cname">${esc(S.name)}</div><div class="sub">${title()} · ⭐ ${S.rep} itibar · Kredi puanı ${S.score} (${scoreWord(S.score)})</div></div>
+      <div class="val">Şirket değeri<br><b>${tl(valuation())}</b></div></div>
+    <div class="kbox"><small>KASA</small><div class="bigmoney ${S.money<0?'neg':''}">${tlFull(S.money)}</div>
+      <div class="k3"><div><small>BORÇ</small><b class="red">${tl(dbt)}</b></div><div><small>GÜNLÜK GELİR</small><b class="green">+${tl(inc)}</b></div><div><small>AYLIK GİDER</small><b class="orange">-${tl(monthlyCost())}</b></div></div>
+    </div>
+    <div class="strip">${g ? `🎯 <b>Hedef:</b> ${g.t} <span class="gold">· Ödül ${tl(g.r)}</span>` : '🏆 Tüm hedefler tamam. Sen bir efsanesin!'}${loanInfo?'<br>'+loanInfo:''}</div>
+  </div>`);
+  const n = OFFICES[S.office+1];
+  const dots = {
+    ofis: n && S.money >= n.fiyat,
+    ekip: S.emps.length < cap() && S.cands.some(c=>S.money >= round10(c.salary*0.5)) && S.emps.length===0,
+    tekno: Object.entries(TYPES).some(([k,t])=>!S.tech[k] && S.rep>=t.rep && S.money>=t.fiyat),
+    gelis: UPGRADES.some(u=>(S.upg[u.id]||0)<u.max && S.money>=u.fiyat(S.upg[u.id]||0)),
+    yatir: BIZ.some(b=>S.rep>=b.rep && (S.biz[b.id]||0)<BIZ_MAX && S.money>=bizCost(b,S.biz[b.id]||0)),
+  };
+  const active = S.prods.filter(p=>p.active).length;
+  const bizCount = BIZ.filter(b=>(S.biz[b.id]||0)>0).length;
+  const tile = (cls, v, ti, b, sm, dot) => `<button class="tile ${cls}" data-act="page" data-v="${v}">${dot?'<span class="dot"></span>':''}<span class="ti">${ti}</span><b>${b}</b><small>${sm}</small></button>`;
+  setHTML($('tiles'),
+    tile('c-purple','ofis','🏢','Ofisim',OFFICES[S.office].ad,dots.ofis) +
+    tile('c-teal','ekip','👥','Personel',`${S.emps.length}/${cap()} kişi`,dots.ekip) +
+    tile('c-orange','urunler','📦','Ürünlerim',`${active} yayında`,false) +
+    tile('c-blue','banka','🏦','Banka',S.loans.length?`${S.loans.length} aktif kredi`:'Kredi çek',false) +
+    tile('c-pink','tekno','🧬','Teknoloji',`${Object.keys(S.tech).length}/4 açık`,dots.tekno) +
+    tile('c-yellow','gelis','🛒','Geliştirme','Ofis ekipmanı',dots.gelis) +
+    tile('c-green','yatirim','💼','Yatırımlar',`${bizCount} işletme`,dots.yatir) +
+    tile('c-red','sirala','🏆','Sıralama',`${myRank()}. sıradasın`,false));
+  $('offCount').textContent = `${S.offers.length} teklif bekliyor`;
+  $('slotInfo').textContent = `${S.projs.length}/${slots()} slot ›`;
+  const sel = selProj();
+  let list = S.projs.map(p => {
+    const T = TYPES[p.type], [st, cls] = projStatus(p);
+    const pct = (p.kod+p.tas)/(p.kodReq+p.tasReq)*100;
+    const colors = {blue:'#60a5fa', orange:'#fb923c', green:'#34d399', red:'#f87171'};
+    let subTxt;
+    if (p.kind==='is'){ const left = p.deadline-S.day; subTxt = `👔 ${tl(p.pay)} · ${left>=0?`⏰ ${left} gün kaldı`:`⚠️ ${-left} gün gecikti`}`; }
+    else subTxt = `🛠️ ${T.ad} · %${Math.floor(pct)} · 🐞 ${Math.ceil(p.bugs)}`;
+    return `<div class="prow ${sel&&sel.id===p.id?'sel':''}" data-act="proj" data-id="${p.id}" style="--c:${colors[cls]}">
+      <div class="pi">${T.ikon}</div><div class="grow"><b>${esc(p.name)}</b><div class="sub">${subTxt}</div><div class="mbar"><i style="width:${pct}%"></i></div></div>
+      <span class="pill ${cls}">${st}</span></div>`;
+  }).join('');
+  for (let i=S.projs.length; i<slots(); i++) list += `<div class="prow empty" data-act="page" data-v="isler">➕ Boş proje slotu: müşteri işi al ya da yeni ürün başlat</div>`;
+  if (active) list += `<div class="prow" data-act="page" data-v="urunler" style="--c:#f5b83d"><div class="pi">📈</div><div class="grow"><b>Yayındaki ürünler: ${active}</b><div class="sub">${fmt(S.prods.reduce((a,p)=>a+p.users,0))} kullanıcı</div></div><span class="pill gold">YAYINDA</span></div>`;
+  setHTML($('projList'), list);
+  const b = $('tapBtn');
+  let html, cls;
+  if (!sel){ cls = 'tapper idle'; html = `<div>😴 Boştasın<small>Müşteri işi al ya da yeni ürün başlat</small></div><span class="arrow">→</span>`; }
+  else if (!devDone(sel)){ cls = 'tapper'; html = `<div>⌨️ KOD YAZ!<small>${esc(sel.name)} · dokunuş başı +${r1(tapPower())}</small></div><span class="arrow">→</span>`; }
+  else if (sel.bugs > 0.001){ cls = 'tapper bug'; html = `<div>🐞 HATA AYIKLA!<small>${esc(sel.name)} · ${Math.ceil(sel.bugs)} hata kaldı</small></div><span class="arrow">→</span>`; }
+  else { cls = 'tapper'; html = `<div>✅ HAZIR!<small>${esc(sel.name)} · projeye dokun ve yayınla</small></div><span class="arrow">→</span>`; }
+  if (b.className !== cls) b.className = cls;
+  setHTML(b, html);
+}
+function projStatus(p){
+  if (!devDone(p)) return (p.kind==='is' && S.day>p.deadline) ? ['GECİKTİ','red'] : ['GELİŞTİRME','blue'];
+  if (p.bugs > 0.001) return ['TEST','orange'];
+  return ['HAZIR ✓','green'];
+}
+
+/* ---- sayfalar ---- */
+const PAGES = {
+  isler:   {t:'👔 Müşteri İşleri', html:()=>offersHTML()},
+  yeni:    {t:'🛠️ Yeni Ürün Geliştir', html:()=>newProdHTML(), stat:true},
+  proje:   {t:'📋 Proje', html:()=>projHTML()},
+  ofis:    {t:'🏢 Ofisim', html:()=>officeHTML()},
+  ekip:    {t:'👥 Personel', html:()=>teamHTML()},
+  urunler: {t:'📦 Ürünlerim', html:()=>productsHTML()},
+  banka:   {t:'🏦 Banka', html:()=>bankHTML()},
+  tekno:   {t:'🧬 Teknoloji', html:()=>techHTML()},
+  gelis:   {t:'🛒 Geliştirmeler', html:()=>upgHTML()},
+  yatirim: {t:'💼 Yatırımlar', html:()=>bizHTML()},
+  sirala:  {t:'🏆 Sıralama', html:()=>rankHTML()},
+  ayarlar: {t:'⚙️ Ayarlar', html:()=>settingsHTML()},
+};
+function openPage(name, arg){
+  page = name; pageArg = arg;
+  $('pTitle').textContent = PAGES[name].t;
+  $('page').classList.remove('hidden');
+  $('pBody').scrollTop = 0;
+  renderPage(true);
+}
+function closePage(){ page = null; $('page').classList.add('hidden'); }
+function renderPage(force){
+  if (!page || !S) return;
+  const P = PAGES[page];
+  if (P.stat && !force) return;
+  const el = $('pInner');
+  if (force && P.stat) el._h = null;
+  setHTML(el, P.html());
+}
+
+function offersHTML(){
+  const full = S.projs.length >= slots();
+  const cards = S.offers.map(o => {
+    const t = TYPES[o.type];
+    return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow">
+      <b>${esc(o.client)}</b><div class="sub">${t.ad} · ${SIZES[o.size].ad} · ${(t.kod+t.tas)*SIZES[o.size].m} iş puanı</div>
+      <div class="sub">⏰ ${o.days} gün · 💎 Min. kalite: ${o.minQ||'yok'}</div></div>
+      <div style="text-align:right"><b class="green" style="font-size:15px">${tl(o.pay)}</b><br><button class="btn sm green" data-act="take-offer" data-id="${o.id}" style="margin-top:5px" ${full?'disabled':''}>Kabul Et</button></div></div></div>`;
+  }).join('');
+  return `<p class="sub" style="margin-bottom:8px">Güvenli para! Zamanında ve kaliteli teslim edersen itibarın artar. Proje slotun: <b>${S.projs.length}/${slots()}</b>${full?' <span class="red">(dolu, önce bir projeyi bitir)</span>':''}</p>
+    ${cards ? `<div class="cards">${cards}</div>` : '<div class="empty-msg">Şu an teklif yok. Ay başında yenileri gelir.</div>'}
+    <button class="btn gray" data-act="refresh-offers" ${S.money<300?'disabled':''}>🔄 Yeni teklifler bul (₺300)</button>`;
+}
+function newProdHTML(){
+  const T = TYPES[form.type], m = SIZES[form.size].m*FOCUS[form.focus].work;
+  const work = Math.round((T.kod+T.tas)*m);
+  const typeChips = Object.entries(TYPES).map(([k,t]) =>
+    `<button class="chip ${form.type===k?'on':''} ${S.tech[k]?'':'lock'}" data-act="f-type" data-v="${k}">${S.tech[k]?t.ikon:'🔒'} ${t.ad}</button>`).join('');
+  const sizeChips = Object.entries(SIZES).map(([k,s]) =>
+    `<button class="chip ${form.size===k?'on':''} ${S.rep>=s.rep?'':'lock'}" data-act="f-size" data-v="${k}">${S.rep>=s.rep?'':'🔒 '}${s.ad}${s.rep&&S.rep<s.rep?` (${s.rep}⭐)`:''}</button>`).join('');
+  const focusChips = Object.entries(FOCUS).map(([k,f]) =>
+    `<button class="chip ${form.focus===k?'on':''}" data-act="f-focus" data-v="${k}">${f.ad}</button>`).join('');
+  const full = S.projs.length >= slots();
+  return `<div class="cards" style="grid-template-columns:1.3fr 1fr">
+    <div class="card">
+      <div class="sub">Tür</div><div class="chips">${typeChips}</div>
+      <div class="sub">Büyüklük</div><div class="chips">${sizeChips}</div>
+      <div class="sub">Çalışma tarzı · ${FOCUS[form.focus].acik}</div><div class="chips">${focusChips}</div>
+    </div>
+    <div class="card">
+      <div class="sub" style="margin-bottom:4px">Ürün adı</div>
+      <div class="row"><input type="text" id="pname" maxlength="28" placeholder="Bir isim yaz ya da zar at" value="${esc(form.name)}"><button class="btn gray" data-act="f-dice">🎲</button></div>
+      <div class="grid2" style="margin-top:8px"><div class="kv"><b>${work}</b><span>İş puanı</span></div><div class="kv"><b>${fmt(T.users*SIZES[form.size].m)}</b><span>Kullanıcı potansiyeli</span></div></div>
+      <button class="btn goldb block" data-act="start-prod" ${full?'disabled':''}>🚀 Geliştirmeye Başla</button>
+      <p class="hint">${full?'<span class="red">Proje slotun dolu!</span> ':''}Yayınlanan ürünler her gün para kazandırır. Kalite ne kadar yüksekse o kadar çok kullanıcı gelir!</p>
+    </div></div>`;
+}
+function projHTML(){
+  const p = S.projs.find(x=>x.id===pageArg);
+  if (!p) return `<div class="empty-msg">Bu proje artık yok.</div>`;
+  const T = TYPES[p.type], done = devDone(p), [st, cls] = projStatus(p);
+  const left = p.kind==='is' ? p.deadline - S.day : 0;
+  let tapCls = 'tapper', tapTxt = '⌨️ KOD YAZ!';
+  if (done && p.bugs > 0.001){ tapCls = 'tapper bug'; tapTxt = '🐞 HATA AYIKLA!'; }
+  else if (done){ tapCls = 'tapper idle'; tapTxt = '✔️ Hata kalmadı'; }
+  return `<div class="cards" style="grid-template-columns:1.2fr 1fr">
+    <div class="card">
+      <div class="row"><div class="big">${T.ikon}</div><div class="grow"><b style="font-size:15px">${esc(p.name)}</b>
+        <div class="sub">${p.kind==='is'?'👔 Müşteri işi':'🛠️ Kendi ürünün'} · ${T.ad} · ${SIZES[p.size].ad} · ${FOCUS[p.focus].ad}</div></div><span class="pill ${cls}">${st}</span></div>
+      ${p.kind==='is'?`<div class="sub" style="margin-top:6px">💰 Ödeme: <b>${tl(p.pay)}</b> · Min. kalite: ${p.minQ||'yok'} · ${left>=0?`⏰ Kalan: <b>${left} gün</b>`:`<b class="red">⚠️ ${-left} gün gecikti!</b>`}</div>`:''}
+      <div class="lbl"><span>💻 Kod</span><span>${Math.floor(p.kod)}/${p.kodReq}</span></div><div class="bar"><i style="width:${p.kod/p.kodReq*100}%;background:#60a5fa"></i></div>
+      <div class="lbl"><span>🎨 Tasarım</span><span>${Math.floor(p.tas)}/${p.tasReq}</span></div><div class="bar"><i style="width:${p.tas/p.tasReq*100}%;background:#f472b6"></i></div>
+      <div class="lbl"><span>🐞 Hatalar</span><b class="${p.bugs>0.001?'red':'green'}">${Math.ceil(p.bugs)}</b></div>
+      <div class="lbl"><span>💎 Tahmini kalite</span>${qBadge(calcQuality(p))}</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:6px">
+      <button class="${tapCls}" data-id="${p.id}" style="min-height:70px;font-size:20px">${tapTxt}</button>
+      ${done?`<button class="btn green block" data-act="release" data-id="${p.id}">${p.kind==='is'?'📦 Müşteriye Teslim Et':'🚀 Ürünü Yayınla'}</button>
+        <p class="hint">💡 Yayınlamadan önce hataları düzeltirsen kalite artar!</p>`:`<p class="hint">Ekibin bu projede otomatik çalışıyor. Sen de dokunarak hızlandırabilirsin. ${S.projs.length>1?'Birden çok proje varsa ekip işini projeler arasında böler.':''}</p>`}
+      <button class="btn gray sm" data-act="cancel" data-id="${p.id}" style="margin-top:auto">🗑️ Projeyi iptal et</button>
+    </div></div>`;
+}
+function desksHTML(){
+  let h = `<div class="desk"><span class="e">🧑‍💻</span><span class="n">Sen</span></div>`;
+  for (const e of S.emps) h += `<div class="desk"><span class="e">${e.emo}</span><span class="n">${esc(e.name.split(' ')[0])}</span></div>`;
+  const empty = cap() - S.emps.length, show = Math.min(empty, 12);
+  for (let i=0;i<show;i++) h += `<div class="desk empty"><span class="e">🪑</span><span class="n">Boş</span></div>`;
+  if (empty > show) h += `<div class="desk empty"><span class="e">➕</span><span class="n">${empty-show} boş</span></div>`;
+  return h;
+}
+function officeHTML(){
+  const O = OFFICES[S.office], n = OFFICES[S.office+1];
+  return `<div class="office l${S.office}"><div class="otitle">${O.ikon} ${O.ad}<span>${S.emps.length+1}/${O.kap+1} kişi · ${O.slot} proje slotu · kira ${tl(O.kira)}/ay</span></div>
+    <div class="desks ${S.projs.length?'busy':''}">${desksHTML()}</div></div>
+    ${n ? `<div class="card"><div class="row"><div class="big">${n.ikon}</div><div class="grow"><b>${n.ad}'e taşın</b>
+      <div class="sub">${n.kap} çalışan · ${n.slot} proje slotu (aynı anda ${n.slot} proje) · aylık kira ${tl(n.kira)}</div></div>
+      <button class="btn goldb" data-act="office-up" ${S.money<n.fiyat?'disabled':''}>${tl(n.fiyat)}</button></div></div>`
+    : '<div class="empty-msg">🌆 En büyük ofistesin. Gökdelen senin!</div>'}
+    <div class="cards">${OFFICES.map((o,i)=>`<div class="card" style="${i===S.office?'border-color:var(--gold)':''}"><b>${o.ikon} ${o.ad}</b><div class="sub">${o.kap} çalışan · ${o.slot} slot · ${o.fiyat?tl(o.fiyat):'Başlangıç'} ${i<S.office?'✅':i===S.office?'📍 Buradasın':''}</div></div>`).join('')}</div>`;
+}
+function teamHTML(){
+  const O = OFFICES[S.office], full = S.emps.length >= cap();
+  const emps = S.emps.map(e => {
+    const tc = trainCost(e);
+    return `<div class="card"><div class="row"><div class="big">${e.emo}</div><div class="grow">
+      <b>${esc(e.name)}</b><div class="sub">${ROLES[e.role].ad} · ${ROLES[e.role].acik} · ${tl(e.salary)}/ay</div>
+      <div class="sub">Yetenek ${e.skill}/10 <span class="skill"><i style="width:${e.skill*10}%"></i></span></div></div></div>
+      <div class="row" style="margin-top:6px">
+        ${e.skill<10?`<button class="btn sm" data-act="train" data-id="${e.id}" ${S.money<tc?'disabled':''}>📚 Eğit (${tl(tc)})</button>`:'<span class="sub">⭐ Usta seviye</span>'}
+        <div class="grow"></div><button class="btn sm gray" data-act="fire" data-id="${e.id}">İşten çıkar</button></div></div>`;
+  }).join('');
+  const cands = S.cands.map(c => {
+    const hc = round10(c.salary*0.5);
+    return `<div class="card"><div class="row"><div class="big">${c.emo}</div><div class="grow">
+      <b>${esc(c.name)}</b><div class="sub">${ROLES[c.role].ad} · ${tl(c.salary)}/ay</div>
+      <div class="sub">Yetenek ${c.skill}/10 <span class="skill"><i style="width:${c.skill*10}%"></i></span></div></div>
+      <div style="text-align:right"><button class="btn sm green" data-act="hire" data-id="${c.id}" ${full||S.money<hc?'disabled':''}>İşe Al</button><div class="sub">${tl(hc)}</div></div></div></div>`;
+  }).join('');
+  return `<div class="grid4" style="margin-bottom:8px">
+      <div class="kv"><b>${S.emps.length}/${O.kap}</b><span>Çalışan (${O.ad})</span></div>
+      <div class="kv"><b>${founderSkill()}/10</b><span>Senin yeteneğin</span></div>
+      <div class="kv"><b class="orange">${tl(S.emps.reduce((a,e)=>a+e.salary,0))}</b><span>Aylık maaşlar</span></div>
+      <div class="kv"><b>${S.boost>0?'🍕 +%20':'Normal'}</b><span>Ekip motivasyonu</span></div>
+    </div>
+    <h2>Çalışanların</h2>
+    ${emps?`<div class="cards">${emps}</div>`:'<p class="sub" style="margin-bottom:8px">Henüz çalışanın yok. Aşağıdan birini işe al!</p>'}
+    <h2>İş başvuruları</h2>
+    <p class="sub" style="margin-bottom:6px">👨‍💻 Programcı kod yazar · 🎨 Tasarımcı tasarım yapar · 🕵️ Testçi hata düzeltir. İşe alırken yarım maaş peşin ödenir.${full?' <span class="red">Ofis dolu! Ofisim\'den büyük ofise taşın.</span>':''}</p>
+    ${cands?`<div class="cards">${cands}</div>`:'<div class="empty-msg">Başvuru kalmadı.</div>'}
+    <button class="btn gray" data-act="refresh-cands" ${S.money<500?'disabled':''}>📢 Yeni iş ilanı ver (₺500)</button>`;
+}
+function productsHTML(){
+  const act = S.prods.filter(p=>p.active), old = S.prods.filter(p=>!p.active);
+  if (!S.prods.length) return `<div class="empty-msg">📦 Henüz yayınlanmış ürünün yok.<br>Ana ekrandan "Yeni Ürün"e dokun ve ilk ürününü geliştir!</div>`;
+  const cards = act.map(p => {
+    const T = TYPES[p.type];
+    const status = p.viral>0 ? '🔥 Viral!' : p.age<=8 ? '📈 Yükselişte' : p.age<=8+p.life*0.4 ? '🏔️ Zirvede' : '📉 Düşüşte';
+    const rev = p.users*T.arpu*(S.upg.bulut?1.25:1)*S.ownership/100;
+    const ac = adCost(p), uc = updCost(p);
+    return `<div class="card"><div class="row"><div class="big">${T.ikon}</div><div class="grow">
+      <b>${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">${T.ad} · ${status} · ${p.age}. gün · toplam ${tl(p.earned)}</div></div></div>
+      <div class="grid2" style="margin-top:6px"><div class="kv"><b>${fmt(p.users)}</b><span>Kullanıcı</span></div><div class="kv"><b class="green">${tl(rev)}</b><span>Günlük gelir</span></div></div>
+      <div class="row" style="margin-top:6px;flex-wrap:wrap">
+        ${p.ad?'<span class="sub">📣 Reklam aktif</span>':`<button class="btn sm orange" data-act="ad" data-id="${p.id}" ${S.money<ac?'disabled':''}>📣 Reklam (${tl(ac)})</button>`}
+        ${p.upd<3?`<button class="btn sm" data-act="update" data-id="${p.id}" ${S.money<uc?'disabled':''}>🔧 Güncelle (${tl(uc)})</button>`:'<span class="sub">🔧 Güncellemeler bitti</span>'}
+      </div></div>`;
+  }).join('');
+  return `<div class="grid4" style="margin-bottom:8px">
+      <div class="kv"><b>${act.length}</b><span>Yayındaki ürün</span></div>
+      <div class="kv"><b>${fmt(act.reduce((a,p)=>a+p.users,0))}</b><span>Toplam kullanıcı</span></div>
+      <div class="kv"><b class="green">${tl(act.reduce((a,p)=>a+p.users*TYPES[p.type].arpu*(S.upg.bulut?1.25:1)*S.ownership/100,0))}</b><span>Günlük ürün geliri</span></div>
+      <div class="kv"><b>%${S.ownership}</b><span>Şirketteki payın</span></div>
+    </div>
+    ${act.length?`<div class="cards">${cards}</div>`:'<div class="empty-msg">Yayında ürünün kalmadı. Yeni bir ürün geliştirme zamanı!</div>'}
+    ${old.length?`<h2>Kapanan ürünler (${old.length})</h2><div class="cards">${old.slice(0,30).map(p=>`<div class="card"><b>${TYPES[p.type].ikon} ${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">Toplam kazanç: ${tl(p.earned)}</div></div>`).join('')}</div>`:''}`;
+}
+function bankHTML(){
+  const lim = loanLimit(), rate = loanRate();
+  const amount = Math.round(lim*bankForm.pct/1000)*1000;
+  const total = Math.round(amount*(1+rate*bankForm.term/12));
+  const inst = Math.ceil(total/bankForm.term);
+  const loans = S.loans.map(l => {
+    const c = Math.round(l.remaining*0.95);
+    return `<div class="card"><div class="row"><div class="big">💳</div><div class="grow"><b>${tl(l.amount)} kredi</b>
+      <div class="sub">Kalan borç ${tl(l.remaining)} · ${tl(l.inst)}/ay · ${l.months} ay kaldı</div></div>
+      <button class="btn sm green" data-act="payoff" data-id="${l.id}" ${S.money<c?'disabled':''}>Erken kapat ${tl(c)}</button></div></div>`;
+  }).join('');
+  return `<div class="cards" style="grid-template-columns:1fr 1.4fr">
+    <div class="card"><div class="sub">KREDİ PUANI</div><div style="font-size:30px;font-weight:900" class="${S.score>=700?'green':S.score>=550?'gold':'red'}">${S.score}</div>
+      <div class="bar" style="margin:4px 0"><i style="width:${(S.score-300)/6}%;background:linear-gradient(90deg,#f87171,#facc15,#34d399)"></i></div>
+      <div class="sub">${scoreWord(S.score)} · Faiz: yıllık %${Math.round(rate*100)}</div>
+      <p class="hint">Taksitleri zamanında ödersen puanın yükselir: daha yüksek limit, daha düşük faiz. Ay sonunda kasan eksiye düşerse puanın düşer!</p></div>
+    <div class="card"><b>🏦 Kod Bank'tan kredi çek</b><div class="sub">Kredi limitin: <b class="gold">${tl(lim)}</b></div>
+      <div class="sub" style="margin-top:6px">Tutar</div><div class="chips">${[0.25,0.5,1].map(v=>`<button class="chip ${bankForm.pct===v?'on':''}" data-act="bank-pct" data-v="${v}">${tl(Math.round(lim*v/1000)*1000)}</button>`).join('')}</div>
+      <div class="sub">Vade</div><div class="chips">${[6,12,24].map(v=>`<button class="chip ${bankForm.term===v?'on':''}" data-act="bank-term" data-v="${v}">${v} ay</button>`).join('')}</div>
+      <div class="grid2"><div class="kv"><b>${tl(inst)}</b><span>Aylık taksit</span></div><div class="kv"><b>${tl(total)}</b><span>Toplam geri ödeme</span></div></div>
+      <button class="btn goldb block" data-act="loan" ${S.loans.length>=3?'disabled':''}>💰 ${tl(amount)} Kredi Çek</button></div>
+    </div>
+    <h2>Aktif kredilerin (${S.loans.length}/3)</h2>
+    ${loans?`<div class="cards">${loans}</div>`:'<div class="empty-msg">Aktif kredin yok.</div>'}`;
+}
+function techHTML(){
+  return `<p class="sub" style="margin-bottom:8px">Yeni teknolojiler daha büyük projeler, daha çok kullanıcı ve daha kârlı müşteri işleri demek.</p><div class="cards">` +
+    Object.entries(TYPES).map(([k,t]) => {
+      if (S.tech[k]) return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow"><b>${t.ad}</b><div class="sub">✅ Açık · ${fmt(t.users)} kullanıcı potansiyeli</div></div></div></div>`;
+      const ok = S.rep >= t.rep;
+      return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow"><b>${t.ad}</b>
+        <div class="sub">${fmt(t.users)} kullanıcı potansiyeli · Gerekli: ${t.rep} ⭐ ${ok?'✅':'❌'}</div></div>
+        <button class="btn sm goldb" data-act="tech" data-v="${k}" ${(!ok||S.money<t.fiyat)?'disabled':''}>${tl(t.fiyat)}</button></div></div>`;
+    }).join('') + '</div>';
+}
+function upgHTML(){
+  return `<div class="cards">` + UPGRADES.map(u => {
+    const l = S.upg[u.id]||0, max = l>=u.max, f = u.fiyat(l);
+    return `<div class="card"><div class="row"><div class="big">${u.ikon}</div><div class="grow"><b>${u.ad}</b>${u.max>1?` <span class="sub">Sv. ${l}/${u.max}</span>`:''}
+      <div class="sub">${u.acik}</div></div>
+      ${max?'<span class="pill green">ALINDI</span>':`<button class="btn sm" data-act="upg" data-v="${u.id}" ${S.money<f?'disabled':''}>${tl(f)}</button>`}</div></div>`;
+  }).join('') + '</div>';
+}
+function bizHTML(){
+  const mulChips = [1,10,'max'].map(v=>`<button class="chip ${bizMul===v?'on':''}" data-act="biz-mul" data-v="${v}">${v==='max'?'MAX':'x'+v}</button>`).join('');
+  const total = BIZ.reduce((a,b)=>a+bizIncome(b,S.biz[b.id]||0),0);
+  const cards = BIZ.map(b => {
+    const l = S.biz[b.id]||0, ok = S.rep >= b.rep;
+    let btn;
+    if (!ok) btn = `<button class="btn sm" disabled>🔒 ${b.rep} ⭐</button>`;
+    else if (l===0) btn = `<button class="btn sm goldb" data-act="biz" data-v="${b.id}" ${S.money<b.fiyat?'disabled':''}>Satın al ${tl(b.fiyat)}</button>`;
+    else if (l>=BIZ_MAX) btn = '<span class="pill green">MAKS</span>';
+    else { const {n,cost} = bizBulk(b,l,bizMul); btn = `<button class="btn sm green" data-act="biz" data-v="${b.id}" ${(n<=0||S.money<cost)?'disabled':''}>+${Math.max(n,1)} Sv. ${tl(n>0?cost:bizCost(b,l))}</button>`; }
+    const next = [10,25,50,100].find(x=>x>l);
+    return `<div class="card"><div class="row"><div class="big">${b.ikon}</div><div class="grow"><b>${b.ad}</b> ${l?`<span class="pill gold">Sv. ${l}</span>`:''}
+      <div class="sub">${b.acik}</div>
+      <div class="sub">${l?`Günlük gelir: <b class="green">${tl(bizIncome(b,l))}</b>`:`Açılınca günlük ~${tl(b.gelir)}`}${b.mevsim&&l?` (mevsim x${seasonMult()})`:''}${next&&l?` · Sv.${next}'da gelir x2!`:''}</div></div></div>
+      <div class="row" style="margin-top:6px;justify-content:flex-end">${btn}</div></div>`;
+  }).join('');
+  return `<div class="row" style="margin-bottom:6px"><div class="grow"><p class="sub">Yan işler kur, şirketin büyüsün! Yatırımların her gün <b class="green">${tl(total)}</b> kazandırıyor. Sen yokken de çalışırlar.</p></div><div class="chips" style="margin:0">${mulChips}</div></div>
+    <div class="cards">${cards}</div>`;
+}
+function rankHTML(){
+  const me = valuation();
+  const list = RIVALS.map(r=>({n:r.n, v:rivalVal(r), me:false})).concat([{n:S.name, v:me, me:true}]).sort((a,b)=>b.v-a.v);
+  const medal = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+  return `<p class="sub" style="margin-bottom:8px">Türkiye'nin en değerli yazılım şirketleri. Şirket değerin; kasan, gelirlerin, yatırımların, ofisin ve itibarınla hesaplanır. Zirveye çık!</p>` +
+    list.map((x,i)=>`<div class="rank ${x.me?'me':''}"><div class="no">${medal(i)}</div><div class="grow"><b>${esc(x.n)}</b>${x.me?' <span class="pill gold">SEN</span>':''}</div><b class="${x.me?'gold':''}">${tl(x.v)}</b></div>`).join('');
+}
+function settingsHTML(){
+  return `<div class="cards">
+    <div class="card"><div class="row"><div class="grow"><b>🔊 Ses efektleri</b><div class="sub">Dokunma, para ve başarı sesleri</div></div><button class="toggle ${S.sound?'on':''}" data-act="sound"></button></div></div>
+    <div class="card"><b>💾 Kayıt</b><div class="sub">Oyun her 5 saniyede otomatik kaydedilir, ayrıca dakikada bir yedek alınır. Sen yokken ürünlerin ve yatırımların para kazanmaya devam eder (en fazla 4 saat).</div></div>
+  </div>
+  <h2>İstatistikler</h2>
+  <div class="grid4" style="margin-bottom:8px">
+    <div class="kv"><b>${S.day}</b><span>Gün</span></div>
+    <div class="kv"><b>${tl(S.stats.earned)}</b><span>Toplam kazanç</span></div>
+    <div class="kv"><b>${S.stats.done} / ${S.stats.prodsDone}</b><span>Müşteri işi / Ürün</span></div>
+    <div class="kv"><b>${S.stats.best}</b><span>En iyi kalite</span></div>
+  </div>
+  <button class="btn red" data-act="reset">🗑️ Baştan Başla</button>`;
+}
+
+/* ---- bildirimler / modal ---- */
+function toast(html){
+  const t = document.createElement('div'); t.className='toast'; t.innerHTML = html;
+  const box = $('toasts'); box.appendChild(t);
+  while (box.children.length > 2) box.firstChild.remove();
+  setTimeout(()=>t.remove(), 2900);
+}
+function floatText(txt, x, y, cls){
+  const f = document.createElement('div'); f.className = 'float '+(cls||''); f.textContent = txt;
+  f.style.left = x+'px'; f.style.top = y+'px';
+  document.body.appendChild(f); setTimeout(()=>f.remove(), 950);
+}
+function floatMoney(v){
+  if (document.hidden || page) return;
+  const r = $('hMoney').getBoundingClientRect();
+  floatText('+'+tl(v), r.left + r.width/2, r.bottom + 4);
+}
+function showModal(html){ const m = $('modal'); m.innerHTML = `<div class="mbox">${html}</div>`; m.classList.remove('hidden'); paused = true; }
+function closeModal(){ const m = $('modal'); m.classList.add('hidden'); m.innerHTML=''; paused = false; }
+function showWelcome(){
+  showModal(`<div class="ev">💻</div><h3>Kod Patronu</h3>
+    <p style="text-align:center">Garajında tek bir bilgisayarla başlıyorsun. Müşteri işleri al, kendi ürünlerini çıkar, ekip kur, yatırım yap ve şirketini bir <b>teknoloji devine</b> dönüştür!</p>
+    <div class="row" style="margin-top:8px"><input type="text" id="cname" maxlength="24" placeholder="Şirketinin adı: Garaj Yazılım"><button class="btn goldb" data-act="begin" style="white-space:nowrap">🚀 Başla</button></div>`);
+}
+
+/* ================= KAYIT ================= */
+let lastBackup = 0;
+function save(){
+  if (!S) return;
+  S.lastSeen = Date.now();
+  try {
+    const d = JSON.stringify(S);
+    localStorage.setItem(SAVE_KEY, d);
+    if (Date.now() - lastBackup > 60000){ localStorage.setItem(BACKUP_KEY, d); lastBackup = Date.now(); }
+  } catch(e){}
+}
+function migrate(d){
+  const s = Object.assign(newState(d.name), d);
+  s.stats = Object.assign(newState('').stats, d.stats||{});
+  if (s.v === 1){ s.projs = d.proj ? [d.proj] : []; delete s.proj; s.v = 2; }
+  if (!Array.isArray(s.projs)) s.projs = [];
+  return s;
+}
+function load(){
+  for (const key of [SAVE_KEY, BACKUP_KEY]){
+    try {
+      const d = JSON.parse(localStorage.getItem(key));
+      if (d && (d.v===1 || d.v===2) && d.name){ S = migrate(d); return true; }
+    } catch(e){}
+  }
+  return false;
+}
+function awayGain(sec){
+  const s = Math.min(sec, 4*3600);
+  const gain = Math.round((S.lastDayInc||0) * (s/DAY_SEC) * 0.3);
+  if (gain > 0 && sec > 20){
+    S.money += gain; S.stats.earned += gain;
+    const mins = Math.round(s/60);
+    showModal(`<div class="ev">🌙</div><h3>Tekrar hoş geldin!</h3>
+      <p style="text-align:center">Sen yokken (${mins>=60?Math.floor(mins/60)+' saat ':''}${mins%60} dk) ürünlerin ve yatırımların çalışmaya devam etti.</p>
+      <p style="text-align:center;font-size:24px;font-weight:900;margin:8px 0" class="green">+${tlFull(gain)}</p>
+      <button class="btn goldb block" data-act="close">Harika!</button>`);
+    snd('cash');
+  }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+window.addEventListener('pagehide', save);
+
+/* ================= DÖNGÜ ================= */
+let last = performance.now(), acc = 0;
+function loop(){
+  const now = performance.now();
+  const dt = (now - last)/1000; last = now;
+  if (!S || paused) return;
+  if (dt > 5){ awayGain(dt); updateAll(true); return; }
+  workTick(dt);
+  S.dayFrac += dt/DAY_SEC;
+  while (S && S.dayFrac >= 1){ S.dayFrac -= 1; newDay(); if (paused) break; }
+  if (!S) return;
+  acc += dt;
+  if (acc >= 0.25){ acc = 0; updateAll(false); }
+}
+setInterval(loop, 100);
+setInterval(save, 5000);
+
+if (load()){
+  updateAll(true);
+  awayGain((Date.now() - S.lastSeen)/1000);
+} else showWelcome();
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
