@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0b1626">
+<meta name="theme-color" content="#b5e1ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,256 +12,115 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>Kod Patronu – Yazılım Şirketi Simülasyonu</title>
-<style>
-:root{--bg:#0b1626;--panel:#12223a;--panel2:#182c48;--line:rgba(255,255,255,.08);--gold:#f5b83d;--gold2:#ffd77a;--txt:#e8eef8;--mut:#8fa3bf;--green:#34d399;--red:#f87171;--orange:#fb923c;--blue:#60a5fa}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:13px;overscroll-behavior:none;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-input{-webkit-user-select:text;user-select:text}
-#app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#16294a 0%,var(--bg) 70%);overflow:hidden}
-@media (orientation:portrait){
-  #app{width:100vh;width:100dvh;height:100vw;left:100vw;transform:rotate(90deg);transform-origin:top left}
-}
-/* ---- üst bar ---- */
-header{display:flex;align-items:center;gap:6px;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.3);border-bottom:1px solid var(--line);flex-shrink:0}
-.logo{font-weight:900;color:var(--gold);font-size:14px;line-height:1;letter-spacing:.5px;margin-right:4px}
-.logo span{display:block;font-size:8px;color:var(--mut);letter-spacing:2px;font-weight:700}
-.hb{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;position:relative}
-.hb.glow{border-color:var(--gold);box-shadow:0 0 10px rgba(245,184,61,.6);animation:glow 1.2s infinite alternate}
-@keyframes glow{to{box-shadow:0 0 2px rgba(245,184,61,.2)}}
-.spacer{flex:1}
-.kasa{font-size:16px;font-weight:900;white-space:nowrap}
-.kasa small{font-size:9px;color:var(--green);font-weight:800;letter-spacing:1px;margin-right:4px}
-.kasa.neg b{color:var(--red)}
-.day{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px 8px;font-size:11px;font-weight:700;white-space:nowrap}
-/* ---- gövde ---- */
-#body{flex:1;display:flex;gap:10px;padding:8px max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));min-height:0}
-#left{width:46%;display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0}
-#right{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0}
-.dcard{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:8px 10px}
-.drow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.cname{font-size:15px;font-weight:900}
-.sub{font-size:11px;color:var(--mut);margin-top:1px}
-.gold{color:var(--gold)}.green{color:var(--green)}.red{color:var(--red)}.orange{color:var(--orange)}.blue{color:var(--blue)}
-.val{text-align:right;font-size:10px;color:var(--mut)}
-.val b{font-size:13px;color:var(--gold2)}
-.kbox{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:5px 10px 6px;margin-top:6px}
-.kbox>small{font-size:9px;color:var(--green);font-weight:800;letter-spacing:1px}
-.bigmoney{font-size:22px;font-weight:900;line-height:1.1}
-.bigmoney.neg{color:var(--red)}
-.k3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:3px}
-.k3 small{display:block;font-size:8.5px;color:var(--mut);font-weight:800;letter-spacing:.5px}
-.k3 b{font-size:12px}
-.strip{margin-top:6px;background:rgba(96,165,250,.1);border-left:3px solid var(--blue);border-radius:6px;padding:4px 8px;font-size:10.5px}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex-shrink:0}
-.tile{position:relative;border:none;border-radius:12px;padding:5px 2px 4px;color:#fff;font-family:inherit;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 rgba(0,0,0,.35)}
-.tile:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 rgba(0,0,0,.35)}
-.tile .ti{font-size:19px;line-height:1.1;display:block}
-.tile b{display:block;font-size:11px;margin-top:1px}
-.tile small{display:block;font-size:9px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
-.dot{position:absolute;top:5px;right:6px;width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
-.c-purple{background:linear-gradient(135deg,#8b5cf6,#5b21b6)}
-.c-teal{background:linear-gradient(135deg,#14b8a6,#115e59)}
-.c-orange{background:linear-gradient(135deg,#f97316,#9a3412)}
-.c-blue{background:linear-gradient(135deg,#3b82f6,#1e40af)}
-.c-pink{background:linear-gradient(135deg,#ec4899,#9d174d)}
-.c-yellow{background:linear-gradient(135deg,#eab308,#854d0e)}
-.c-green{background:linear-gradient(135deg,#22c55e,#166534)}
-.c-red{background:linear-gradient(135deg,#ef4444,#991b1b)}
-.cta2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.ctile{display:flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:8px 10px;color:#fff;font-family:inherit;text-align:left;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 0 rgba(0,0,0,.35)}
-.ctile:active{transform:translateY(2px)}
-.ctile .ci{font-size:24px}
-.ctile b{display:block;font-size:13px}
-.ctile small{display:block;font-size:10px;opacity:.9}
-.sechead{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;margin-top:2px;padding:0 2px}
-.prow{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c,#60a5fa);border-radius:10px;padding:6px 8px}
-.prow.sel{background:var(--panel2);border-color:rgba(245,184,61,.5);border-left-color:var(--c)}
-.prow .pi{font-size:20px}
-.grow{flex:1;min-width:0}
-.prow b{font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mbar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:4px;overflow:hidden}
-.mbar i{display:block;height:100%;background:var(--c,#60a5fa);border-radius:2px}
-.pill{font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;letter-spacing:.3px}
-.pill.blue{color:var(--blue);background:rgba(96,165,250,.12)}.pill.orange{color:var(--orange);background:rgba(251,146,60,.12)}.pill.green{color:var(--green);background:rgba(52,211,153,.12)}.pill.red{color:var(--red);background:rgba(248,113,113,.12)}.pill.gold{color:var(--gold);background:rgba(245,184,61,.12)}
-.prow.empty{border-style:dashed;border-left-width:1px;justify-content:center;color:var(--mut);font-size:11.5px;padding:9px}
-.tapper{border:none;font-family:inherit;color:#1c1405;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:14px;font-weight:900;box-shadow:0 4px 0 #a16207;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-.tapper:active{transform:translateY(3px);box-shadow:0 1px 0 #a16207}
-.tapper.bug{background:linear-gradient(90deg,#f97316,#fb7185);color:#fff;box-shadow:0 4px 0 #9a3412}
-.tapper.idle{background:linear-gradient(90deg,#475569,#64748b);color:#e2e8f0;box-shadow:0 4px 0 #1e293b}
-#tapBtn{width:100%;min-height:62px;margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:20px;flex-shrink:0}
-#tapBtn small{display:block;font-size:10.5px;font-weight:700;opacity:.8;text-align:left}
-#tapBtn .arrow{font-size:22px;background:rgba(0,0,0,.15);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center}
-/* ---- sayfalar ---- */
-#page{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:40}
-#page.hidden,#modal.hidden{display:none}
-.phead{display:flex;align-items:center;gap:10px;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.3);border-bottom:1px solid var(--line);flex-shrink:0}
-.back{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:6px 12px;font-weight:800;font-family:inherit;font-size:12px}
-.ptitle{font-size:16px;font-weight:900;flex:1}
-#pBody{flex:1;overflow-y:auto;padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-bottom:8px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
-h2{font-size:13px;margin:6px 2px 6px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
-h3{font-size:18px;margin-bottom:6px;text-align:center}
-p{line-height:1.45}
-.hint{font-size:11px;color:var(--mut);margin-top:6px}
-.btn{background:#3b82f6;color:#fff;border:none;border-radius:10px;padding:8px 12px;font-weight:800;font-size:12.5px;font-family:inherit;box-shadow:0 2px 0 rgba(0,0,0,.35)}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{background:#2a3a52;color:#6b7c95;box-shadow:none}
-.btn.green{background:#16a34a}.btn.red{background:#dc2626}.btn.gray{background:#475569}.btn.orange{background:#ea580c}.btn.goldb{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#1c1405}
-.btn.sm{padding:6px 9px;font-size:11.5px}.btn.block{width:100%;margin-top:8px}
-.row{display:flex;align-items:center;gap:8px}
-.big{font-size:28px;line-height:1}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
-.chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#dde;border-radius:999px;padding:6px 10px;font-size:12px;font-family:inherit}
-.chip.on{background:#3b82f6;border-color:#93c5fd;color:#fff;font-weight:800}
-.chip.lock{opacity:.45}
-.lbl{display:flex;justify-content:space-between;font-size:12px;margin:6px 0 3px}
-.bar{height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden}
-.bar>i{display:block;height:100%;border-radius:5px}
-.skill{display:inline-block;height:5px;width:56px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;vertical-align:middle}
-.skill>i{display:block;height:100%;background:linear-gradient(90deg,#facc15,#34d399)}
-.badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10.5px;font-weight:800}
-.q1{background:#7f1d1d}.q2{background:#92400e}.q3{background:#3f6212}.q4{background:#15803d}.q5{background:linear-gradient(90deg,#a16207,#eab308);color:#111}
-input[type=text]{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #3b82f6;background:#08101d;color:#fff;font-size:16px;font-family:inherit}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.kv{background:rgba(0,0,0,.22);border-radius:10px;padding:7px}
-.kv b{display:block;font-size:14px}
-.kv span{font-size:10px;color:var(--mut)}
-.empty-msg{text-align:center;color:var(--mut);padding:18px 8px;font-size:13px}
-.office{border-radius:14px;padding:10px;border:1px solid var(--line);margin-bottom:8px}
-.office.l0{background:linear-gradient(160deg,#57534e,#292524)}
-.office.l1{background:linear-gradient(160deg,#0e7490,#164e63)}
-.office.l2{background:linear-gradient(160deg,#4338ca,#1e1b4b)}
-.office.l3{background:linear-gradient(160deg,#7e22ce,#3b0764)}
-.office.l4{background:linear-gradient(160deg,#0f172a,#1e3a8a 60%,#b45309)}
-.otitle{display:flex;justify-content:space-between;font-weight:900;margin-bottom:8px;font-size:15px}
-.otitle span{font-weight:600;font-size:11px;opacity:.85}
-.desks{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:5px}
-.desk{background:rgba(0,0,0,.28);border-radius:9px;text-align:center;padding:5px 2px 3px}
-.desk .e{font-size:24px;display:block;line-height:1.15}
-.desk .n{font-size:9.5px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.desk.empty .e{opacity:.3}
-.busy .desk:not(.empty) .e{animation:bob .5s infinite alternate}
-.busy .desk:nth-child(2n) .e{animation-delay:.2s}
-@keyframes bob{to{transform:translateY(-4px)}}
-.rank{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:5px}
-.rank.me{border-color:var(--gold);background:rgba(245,184,61,.12)}
-.rank .no{width:30px;text-align:center;font-weight:900;font-size:15px}
-.days7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:10px 0}
-.days7 div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 0;text-align:center;font-size:10px}
-.days7 div.got{background:rgba(52,211,153,.15);border-color:var(--green)}
-.days7 div.now{background:rgba(245,184,61,.2);border-color:var(--gold)}
-.days7 b{display:block;font-size:16px}
-.toggle{width:46px;height:26px;border-radius:13px;background:#475569;position:relative;border:none}
-.toggle.on{background:#16a34a}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
-.toggle.on::after{left:23px}
-/* ---- modal / bildirim ---- */
-#modal{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;padding:12px}
-.mbox{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--gold);border-radius:16px;padding:14px 16px;max-width:440px;width:100%;max-height:94%;overflow-y:auto;animation:pop .2s ease-out}
-.mbox .ev{font-size:40px;text-align:center}
-.mbox p{margin-bottom:6px;font-size:13px}
-@keyframes pop{from{transform:scale(.85);opacity:0}}
-#toasts{position:absolute;top:46px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:90}
-.toast{background:rgba(11,22,38,.96);border:1px solid var(--gold);padding:6px 12px;border-radius:10px;font-size:12px;max-width:80%;animation:tin .2s ease-out,tout .4s 2.4s forwards;box-shadow:0 4px 14px rgba(0,0,0,.5)}
-@keyframes tin{from{transform:translateY(-8px);opacity:0}}
-@keyframes tout{to{opacity:0}}
-.float{position:fixed;pointer-events:none;font-weight:900;font-size:17px;color:#fde68a;text-shadow:0 2px 4px #000;animation:fl .9s ease-out forwards;z-index:200;transform:translate(-50%,0)}
-@keyframes fl{to{margin-top:-60px;opacity:0}}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap"><link rel="stylesheet" href="stil.css?v=59">
 </head>
 <body>
+<div id="probe" style="position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)"></div>
 <div id="app">
-  <header>
-    <div class="logo">KOD PATRONU<span>YAZILIM ŞİRKETİ</span></div>
-    <button class="hb" id="dailyBtn" data-act="daily">🎁 Günlük</button>
-    <button class="hb" data-act="page" data-v="sirala">🏆 Sıralama</button>
-    <button class="hb" data-act="page" data-v="ayarlar">⚙️</button>
-    <div class="spacer"></div>
-    <div class="kasa" id="hKasa"><small>KASA</small><b id="hMoney">₺0</b></div>
-    <div class="day" id="hDate">📅</div>
-  </header>
-  <div id="body">
-    <section id="left">
-      <div id="dash"></div>
-      <div id="tiles" class="tiles"></div>
-    </section>
-    <section id="right">
-      <div class="cta2">
-        <button class="ctile c-blue" data-act="page" data-v="isler"><span class="ci">👔</span><div><b>Müşteri İşleri</b><small id="offCount"></small></div></button>
-        <button class="ctile c-green" data-act="page" data-v="yeni"><span class="ci">🛠️</span><div><b>Yeni Ürün</b><small>Kendi ürününü çıkar</small></div></button>
-      </div>
-      <div class="sechead"><span>Devam eden projeler</span><span class="gold" id="slotInfo"></span></div>
-      <div id="projList" style="display:flex;flex-direction:column;gap:5px"></div>
-      <button id="tapBtn" class="tapper"></button>
-    </section>
+  <div id="scene" class="tapper"></div>
+  <div class="hud">
+    <button class="pillw cmp" data-act="page" data-v="finans"><span class="ico" data-ic="sirket"></span><span class="t"><b id="hName">Kod Patronu</b><small id="hTitle"></small></span></button>
+    <button class="pillw money" id="hMoneyP" data-act="page" data-v="finans"><span class="ico" data-ic="para"></span><span class="t"><b id="hMoney">₺0</b><small id="hInc"></small></span></button>
+    <button class="pillw" data-act="page" data-v="sirala"><span class="ico" data-ic="yildiz"></span><span class="t"><b id="hRep">0</b><small>itibar</small></span></button>
+    <button class="pillw rp" data-act="page" data-v="tekno"><span class="ico" data-ic="arge"></span><span class="t"><b id="hRp">0</b><small>Ar-Ge puanı</small></span></button>
+    <div class="sp"></div>
+    <div class="pillw"><span class="ico" data-ic="takvim"></span><span class="t"><b id="hDay">Gün 1</b><small id="hDate"></small></span></div>
+    <button class="rb teal" id="inboxBtn" data-act="inbox" data-ic="zarf"></button>
+    <button class="rb" id="dailyBtn" data-act="daily" data-ic="hediye"></button>
+    <button class="rb teal" data-act="page" data-v="ayarlar" data-ic="ayar"></button>
   </div>
-  <div id="page" class="hidden">
-    <div class="phead"><button class="back" data-act="home">‹ Ana ekran</button><div class="ptitle" id="pTitle"></div><div class="kasa"><small>KASA</small><b id="pMoney"></b></div></div>
+  <div id="banner"></div>
+  <div id="hintp" class="hintp" style="display:none"></div>
+  <div class="zoomc"><button class="zb zteam" data-act="team" title="Ekiple aktivite"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><path d="M14.5 14.6c.8-.4 1.6-.6 2.5-.6 2.1 0 3.8 1.4 4.3 4"/></svg></button><button class="zb" data-act="zin">＋</button><span id="zoomLvl"></span><button class="zb" data-act="zout">－</button></div>
+  <div id="side">
+    <div class="panel" style="display:flex;flex-direction:column;min-height:0;flex:1">
+      <div class="ptl"><span>PROJELER</span><span id="slotInfo" class="slotinfo"></span></div>
+      <div id="plist"></div>
+    </div>
+    <div class="panel goalc" id="goal"></div>
+  </div>
+  <div id="dock"></div>
+  <div id="page" class="hidden"><div class="sheet">
+    <div class="phead"><button class="backb" data-act="home">‹</button><div class="ptitle" id="pTitle"></div>
+      <div class="pillw money"><span class="ico" data-ic="para"></span><span class="t"><b id="pMoney"></b></span></div>
+      <button class="xbtn" data-act="home">✕</button></div>
     <div id="pBody"><div id="pInner"></div></div>
-  </div>
+  </div></div>
   <div id="modal" class="hidden"></div>
   <div id="toasts"></div>
 </div>
 
+<script src="ofis.js?v=59"></script>
+<script src="brif.js?v=59"></script>
+<script src="ikon.js?v=59"></script>
+<script type="module" src="ofis3d.js?v=59"></script>
 <script>
 'use strict';
 /* ================= SABİTLER ================= */
 const SAVE_KEY = 'kodPatronu_v1';
 const BACKUP_KEY = 'kodPatronu_yedek';
-const DAY_SEC = 3;
+const DAY_SEC = 6;
 const MONTH_DAYS = 30;
 const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 const WEEKDAYS = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
 
 const TYPES = {
-  web:   {ad:'Web Sitesi',     ikon:'🌐', kod:60,  tas:30,  users:3000,  arpu:0.10, fiyat:0,      rep:0,   tier:1},
-  mobil: {ad:'Mobil Uygulama', ikon:'📱', kod:120, tas:80,  users:6000,  arpu:0.12, fiyat:15000,  rep:10,  tier:1.5},
-  oyun:  {ad:'Oyun',           ikon:'🎮', kod:220, tas:200, users:12000, arpu:0.14, fiyat:60000,  rep:35,  tier:2},
-  ai:    {ad:'Yapay Zekâ',     ikon:'🤖', kod:550, tas:150, users:25000, arpu:0.25, fiyat:400000, rep:100, tier:3},
+  web:   {ad:'Web Sitesi',     ikon:'🌐', kod:60,  tas:30,  users:15000, arpu:2.1,  fiyat:0,       rep:0,   tier:1, butce:[620000, 1200000, 8000000]},
+  mobil: {ad:'Mobil Uygulama', ikon:'📱', kod:120, tas:80,  users:15000, arpu:2.5,  fiyat:250000,  rep:10,  tier:1.5, butce:[750000, 1600000, 9500000]},
+  oyun:  {ad:'Oyun',           ikon:'🎮', kod:220, tas:200, users:16000, arpu:2.75, fiyat:900000,  rep:35,  tier:2, butce:[850000, 2200000, 12000000]},
+  ai:    {ad:'Yapay Zekâ',     ikon:'🤖', kod:550, tas:150, users:18000, arpu:2.9,  fiyat:5000000, rep:100, tier:3, butce:[1000000, 3000000, 15000000]},
 };
-const SIZES = {kucuk:{ad:'Küçük',m:1,rep:0}, orta:{ad:'Orta',m:3,rep:12}, buyuk:{ad:'Büyük',m:8,rep:45}};
+const SIZES = {kucuk:{ad:'Küçük',m:1,um:1,i:0,rep:0}, orta:{ad:'Orta',m:3,um:2,i:1,rep:12}, buyuk:{ad:'Büyük',m:8,um:11,i:2,rep:45}};
+const prodBudget = (type, size) => TYPES[type].butce[SIZES[size].i];
 const FOCUS = {
   hizli:   {ad:'⚡ Hızlı',   work:0.7, bug:1.5, q:-5, acik:'Çabuk biter ama hata çok olur'},
   dengeli: {ad:'⚖️ Dengeli', work:1,   bug:1,   q:0,  acik:'Normal hız, normal kalite'},
   kaliteli:{ad:'💎 Kaliteli', work:1.4, bug:0.6, q:6,  acik:'Uzun sürer ama daha kaliteli'},
 };
 const OFFICES = [
-  {ad:'Garaj',       ikon:'🏚️', kap:2,  slot:1, fiyat:0,       kira:0},
-  {ad:'Küçük Ofis',  ikon:'🏠', kap:5,  slot:2, fiyat:25000,   kira:1500},
-  {ad:'Plaza Katı',  ikon:'🏢', kap:10, slot:3, fiyat:150000,  kira:6000},
-  {ad:'Kendi Binan', ikon:'🏬', kap:20, slot:4, fiyat:1000000, kira:20000},
-  {ad:'Gökdelen',    ikon:'🌆', kap:40, slot:5, fiyat:8000000, kira:80000},
+  {ad:'Garaj',         ikon:'🏠', kap:0,  slot:1, fiyat:0,        kira:0,      esik:0,         acik:'Evin garajında tek başına başlıyorsun.'},
+  {ad:'Stüdyo Daire',  ikon:'🛋️', kap:2,  slot:2, fiyat:350000,    kira:18000,   esik:500000,     acik:'Hem ev hem ofis: ilk çalışanlarını alabileceğin küçük bir daire.'},
+  {ad:'Ofis',          ikon:'🏢', kap:4,  slot:3, fiyat:3500000,   kira:120000,  esik:5000000,   acik:'Gerçek bir ofis! 4 çalışana kadar ekip kurabilirsin.'},
+  {ad:'Büyük Ofis',    ikon:'🏙️', kap:6,  slot:4, fiyat:25000000,  kira:600000,  esik:40000000,  acik:'Geniş bir ofis katı: 6 kişilik güçlü bir ekip.'},
+  {ad:'Gökdelen Katı', ikon:'🌆', kap:12, slot:5, fiyat:150000000, kira:2500000, esik:250000000, acik:'Şehrin tepesinde dev bir teknoloji şirketi.'},
 ];
 const ROLES = {
-  prog:{ad:'Programcı', emo:['👨‍💻','👩‍💻'], acik:'Kod yazar'},
-  tas: {ad:'Tasarımcı', emo:['👨‍🎨','👩‍🎨'], acik:'Tasarım yapar'},
-  test:{ad:'Testçi',    emo:['🕵️‍♂️','🕵️‍♀️'], acik:'Hata düzeltir'},
+  prog:{ad:'Programcı', emo:['👨‍💻','👩‍💻'], acik:'Kod yazar', renk:'#3b82f6'},
+  tas: {ad:'UI Tasarımcı', emo:['👨‍🎨','👩‍🎨'], acik:'Arayüz (UI) tasarlar', renk:'#ec4899'},
+  test:{ad:'Testçi',    emo:['🕵️‍♂️','🕵️‍♀️'], acik:'Hata düzeltir', renk:'#f59e0b'},
 };
 const UPGRADES = [
-  {id:'klavye',   ikon:'⌨️', ad:'Mekanik Klavye',       acik:'Her dokunuşun +1 daha fazla iş üretir', max:10, fiyat:l=>Math.round(400*Math.pow(2.2,l)/10)*10},
-  {id:'kurs',     ikon:'📚', ad:'Kendini Geliştir',     acik:'Kurucu yeteneğin +1', max:7, fiyat:l=>Math.round(2000*Math.pow(2.5,l)/10)*10},
-  {id:'kahve',    ikon:'☕', ad:'Kahve Makinesi',        acik:'Ekip %15 daha hızlı', max:1, fiyat:()=>3000},
-  {id:'sandalye', ikon:'🪑', ad:'Ergonomik Sandalyeler', acik:'Ekip %10 daha hızlı', max:1, fiyat:()=>9000},
-  {id:'otest',    ikon:'🧪', ad:'Otomatik Test Sistemi', acik:'Hata düzeltme %40 hızlı, %20 az hata', max:1, fiyat:()=>25000},
-  {id:'ekran',    ikon:'🖥️', ad:'Çift Monitör',          acik:'Ekip %20 daha hızlı', max:1, fiyat:()=>40000},
-  {id:'bulut',    ikon:'☁️', ad:'Bulut Sunucular',       acik:'Ürün gelirleri +%25', max:1, fiyat:()=>60000},
-  {id:'pazarlama',ikon:'📣', ad:'Pazarlama Ekibi',       acik:'Yeni ürünlere %30 daha çok kullanıcı', max:1, fiyat:()=>100000},
-  {id:'arge',     ikon:'🔬', ad:'Ar-Ge Laboratuvarı',    acik:'Yeni ürünlerin kalitesi +8', max:1, fiyat:()=>300000},
+  {id:'kurs',     ikon:'📚', ad:'Kendini Geliştir',     acik:'Kurucu yeteneğin +1', max:7, fiyat:l=>Math.round(20000*Math.pow(2.5,l)/10)*10},
+  {id:'kahve',    ikon:'☕', ad:'Kahve Makinesi',        acik:'Ekip %15 daha hızlı (ofiste görünür!)', max:1, fiyat:()=>30000},
+  {id:'otest',    ikon:'🧪', ad:'Otomatik Test Sistemi', acik:'Hata düzeltme %40 hızlı, %20 az hata', max:1, fiyat:()=>250000},
+  {id:'bulut',    ikon:'☁️', ad:'Bulut Sunucular',       acik:'Ürün gelirleri +%25 (ofiste sunucu dolabı)', max:1, fiyat:()=>600000},
+  {id:'pazarlama',ikon:'📣', ad:'Pazarlama Ekibi',       acik:'Yeni ürünlere %30 daha çok kullanıcı', max:1, fiyat:()=>1000000},
+  {id:'arge',     ikon:'🔬', ad:'Ar-Ge Laboratuvarı',    acik:'Yeni ürünlerin kalitesi +8', max:1, fiyat:()=>3000000},
 ];
 const BIZ = [
-  {id:'kafe',     ikon:'☕', ad:'Kahve Dükkânı',          acik:'Ofisinin altında kahve dükkânı. Çalışanların da müşterin!', fiyat:20000,   gelir:250,   rep:0},
-  {id:'spor',     ikon:'🏋️', ad:'Spor Salonu',            acik:'Üyelik satan modern bir spor salonu.', fiyat:80000,   gelir:900,   rep:15},
-  {id:'dondurma', ikon:'🍦', ad:'Dondurma Fabrikası',     acik:'Yazın satışlar patlar (x2,5), kışın düşer!', fiyat:250000,  gelir:2700,  rep:40, mevsim:true},
-  {id:'netkafe',  ikon:'🕹️', ad:'İnternet Kafe & E-spor', acik:'Turnuva düzenle, e-spor takımı kur.', fiyat:700000,  gelir:6500,  rep:80},
-  {id:'muzik',    ikon:'🎵', ad:'Müzik Şirketi',          acik:'Şarkıcı keşfet, hit şarkılar çıkar.', fiyat:2500000, gelir:22000, rep:150},
+  {id:'kafe',     ikon:'☕', ad:'Kahve Dükkânı',          acik:'Ofisinin altında kahve dükkânı. Çalışanların da müşterin!', fiyat:200000,   gelir:2500,   rep:0},
+  {id:'spor',     ikon:'🏋️', ad:'Spor Salonu',            acik:'Üyelik satan modern bir spor salonu.', fiyat:800000,   gelir:9000,   rep:15},
+  {id:'dondurma', ikon:'🍦', ad:'Dondurma Fabrikası',     acik:'Yazın satışlar patlar (x2,5), kışın düşer!', fiyat:2500000,  gelir:27000,  rep:40, mevsim:true},
+  {id:'netkafe',  ikon:'🕹️', ad:'İnternet Kafe & E-spor', acik:'Turnuva düzenle, e-spor takımı kur.', fiyat:7000000,  gelir:65000,  rep:80},
+  {id:'muzik',    ikon:'🎵', ad:'Müzik Şirketi',          acik:'Şarkıcı keşfet, hit şarkılar çıkar.', fiyat:25000000, gelir:220000, rep:150},
 ];
 const BIZ_MAX = 100;
+// Ar-Ge yenilikleri: çalışanlar araştırır, bitince kalıcı avantaj sağlar
+const INNOV = [
+  {id:'kutuphane', ikon:'📚', ad:'Ortak Kod Kütüphanesi', acik:'Yeni projelerde kod işi %12 azalır', puan:120},
+  {id:'tasarim',   ikon:'🎨', ad:'Tasarım Sistemi',       acik:'Yeni projelerde tasarım işi %12 azalır', puan:120},
+  {id:'karanlik',  ikon:'🌙', ad:'Karanlık Mod',          acik:'Tüm yeni ürünlerin kalitesi +3', puan:160},
+  {id:'guvenlik',  ikon:'🔐', ad:'Güvenlik Kalkanı',      acik:'%15 daha az hata, sunucular çökmez', puan:220},
+  {id:'dil',       ikon:'🌍', ad:'Çoklu Dil Desteği',     acik:'Yeni ürünler %15 daha çok kullanıcıya ulaşır', puan:260},
+  {id:'odeme',     ikon:'💳', ad:'Uygulama İçi Ödeme',    acik:'Tüm ürün gelirleri +%15', puan:320, req:'mobil'},
+  {id:'motor',     ikon:'🕹️', ad:'Kendi Oyun Motorumuz', acik:'Oyun projelerinde kalite +6', puan:450, req:'oyun'},
+  {id:'oneri',     ikon:'🧠', ad:'Akıllı Öneri Motoru',   acik:'Ürünler %25 daha uzun süre popüler kalır', puan:700, req:'ai'},
+];
+const AWAY = ['kurs','izin','konf'];
 const RIVALS = [
-  {n:'Bit Yazılım', b:30000, g:0.004}, {n:'Piksel Soft', b:120000, g:0.006}, {n:'Mavi Ekran Teknoloji', b:400000, g:0.006},
-  {n:'Kuantum Bilişim', b:1.5e6, g:0.007}, {n:'Bulut Yazılım A.Ş.', b:5e6, g:0.007}, {n:'Zirve Dijital', b:15e6, g:0.008},
-  {n:'Atom Labs', b:50e6, g:0.008}, {n:'Nova Teknoloji', b:150e6, g:0.009}, {n:'Mega Kod Holding', b:500e6, g:0.01},
+  {n:'Bit Yazılım', b:400000, g:0.004}, {n:'Piksel Soft', b:1.5e6, g:0.006}, {n:'Mavi Ekran Teknoloji', b:5e6, g:0.006},
+  {n:'Kuantum Bilişim', b:18e6, g:0.007}, {n:'Bulut Yazılım A.Ş.', b:60e6, g:0.007}, {n:'Zirve Dijital', b:180e6, g:0.008},
+  {n:'Atom Labs', b:600e6, g:0.008}, {n:'Nova Teknoloji', b:1.8e9, g:0.009}, {n:'Mega Kod Holding', b:6e9, g:0.01},
 ];
 const TITLES = [[0,'Garaj Girişimi'],[15,'Yerel Firma'],[50,'Tanınan Şirket'],[150,'Sektör Lideri'],[400,'Teknoloji Devi'],[1000,'Dünya Efsanesi']];
 const FIRST = ['Ahmet','Mehmet','Ayşe','Fatma','Can','Ece','Emre','Zeynep','Burak','Elif','Mert','Selin','Kerem','Deniz','Oğuz','Merve','Barış','İrem','Kaan','Buse','Arda','Derya','Tolga','Gizem','Onur','Esra','Yusuf','Nazlı','Serkan','Ceren','Eren','Damla','Furkan','Melis','Hakan','Sude'];
@@ -274,26 +133,29 @@ const NAMES = {
   ai:   [['Akıl','Zeka','Beyin','Robo','Dahi','Bilge','Neo','Kuantum'],['Asistan','Çizer','Yazar','Çevirmen','Doktor','Öğretmen','Analiz','Müzisyen']],
 };
 const GOALS = [
-  {t:'İlk müşteri işini teslim et', c:()=>S.stats.done>=1, r:1000},
-  {t:'İlk çalışanını işe al (Personel)', c:()=>S.emps.length>=1, r:1500},
-  {t:'Kendi ürününü geliştirip yayınla', c:()=>S.stats.prodsDone>=1, r:2000},
-  {t:'Mobil Uygulama teknolojisini aç', c:()=>S.tech.mobil, r:3000},
-  {t:'Küçük Ofis\'e taşın', c:()=>S.office>=1, r:5000},
-  {t:'Aynı anda 2 proje yürüt', c:()=>S.projs.length>=2, r:4000},
-  {t:'İlk yatırımını yap: Kahve Dükkânı', c:()=>(S.biz.kafe||0)>=1, r:5000},
-  {t:'Toplam 8 proje tamamla', c:()=>S.stats.done+S.stats.prodsDone>=8, r:6000},
-  {t:'70+ kaliteli bir ürün çıkar', c:()=>S.stats.best>=70, r:10000},
-  {t:'Oyun teknolojisini aç', c:()=>S.tech.oyun, r:15000},
-  {t:'5 çalışana ulaş', c:()=>S.emps.length>=5, r:15000},
-  {t:'Plaza Katı\'na taşın', c:()=>S.office>=2, r:40000},
-  {t:'Bir işletmeyi 10. seviyeye çıkar', c:()=>BIZ.some(b=>(S.biz[b.id]||0)>=10), r:40000},
-  {t:'Toplam ₺1 milyon kazan', c:()=>S.stats.earned>=1e6, r:60000},
-  {t:'Yapay Zekâ teknolojisini aç', c:()=>S.tech.ai, r:100000},
-  {t:'90+ kaliteli efsane bir ürün çıkar', c:()=>S.stats.best>=90, r:150000},
-  {t:'Kendi binana taşın', c:()=>S.office>=3, r:300000},
-  {t:'Sıralamada ilk 3\'e gir', c:()=>myRank()<=3, r:500000},
-  {t:'Gökdelene taşın', c:()=>S.office>=4, r:1000000},
-  {t:'Teknoloji Devi ol (400 itibar)', c:()=>S.rep>=400, r:2000000},
+  {t:'İlk müşteri işini teslim et', c:()=>S.stats.done>=1, r:15000},
+  {t:'Kendi ürününü geliştirip yayınla', c:()=>S.stats.prodsDone>=1, r:100000},
+  {t:'Stüdyo daireye taşın', c:()=>S.office>=1, r:50000},
+  {t:'İlk çalışanını işe al (Personel)', c:()=>S.emps.length>=1, r:30000},
+  {t:'Mobil Uygulama teknolojisini aç', c:()=>S.tech.mobil, r:50000},
+  {t:'Aynı anda 2 proje yürüt', c:()=>S.projs.length>=2, r:60000},
+  {t:'Bir çalışanı uzmanlık kursuna gönder', c:()=>S.emps.some(e=>e.spec||(e.task&&e.task.type==='kurs')), r:80000},
+  {t:'Ar-Ge ile ilk yeniliğini geliştir', c:()=>Object.values(S.innov||{}).some(v=>v.done), r:120000},
+  {t:'İlk yatırımını yap: Kahve Dükkânı', c:()=>(S.biz.kafe||0)>=1, r:80000},
+  {t:'70+ kaliteli bir ürün çıkar', c:()=>S.stats.best>=70, r:150000},
+  {t:'Oyun teknolojisini aç', c:()=>S.tech.oyun, r:250000},
+  {t:'Kasada ₺2 milyon biriktir', c:()=>S.money>=2e6, r:300000},
+  {t:'Ofise taşın', c:()=>S.office>=2, r:600000},
+  {t:'Bir takım lideri ata', c:()=>S.emps.some(e=>e.lead), r:600000},
+  {t:'5 çalışana ulaş', c:()=>S.emps.length>=5, r:900000},
+  {t:'Bir işletmeyi 10. seviyeye çıkar', c:()=>BIZ.some(b=>(S.biz[b.id]||0)>=10), r:1500000},
+  {t:'Yapay Zekâ teknolojisini aç', c:()=>S.tech.ai, r:3000000},
+  {t:'Kasada ₺30 milyon biriktir', c:()=>S.money>=30e6, r:5000000},
+  {t:'Büyük Ofis\'e taşın', c:()=>S.office>=3, r:10000000},
+  {t:'90+ kaliteli efsane bir ürün çıkar', c:()=>S.stats.best>=90, r:12000000},
+  {t:'Sıralamada ilk 3\'e gir', c:()=>myRank()<=3, r:40000000},
+  {t:'Gökdelen katına taşın', c:()=>S.office>=4, r:80000000},
+  {t:'Teknoloji Devi ol (400 itibar)', c:()=>S.rep>=400, r:150000000},
 ];
 
 /* ================= YARDIMCILAR ================= */
@@ -316,21 +178,34 @@ const r1 = n => (Math.round(n*10)/10).toLocaleString('tr-TR');
 function qClass(q){ return q>=85?'q5':q>=70?'q4':q>=50?'q3':q>=30?'q2':'q1'; }
 function qWord(q){ return q>=85?'Efsane! 🏆':q>=70?'Harika! 🌟':q>=50?'İyi 👍':q>=30?'Vasat 😐':'Kötü 👎'; }
 function qBadge(q){ return `<span class="badge ${qClass(q)}">${q} · ${qWord(q)}</span>`; }
+function hashN(n){ n = (n ^ 61) ^ (n >>> 16); n = n + (n << 3); n = n ^ (n >>> 4); n = n * 0x27d4eb2d; n = n ^ (n >>> 15); return Math.abs(n); }
 
 /* ================= DURUM ================= */
 let S = null;
 let paused = false;
 let curChoices = [];
 let page = null, pageArg = null;
-let form = {type:'web', size:'kucuk', focus:'dengeli', name:''};
-let bankForm = {pct:0.5, term:12};
+let form = {type:'web', size:'kucuk', focus:'dengeli', name:'', topic:null, aud:'herkes'};
+let bankForm = {bank:'kod', pct:0.5, term:6};
+// üç banka: her bankadan aynı anda tek kredi; faiz, limit ve şartlar farklı
+const BANKS = [
+  {id:'kod',   ad:'Kod Bank',            acik:'Dengeli faiz, her vade.',                 rate:1.0,  lim:1.0,  minScore:0,   terms:[3,6,12,24], renk:'#2f54eb'},
+  {id:'mavi',  ad:'Mavi Yatırım Bankası', acik:'En düşük faiz ama iyi kredi puanı ister.', rate:0.7,  lim:0.75, minScore:650, terms:[6,12,24],   renk:'#0f766e'},
+  {id:'turbo', ad:'Turbo Finans',        acik:'Hemen ve yüksek limit, ama faizi pahalı.', rate:1.65, lim:1.35, minScore:0,   terms:[3,6],       renk:'#c2410c'},
+];
+const bankOf = l => l.rescue ? null : (l.bank || 'kod');
+const bankLoan = id => S.loans.find(l => bankOf(l) === id);
+const bankRate = b => Math.min(0.9, loanRate()*b.rate);
+const bankLimit = b => Math.round(loanLimit()*b.lim/1000)*1000;
 let bizMul = 1;
+let briefForm = {st:null, feats:[], f:null, focus:'dengeli'};
+let stockMul = 10, invTab = 'isletme';
 
 function newState(name){
   return {
-    v:2, name, money:5000, rep:0, day:1, dayFrac:0, office:0, ownership:100,
-    emps:[], cands:[], offers:[], projs:[], sel:null, prods:[], upg:{}, tech:{web:true},
-    biz:{}, loans:[], score:600, sound:true, lastDaily:'', streak:0,
+    v:3, name, money:100000, offered:{}, rep:0, day:1, dayFrac:0, office:0, ownership:100, holders:[],
+    emps:[], cands:[], offers:[], projs:[], sel:null, prods:[], upg:{}, eq:{pc:0, klavye:0, koltuk:0}, eqStd:0, tech:{web:true},
+    biz:{}, loans:[], score:600, sound:true, lastDaily:'', streak:0, taps:0, innov:{}, rp:0,
     stats:{earned:0, done:0, prodsDone:0, best:0}, goal:0, boost:0,
     nextEvent:30, lastDayInc:0, lastSeen:Date.now(), idSeq:1,
   };
@@ -340,19 +215,21 @@ function newState(name){
 const cap = () => OFFICES[S.office].kap;
 const slots = () => OFFICES[S.office].slot;
 const founderSkill = () => 3 + (S.upg.kurs||0);
-const tapPower = () => (2 + (S.upg.klavye||0)) * (1 + (founderSkill()-3)*0.1);
+const tapPower = () => (2 + eqTap()) * (1 + (founderSkill()-3)*0.1);
 function teamSpeed(){
   let m = 1;
   if (S.upg.kahve) m *= 1.15;
-  if (S.upg.sandalye) m *= 1.10;
-  if (S.upg.ekran) m *= 1.20;
+  m *= eqSpeed();      // klavye, koltuk, bilgisayar (eskiyen ekipman yavaşlatır)
   if (S.boost > 0) m *= 1.20;
   return m;
 }
-const bugRate = s => Math.max(0.005, (11-s)*0.01) * (S.upg.otest?0.8:1);
+const bugRate = s => Math.max(0.005, (11-s)*0.01) * (S.upg.otest?0.8:1) * (hasInv('guvenlik')?0.85:1) * eqBug();
+const revMult = () => (S.upg.bulut?1.25:1) * (hasInv('odeme')?1.15:1) * S.ownership/100;
 const testMult = () => S.upg.otest ? 1.4 : 1;
 const debt = () => S.loans.reduce((a,l)=>a+l.remaining,0);
-const monthlyCost = () => S.emps.reduce((a,e)=>a+e.salary,0) + OFFICES[S.office].kira + S.loans.reduce((a,l)=>a+l.inst,0);
+const salaries = () => S.emps.reduce((a,e)=>a+e.salary,0) + (S.mgr ? S.mgr.salary : 0);
+const installments = () => S.loans.reduce((a,l)=>a+l.inst,0);
+const monthlyCost = () => salaries() + OFFICES[S.office].kira + installments();
 const devDone = p => p.kod >= p.kodReq - 1e-6 && p.tas >= p.tasReq - 1e-6;
 const needsWork = p => !devDone(p) || p.bugs > 0.001;
 const monthIdx = () => Math.floor((S.day-1)/30)%12;
@@ -360,10 +237,10 @@ function title(){ let t = TITLES[0][1]; for (const [r,n] of TITLES) if (S.rep >=
 function calcQuality(p){
   const avg = p.pts > 0 ? p.skillPts/p.pts : founderSkill();
   const total = p.kodReq + p.tasReq;
-  const q = 25 + avg*6.5 + FOCUS[p.focus].q + (S.upg.arge?8:0) - (p.bugs/total)*200;
+  const q = 25 + avg*6.5 + FOCUS[p.focus].q + sprintQ(p) + (S.upg.arge?8:0) + (hasInv('karanlik')?3:0) + (hasInv('motor')&&p.type==='oyun'?6:0) - (p.bugs/total)*200;
   return Math.round(clamp(q,1,100));
 }
-function salaryFor(skill){ return skill*skill*60 + skill*300; }
+function salaryFor(skill){ return (skill*skill*60 + skill*300)*12; }
 function randName(){ return pick(FIRST)+' '+pick(LAST_I)+'.'; }
 function randProdName(type){ const [a,b] = NAMES[type]; return pick(a)+' '+pick(b); }
 function bizMult(l){ return (l>=10?2:1)*(l>=25?2:1)*(l>=50?2:1)*(l>=100?2:1); }
@@ -371,20 +248,24 @@ function seasonMult(){ const m = monthIdx(); return (m>=5&&m<=7) ? 2.5 : (m===11
 function bizIncome(b, l){ if (!l) return 0; let v = b.gelir*l*bizMult(l); if (b.mevsim) v *= seasonMult(); return v; }
 function bizCost(b, l){ return l===0 ? b.fiyat : Math.round(b.fiyat*0.3*Math.pow(1.13,l-1)/10)*10; }
 function bizBulk(b, l, mul){
-  let n = 0, cost = 0, money = S.money;
+  let n = 0, cost = 0;
   const want = mul==='max' ? BIZ_MAX : mul;
   while (n < want && l+n < BIZ_MAX){
     const c = bizCost(b, l+n);
-    if (mul==='max' && cost + c > money) break;
+    if (mul==='max' && cost + c > S.money) break;
     cost += c; n++;
   }
   return {n, cost};
 }
 function bizSpent(b){ let c = 0; const l = S.biz[b.id]||0; for (let i=0;i<l;i++) c += bizCost(b,i); return c; }
+const prodIncome = () => S.prods.filter(p=>p.active).reduce((a,p)=>a+p.users*TYPES[p.type].arpu*revMult(),0);
+const bizTotal = () => BIZ.reduce((a,b)=>a+bizIncome(b,S.biz[b.id]||0),0);
 function valuation(){
   let v = Math.max(0, S.money - debt());
   v += S.lastDayInc*90;
   for (const b of BIZ) v += bizSpent(b)*0.8;
+  v += portfolioValue();
+  for (const c of CARS) if ((S.cars||{})[c.id]) v += c.fiyat*0.5;
   v += OFFICES[S.office].fiyat*0.6;
   for (const k in S.tech) v += TYPES[k].fiyat*0.5;
   v += S.rep*2000 + S.emps.length*5000;
@@ -392,12 +273,39 @@ function valuation(){
 }
 const rivalVal = r => r.b*(1+(S.day-1)*r.g);
 function myRank(){ const me = valuation(); return 1 + RIVALS.filter(r=>rivalVal(r)>me).length; }
-function scoreWord(s){ return s<500?'Kötü':s<600?'Orta':s<700?'İyi':s<800?'Çok iyi':'Mükemmel'; }
-function loanLimit(){ return Math.max(5000, Math.round(((S.score-300)/600)*(30000 + valuation()*0.4)/1000)*1000); }
-function loanRate(){ return clamp(0.45 - (S.score-300)/600*0.35, 0.10, 0.45); }
+function scoreWord(s){ return s<500?'Kötü':s<600?'Orta':s<700?'İyi':s<850?'Çok iyi':s<950?'Mükemmel':'Kusursuz'; }
+function loanLimit(){ return Math.max(50000, Math.round(((S.score-300)/700)*(400000 + valuation()*0.4)/1000)*1000); }
+function loanRate(){ return clamp(0.45 - (S.score-300)/700*0.35, 0.10, 0.45); }
 function todayStr(off=0){ const d = new Date(Date.now()+off*864e5); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 const dailyReady = () => S.lastDaily !== todayStr();
-function dailyAmount(streak){ return Math.round((1000 + valuation()*0.005)*streak/100)*100; }
+function dailyAmount(streak){ return Math.round((10000 + valuation()*0.005)*streak/100)*100; }
+
+/* ================= ÇALIŞAN YETENEKLERİ ================= */
+const SKILLS = [
+  {k:'hiz',  ad:'İş hızı',         acik:'Ne kadar hızlı çalışır'},
+  {k:'kod',  ad:'Yazılım bilgisi', acik:'Kod yazma ustalığı, daha az hata'},
+  {k:'tas',  ad:'Tasarım',         acik:'Arayüz ve görsellik'},
+  {k:'test', ad:'Hata bulma',      acik:'Test ve kalite'},
+  {k:'arge', ad:'Araştırma',       acik:'Ar-Ge ve yenilik hızı'},
+  {k:'uyum', ad:'Takım uyumu',     acik:'Yorgunluğa dayanıklılık, moral'},
+];
+const ROLE_MAIN = {prog:'kod', tas:'tas', test:'test'};
+function genSkills(role, skill, seed){
+  let r = (seed||1)*9301 + 49297; const rnd = () => (r = (r*9301 + 49297) % 233280) / 233280;
+  const sk = {}, main = ROLE_MAIN[role];
+  for (const s of SKILLS){
+    let v = s.k===main ? skill + (rnd()*2-1) : s.k==='hiz' || s.k==='uyum' ? skill*0.75 + rnd()*4 - 1.5 : skill*0.5 + rnd()*3 - 1;
+    sk[s.k] = clamp(Math.round(v), 1, 10);
+  }
+  return sk;
+}
+const skillsOf = e => e.sk || (e.sk = genSkills(e.role, e.skill, typeof e.id==='number' ? e.id : 7));
+const skMain = e => skillsOf(e)[ROLE_MAIN[e.role]] || e.skill;
+function skillUp(e){ const sk = skillsOf(e), m = ROLE_MAIN[e.role]; sk[m] = Math.min(10, sk[m]+1); const o = pick(SKILLS.filter(s => s.k!==m && sk[s.k] < 10)); if (o && Math.random() < 0.6) sk[o.k]++; }
+function skillRows(e, cls=''){
+  const sk = skillsOf(e), m = ROLE_MAIN[e.role];
+  return `<div class="skl ${cls}">${SKILLS.map(s => `<div class="skr ${s.k===m?'main':''}" title="${s.acik}"><span>${s.ad}</span><i class="skb"><i style="width:${sk[s.k]*10}%"></i></i><b>${sk[s.k]}</b></div>`).join('')}</div>`;
+}
 
 /* ================= OLUŞTURUCULAR ================= */
 function genCand(){
@@ -405,7 +313,8 @@ function genCand(){
   const maxS = Math.min(10, 2.5 + S.office*1.6 + S.rep/40);
   const skill = clamp(Math.round(1 + Math.random()*(maxS-1)), 1, 10);
   const salary = round10(salaryFor(skill)*(0.9 + Math.random()*0.25));
-  return {id:S.idSeq++, name:randName(), role, skill, salary, emo:pick(ROLES[role].emo)};
+  const id = S.idSeq++;
+  return {id, name:randName(), role, skill, salary, emo:pick(ROLES[role].emo), mood:70, sk:genSkills(role, skill, id + Math.floor(Math.random()*1000))};
 }
 function genOffer(){
   const types = Object.keys(TYPES).filter(t=>S.tech[t]);
@@ -415,9 +324,10 @@ function genOffer(){
   const T = TYPES[type], sm = SIZES[size].m;
   const work = (T.kod+T.tas)*sm;
   const minQ = pick([0,0,30,40,50,60].filter(x => x <= 30 + S.rep*0.5));
-  const pay = Math.round(work*28*(1+S.rep/150)*(1+minQ/120)*(0.9+Math.random()*0.3)/50)*50;
-  const days = Math.round(work/8) + 15;
-  return {id:S.idSeq++, client:pick(CLIENTS), type, size, minQ, pay, days};
+  const pay = Math.round((25000 + work*130)*(1+Math.min(S.rep,450)/150)*(1+minQ/120)*(0.9+Math.random()*0.3)/500)*500;
+  const days = Math.round(work/10) + 12;
+  const cl = pick(CLIENT_LIST);
+  return {id:S.idSeq++, client:cl.ad, cid:CLIENT_LIST.indexOf(cl), brief:makeBrief(cl, type), type, size, minQ, pay, days};
 }
 function refreshOffers(){ S.offers = [genOffer(), genOffer(), genOffer(), genOffer()]; }
 function refreshCands(){ S.cands = [genCand(), genCand(), genCand(), genCand()]; }
@@ -425,8 +335,8 @@ function makeProj(kind, type, size, focus, name, extra){
   const T = TYPES[type], m = SIZES[size].m * FOCUS[focus].work;
   return Object.assign({
     id:S.idSeq++, kind, type, size, focus, name,
-    kodReq:Math.round(T.kod*m), tasReq:Math.round(T.tas*m),
-    kod:0, tas:0, bugs:0, pts:0, skillPts:0, start:S.day
+    kodReq:Math.round(T.kod*m*(hasInv('kutuphane')?0.88:1)), tasReq:Math.round(T.tas*m*(hasInv('tasarim')?0.88:1)),
+    kod:0, tas:0, bugs:0, pts:0, skillPts:0, start:S.day, spr:{plans:[], rev:0}
   }, extra||{});
 }
 
@@ -438,12 +348,13 @@ function snd(type){
     actx = actx || new (window.AudioContext||window.webkitAudioContext)();
     if (actx.state === 'suspended') actx.resume();
     const N = {
-      tap:   [[1200,0.025,'square',0.025,0],[700,0.02,'square',0.02,0.01]],
-      click: [[520,0.03,'sine',0.05,0]],
+      tap:   [[1200,0.025,'square',0.02,0],[700,0.02,'square',0.016,0.01]],
+      click: [[660,0.04,'sine',0.06,0]],
       cash:  [[1318,0.09,'sine',0.12,0],[1760,0.16,'sine',0.12,0.07]],
       ok:    [[523,0.1,'triangle',0.14,0],[659,0.1,'triangle',0.14,0.09],[784,0.1,'triangle',0.14,0.18],[1046,0.22,'triangle',0.14,0.27]],
-      bad:   [[220,0.22,'sawtooth',0.06,0],[165,0.25,'sawtooth',0.06,0.12]],
+      bad:   [[220,0.22,'sawtooth',0.05,0],[165,0.25,'sawtooth',0.05,0.12]],
       event: [[880,0.08,'sine',0.1,0],[660,0.08,'sine',0.1,0.1],[990,0.15,'sine',0.1,0.2]],
+      pop:   [[900,0.05,'sine',0.04,0],[1300,0.05,'sine',0.03,0.03]],
     }[type];
     const t0 = actx.currentTime;
     for (const [f,d,w,v,dl] of N){
@@ -456,38 +367,70 @@ function snd(type){
 }
 
 /* ================= ÇALIŞMA ================= */
-function give(p, part, amt, skill){
-  const room = p[part+'Req'] - p[part];
-  const a = Math.min(amt, room);
+function give(p, part, amt, skill, bm=1){
+  const room = Math.min(p[part+'Req'] - p[part], sprRoom(p));
+  const want = amt*sprSpeed(p); p._want = (p._want||0) + want;      // herkes çalışır, iş oranlı paylaşılır
+  const a = Math.min(want*(p._k ?? 1), room);
   if (a <= 0) return 0;
   p[part] += a; p.pts += a; p.skillPts += a*skill;
-  p.bugs += a * bugRate(skill) * FOCUS[p.focus].bug;
+  p.bugs += a * bugRate(skill) * FOCUS[p.focus].bug * bm * (p.bugMul||1);
   return a;
 }
-function fixBugs(p, amt){ p.bugs = Math.max(0, p.bugs - amt); }
-function workOn(p, part, amt, skill){
+function fixBugs(p, amt){ const b = p.bugs; p.bugs = Math.max(0, p.bugs - amt); return b - p.bugs; }
+function workOn(p, part, amt, skill, bm=1){
   const other = part==='kod' ? 'tas' : 'kod';
-  if (p[part] < p[part+'Req']) give(p, part, amt, skill);
-  else if (p[other] < p[other+'Req']) give(p, other, amt*0.3, skill);
-  else fixBugs(p, amt*0.1);
+  if (p[part] < p[part+'Req']) return ['w', give(p, part, amt, skill, bm)];
+  if (p[other] < p[other+'Req']) return ['w', give(p, other, amt*0.3, skill, bm)];
+  return ['b', fixBugs(p, amt*0.1)];
 }
 function lowerPart(p){ return p.kod/p.kodReq <= p.tas/p.tasReq ? 'kod' : 'tas'; }
+const hasInv = id => !!(S.innov && S.innov[id] && S.innov[id].done);
+const isAway = e => !!(e.task && AWAY.includes(e.task.type));
+const leadBonus = e => S.emps.some(x => x!==e && x.lead && x.role===e.role && !isAway(x)) ? 1.1 : 1;
+const canResearch = i => !hasInv(i.id) && (!i.req || S.tech[i.req]);
+function researchTick(e, sp, dt){
+  const inv = INNOV.find(i=>i.id===e.task.innov);
+  if (!inv || hasInv(inv.id)){ e.task = null; sceneKey = ''; return; }
+  const st = S.innov[inv.id] = S.innov[inv.id] || {pts:0};
+  const v = (e.skill + skillsOf(e).arge)/2*0.5*sp*moodMult(e)*(0.85 + skillsOf(e).hiz*0.03)*dt;
+  st.pts += v; fxAdd(e.id, 'arge', v);
+  if (st.pts >= inv.puan){
+    st.done = true; st.pts = inv.puan;
+    for (const x of S.emps) if (x.task && x.task.type==='arge' && x.task.innov===inv.id) x.task = null;
+    sceneKey = '';
+    toast(`🔬 Yenilik tamamlandı: ${inv.ikon} ${inv.ad}!`); snd('ok');
+    setTimeout(()=>speakAll('🎉'), 300);
+  }
+}
+// her aşamanın en kısa süresi (gün): kalabalık ekip bile aşamayı bir anda bitiremez
+const phaseMinDays = p => [5, 8, 11][SIZES[p.size].i] || 5;
+function paceCap(need, dt){ for (const p of need){ const cap = (p.kodReq+p.tasReq)/3 / (phaseMinDays(p)*DAY_SEC) * dt; p._k = p._want > 0 ? Math.min(1, cap/p._want) : 1; p._want = 0; } }
 function workTick(dt){
-  const need = S.projs.filter(needsWork);
+  for (const e of S.emps) if (e.task && e.task.type==='arge') researchTick(e, teamSpeed(), dt);
+  const need = S.projs.filter(p => needsWork(p) && !sprWait(p));
   if (!need.length) return;
   const n = need.length, sp = teamSpeed(), fs = founderSkill();
-  const fa = 0.25*fs*sp*dt/n;
+  const fa = 0.55*fs*sp*dt/n;      // kurucu kendi kendine çalışır
+  let fk = 0, ft = 0;
   for (const p of need){
-    if (!devDone(p)) give(p, lowerPart(p), fa, fs); else fixBugs(p, fa*0.15);
+    if (S.ftask) continue;
+    if (!devDone(p)){ const part = lowerPart(p), a = give(p, part, fa*knowMult(S.fknow, p.type, 'me'), fs, knowBug(S.fknow)); if (part==='kod') fk += a; else ft += a; } else fixBugs(p, fa*0.3*knowFix(S.fknow,'me'));
   }
+  if (fk+ft > 0){ fxAdd('me', fk>=ft?'prog':'tas', fk+ft); S.rp = (S.rp||0) + (fk+ft)*0.04; }
   for (const e of S.emps){
-    const amt = e.skill*0.6*sp*dt/n;
+    if (e.task && e.task.type!=='mentor') continue;
+    const m = moodMult(e) * leadBonus(e) * (e.task ? 0.8 : 1) * ((e.fresh||0) > 0 ? 1.15 : 1) * (0.85 + skillsOf(e).hiz*0.03);
+    const ms = (e.skill + skMain(e))/2;
+    let w = 0, b = 0;
     for (const p of need){
-      if (e.role==='prog') workOn(p, 'kod', amt, e.skill);
-      else if (e.role==='tas') workOn(p, 'tas', amt, e.skill);
-      else fixBugs(p, e.skill*0.15*testMult()*sp*dt/n);
+      const spec = (e.spec===p.type ? 1.35 : 1) * knowMult(e.know, p.type, e.role), bm = knowBug(e.know);
+      if (e.role==='test'){ b += fixBugs(p, ms*0.15*testMult()*sp*m*spec*knowFix(e.know, e.role)*dt/n); }
+      else { const [k,v] = workOn(p, e.role==='prog'?'kod':'tas', ms*0.6*sp*m*spec*dt/n, skMain(e), bm); if (k==='w') w += v; else b += v; }
     }
+    if (w > 0){ fxAdd(e.id, e.role, w); S.rp = (S.rp||0) + w*0.04; }
+    if (b > 0) fxAdd(e.id, 'fix', b*6);
   }
+  paceCap(need, dt);
 }
 function selProj(){
   let p = S.projs.find(x=>x.id===S.sel);
@@ -496,32 +439,88 @@ function selProj(){
   return p;
 }
 function tapWork(p){
-  const amt = tapPower();
+  const amt = tapPower() * knowMult(S.fknow, p.type, 'me');
   if (!devDone(p)){
     const part = lowerPart(p);
-    give(p, part, amt, founderSkill());
-    return '+'+r1(amt)+(part==='kod'?' 💻':' 🎨');
+    give(p, part, amt, founderSkill(), knowBug(S.fknow)); S.rp = (S.rp||0) + amt*0.03;
+    return ['+'+r1(amt), part];
   }
-  if (p.bugs <= 0.001) return '✔️ Hazır';
+  if (p.bugs <= 0.001) return ['✔️ Hazır', 'ok'];
   fixBugs(p, amt*0.25);
-  return '-'+r1(amt*0.25)+' 🐞';
+  return ['−'+r1(amt*0.25), 'fix'];
 }
 function doTap(el, ev){
   const id = +el.dataset.id;
   if (id) S.sel = id;
   const p = selProj();
-  if (!p){ toast('📋 Önce bir müşteri işi al ya da yeni ürün başlat!'); snd('bad'); return; }
-  const r = tapWork(p);
-  floatText(r, ev.clientX, ev.clientY - 18);
+  if (!p){ toast('📋 Önce yeni bir proje başlat! (sağ alttaki Yeni Proje)'); snd('bad'); return; }
+  if (sprWait(p)){ openSprint(p.id); return; }
+  return;    // dokunarak çalışma kaldırıldı: ekip ve patron kendiliğinden çalışır
+  const [txt, kind] = tapWork(p);
+  sprintCheck();
+  S.taps = (S.taps||0) + 1;
+  floatPill(kind==='kod'?'kod':kind==='tas'?'ui':kind==='fix'?'bug':'ok', txt, ev.clientX, ev.clientY - 20);
+  if (kind !== 'ok') bubble('me', kind==='kod'?'kod':kind==='tas'?'ui':'bug', Math.max(1, Math.round(kind==='fix'?tapPower()*0.25:tapPower())));
   snd('tap');
   if (navigator.vibrate) navigator.vibrate(6);
   updateHome(); renderPage(false);
 }
 
 /* ================= ZAMAN ================= */
+function moodMult(e){ return (0.8 + (e.mood ?? 70)/250) * ((e.warn||0) > 0 ? 1.25 : 1); }
+function moodFace(m){ return m>=80?'😄':m>=60?'🙂':m>=40?'😐':m>=20?'😟':'😫'; }
+function moodDay(){
+  const busy = S.projs.some(needsWork);
+  for (const e of S.emps){
+    if (e.mood === undefined) e.mood = 70;
+    const working = e.task ? !isAway(e) : busy;
+    e.mood = clamp(e.mood + (isAway(e) ? 3 : working ? -1.0*(S.upg.kahve?0.7:1)*(1-eqMoral()*0.5)*(1.15 - skillsOf(e).uyum*0.03) : 0.8) + (S.boost>0?0.4:0) + (S.money<0 ? -1.2 : 0) + (S.projs.length > S.emps.length + 1 ? -0.4 : 0), 5, 100);
+    if (e.warn > 0) e.warn--;
+    if ((e.fresh||0) > 0) e.fresh--;
+  }
+}
+function taskDay(){
+  if (S.ftask && S.day >= S.ftask.until){ const it = LEARN_BY[S.ftask.item]; S.fknow = (S.fknow||[]).concat(S.ftask.item); S.ftask = null; sceneKey = ''; toast(`🎓 Artık ${it.ad} biliyorsun! ${it.acik}`); snd('ok'); }
+  for (const e of [...S.emps]){
+    const t = e.task;
+    if (!t || !t.until || S.day < t.until) continue;
+    e.task = null; sceneKey = '';
+    if (t.type==='kurs'){ e.spec = t.spec; toast(`🎓 ${esc(e.name)} kursu bitirdi: artık ${TYPES[t.spec].ikon} ${TYPES[t.spec].ad} uzmanı!`); snd('ok'); }
+    else if (t.type==='izin'){ e.mood = 100; e.fresh = 10; toast(`🏖️ ${esc(e.name)} izinden dinç döndü! 10 gün daha hızlı.`); }
+    else if (t.type==='konf'){
+      const g = 2 + Math.round(e.skill/2); S.rep += g;
+      let msg = `🎤 ${esc(e.name)} konferanstan döndü: +${g} ⭐`;
+      if (Math.random() < 0.5){ const c = genCand(); c.skill = clamp(c.skill+2, 1, 10); c.salary = round10(salaryFor(c.skill)*(0.9+Math.random()*0.25)); S.cands.unshift(c); msg += ' ve yetenekli bir aday buldu!'; }
+      toast(msg);
+    }
+    else if (t.type==='ogren'){ const it = LEARN_BY[t.item]; e.know = (e.know||[]).concat(t.item); toast(`🎓 ${esc(e.name)} artık ${it.ad} biliyor! ${it.acik}`); snd('ok'); setTimeout(()=>speak(e.id,'🤓'),200); }
+    else if (t.type==='mentor'){
+      const m = S.emps.find(x=>x.id===t.target);
+      if (m && m.skill < 10){ m.salary = round10(m.salary*salaryFor(m.skill+1)/salaryFor(m.skill)); m.skill++; skillUp(m); toast(`🧑‍🏫 ${esc(e.name)} sayesinde ${esc(m.name)} yetenek ${m.skill} oldu!`); snd('ok'); }
+    }
+  }
+}
+function checkOfficeOffer(){
+  const i = S.office+1, n = OFFICES[i];
+  if (!n || S.offered[i] || S.money < n.esik || paused) return;
+  S.offered[i] = true;
+  curChoices = [()=>ACTIONS['office-up'](), null];
+  snd('event');
+  showModal('📞', `<h3>Emlakçı Arıyor!</h3><p style="text-align:center">"Patron, işler çok iyi gidiyor! Sana harika bir yer buldum: <b>${n.ikon} ${n.ad}</b>"</p>
+    <p class="sub" style="text-align:center">${n.acik}</p>
+    <div class="grid4" style="margin:8px 0"><div class="kv"><b>${n.kap}</b><span>Çalışan</span></div><div class="kv"><b>${n.slot}</b><span>Proje slotu</span></div><div class="kv"><b>${tl(n.kira)}</b><span>Aylık kira</span></div><div class="kv"><b>${tl(n.fiyat)}</b><span>Taşınma ücreti</span></div></div>
+    <div class="grid2"><button class="btn gray block" data-act="choice" data-i="1">Şimdi değil</button><button class="btn block lg" data-act="choice" data-i="0" ${S.money<n.fiyat?'disabled':''}>Taşınalım!</button></div>
+    <p class="hint" style="text-align:center">İstersen sonra da 🏢 Ofisim'den taşınabilirsin.</p>`);
+}
 function newDay(){
-  S.day++;
+  S.day++; tagPts = {};
   if (S.boost > 0) S.boost--;
+  stockDay();
+  moodDay();
+  taskDay();
+  eqDay();
+  for (const p of S.projs){ const pr = (p.kod+p.tas)/(p.kodReq+p.tasReq); const d = Math.max(0, pr - (p.prevProg ?? pr)); p.rate = p.rate === undefined ? d : p.rate*0.7 + d*0.3; p.prevProg = pr; }
+  staffMailDay(); staffNoteDay(); mgrDay();
   let inc = 0;
   for (const pr of S.prods) if (pr.active) inc += prodDay(pr);
   for (const b of BIZ) inc += bizIncome(b, S.biz[b.id]||0);
@@ -531,7 +530,13 @@ function newDay(){
   if ((S.day-1) % MONTH_DAYS === 0) monthEnd();
   if (!S) return;
   S.nextEvent--;
+  if (!S.trend || S.day >= (S.trendUntil||0)){ const had = !!S.trend; rollTrend(); if (had) toast(`🔥 Yeni trend: ${TOPICS[S.trend].ikon} ${TOPICS[S.trend].ad}! Bu konuda ürün çıkarırsan +%40 kullanıcı.`); }
+  checkOfficeOffer();
+  checkRescue();
+  checkRaise();
+  payWarn();
   if (S.nextEvent <= 0 && !paused){ S.nextEvent = 25 + Math.floor(Math.random()*35); triggerEvent(); }
+  if (S.emps.length && !paused){ S.nextOff = (S.nextOff ?? 18) - 1; if (S.nextOff <= 0){ S.nextOff = 16 + Math.floor(Math.random()*20); triggerEvent(OFFICE_EVENTS); } }
   checkGoals();
 }
 function prodDay(pr){
@@ -539,82 +544,109 @@ function prodDay(pr){
   const f = pr.age <= 8 ? pr.age/8 : Math.exp(-(pr.age-8)/pr.life);
   if (pr.viral > 0) pr.viral--;
   pr.users = Math.round(pr.peak * f * (pr.ad?1.3:1) * (pr.viral>0?2:1));
-  const rev = pr.users * TYPES[pr.type].arpu * (S.upg.bulut?1.25:1) * S.ownership/100;
+  const rev = pr.users * TYPES[pr.type].arpu * revMult();
   pr.earned += rev;
   if (pr.age > 8 && f < 0.03){ pr.active = false; pr.users = 0; toast(`📴 ${esc(pr.name)} kapandı. Yeni ürün zamanı!`); }
   return rev;
 }
+// kredi bitişine yaklaşınca uyarı (son 2 taksit)
+function loanAlert(list){
+  const total = list.reduce((a,l)=>a+l.remaining,0), inst = list.reduce((a,l)=>a+l.inst,0);
+  const left = Math.min(...list.map(l=>l.months)), payoff = Math.round(total*0.95);
+  if (paused){ toast(`🏦 Kredi geri ödemesi yaklaşıyor! Kalan borç ${tl(total)}`); return; }
+  curChoices = [null, () => {
+    if (S.money < payoff) return;
+    S.money -= payoff; S.loans = S.loans.filter(x=>!list.includes(x)); S.score = clamp(S.score+25, 300, 1000);
+    toast('🏦 Kredi erken kapatıldı! Kredi puanın yükseldi.'); snd('ok');
+  }];
+  snd('event');
+  showModal('🏦', `<h3>Kredinin geri ödemesi yaklaşıyor!</h3>
+    <p style="text-align:center">${list.length>1?list.length+' kredinin':'Kredinin'} son <b>${left} taksiti</b> kaldı. ${left===1?'Bir sonraki ay sonunda son ödeme yapılacak.':'Son ödeme 2 ay sonra.'}</p>
+    <div class="grid3" style="margin:8px 0">
+      <div class="kv"><b class="red">${tl(total)}</b><span>Kalan borç</span></div>
+      <div class="kv"><b>${tl(inst)}</b><span>Aylık taksit</span></div>
+      <div class="kv"><b class="${S.money>=inst?'green':'red'}">${tl(S.money)}</b><span>Kasandaki para</span></div>
+    </div>
+    ${S.money < inst ? '<p class="red" style="text-align:center"><b>⚠️ Kasan bir sonraki taksiti karşılamıyor!</b> Ödeyemezsen kredi puanın düşer, iflasa yaklaşırsın.</p>' : ''}
+    <div class="grid2"><button class="btn teal block" data-act="choice" data-i="0">Tamam</button><button class="btn block" data-act="choice" data-i="1" ${S.money<payoff?'disabled':''}>Şimdi kapat ${tl(payoff)} (%5 indirim)</button></div>`);
+}
+function payWarn(){
+  if (!S.loans.length) return;
+  const daysLeft = MONTH_DAYS - ((S.day-1) % MONTH_DAYS);
+  if (daysLeft !== 5) return;
+  const due = installments() + salaries() + OFFICES[S.office].kira;
+  if (S.money < due) toast(`⚠️ 5 gün sonra ${tl(due)} ödeme var (kredi taksiti + maaşlar). Kasan yetmiyor!`);
+  else toast(`🏦 Hatırlatma: 5 gün sonra kredi taksiti ödenecek (${tl(installments())}).`);
+}
 function monthEnd(){
-  const salaries = S.emps.reduce((a,e)=>a+e.salary,0) + OFFICES[S.office].kira;
-  S.money -= salaries;
+  const sal = salaries() + OFFICES[S.office].kira;
+  S.money -= sal;
   let inst = 0;
   for (const l of S.loans){
     const pay = Math.min(l.inst, l.remaining);
-    S.money -= pay; inst += pay; l.remaining -= pay; l.months--;
-    if (S.money < 0) S.score = clamp(S.score-25, 300, 900); else S.score = clamp(S.score+8, 300, 900);
+    S.money -= pay; inst += pay; l.remaining -= pay; l.months--; l.paidN = (l.paidN||0) + 1;
+    if (S.money < 0) S.score = clamp(S.score-25, 300, 1000); else S.score = clamp(S.score+8, 300, 1000);
   }
   const closed = S.loans.filter(l=>l.remaining<=1 || l.months<=0);
-  if (closed.length){ S.score = clamp(S.score+20*closed.length, 300, 900); toast('🏦 Kredin tamamen kapandı! Kredi puanın yükseldi.'); }
+  if (closed.length){ S.score = clamp(S.score+20*closed.length, 300, 1000); toast('🏦 Kredin tamamen kapandı! Kredi puanın yükseldi.'); }
   S.loans = S.loans.filter(l=>!closed.includes(l));
-  const total = salaries + inst;
+  const soon = S.loans.filter(l => l.months > 0 && l.months <= 2);
+  if (soon.length) loanAlert(soon);
+  const total = sal + inst;
   if (total > 0) toast(`💸 Ay sonu ödemeleri: ${tl(total)}`);
   refreshOffers(); refreshCands();
-  if (S.money < -20000){ gameOver(); return; }
-  if (S.money < 0) toast('⚠️ Kasa eksiye düştü! ₺-20.000 altında iflas edersin.');
+  // kasa eksideyse maaşlar gecikmiş sayılır: her geciken ay ekip daha da mutsuz
+  if (S.money < 0 && S.emps.length){ S.unpaid = (S.unpaid||0) + 1; moodAll(-10*Math.min(3, S.unpaid), S.unpaid > 1 ? `Maaşlar ${S.unpaid} aydır gecikiyor!` : 'Maaşlar gecikti!'); }
+  else S.unpaid = 0;
+  for (const e of [...S.emps]) if ((e.mood ?? 70) < 15 && Math.random() < 0.5){ S.emps = S.emps.filter(x=>x!==e); toast(`😫 ${esc(e.name)} morali çok düşük olduğu için istifa etti!`); }
+  if (S.money < 0) toast(`⚠️ Kasa eksiye düştü! ${tl(rescueLimit())} altına inersen şirket iflasın eşiğine gelir.`);
 }
 
 /* ================= OLAYLAR ================= */
 const EVENTS = [
   () => { const a = S.prods.filter(p=>p.active); if (!a.length) return null; const p = pick(a);
     return {ikon:'🔥', title:'Viral Oldu!', text:`<b>${esc(p.name)}</b> sosyal medyada patladı! 15 gün boyunca kullanıcı sayısı <b>2 katına</b> çıkacak.`,
-      choices:[{label:'Harika! 🎉', cls:'green', fn:()=>{ p.viral = 15; }}]}; },
-  () => { if (S.day < 45 || S.ownership <= 40) return null;
-    const amt = Math.round(Math.max(20000, valuation()*0.12)/1000)*1000;
-    return {ikon:'💼', title:'Yatırımcı Teklifi', text:`Bir yatırımcı şirketinin <b>%10</b> hissesi için <b>${tl(amt)}</b> teklif ediyor. Kabul edersen ürün gelirlerinden daha az pay alırsın. (Şu anki payın: %${S.ownership})`,
-      choices:[{label:`Kabul et (+${tl(amt)})`, cls:'green', fn:()=>{ S.money += amt; S.ownership -= 10; toast(`💼 ${tl(amt)} yatırım aldın!`); snd('cash'); }},
-               {label:'Reddet, şirket benim!', cls:'gray'}]}; },
+      choices:[{label:'Harika! 🎉', fn:()=>{ p.viral = 15; }}]}; },
+  () => investorOffer(),
   () => { const c = S.emps.filter(e=>e.skill>=4); if (!c.length) return null; const e = pick(c); const raise = round10(e.salary*0.25);
-    return {ikon:'🕴️', title:'Transfer Girişimi', text:`Rakip bir şirket <b>${esc(e.name)}</b> (${ROLES[e.role].ad}, yetenek ${e.skill}) adlı çalışanına daha yüksek maaş teklif etti!`,
-      choices:[{label:`Zam yap (+${tl(raise)}/ay)`, cls:'green', fn:()=>{ e.salary += raise; toast(`😊 ${esc(e.name)} kalmaya karar verdi.`); }},
-               {label:'Gitmesine izin ver', cls:'red', fn:()=>{ S.emps = S.emps.filter(x=>x.id!==e.id); toast(`👋 ${esc(e.name)} şirketten ayrıldı.`); }}]}; },
-  () => { const a = S.prods.filter(p=>p.active && p.users>100); if (!a.length) return null; const p = pick(a);
-    const cost = Math.round(Math.max(1000, p.users*TYPES[p.type].arpu*3)/100)*100;
+    return {ikon:avatarSVG(e.id, e.role, e.emo), title:'Transfer Girişimi', text:`Rakip bir şirket <b>${esc(e.name)}</b> (${ROLES[e.role].ad}, yetenek ${e.skill}) adlı çalışanına daha yüksek maaş teklif etti!`,
+      choices:[{label:'Gitmesine izin ver', cls:'red', fn:()=>{ S.emps = S.emps.filter(x=>x.id!==e.id); toast(`👋 ${esc(e.name)} şirketten ayrıldı.`); }},
+               {label:`Zam yap (+${tl(raise)}/ay)`, fn:()=>{ e.salary += raise; toast(`😊 ${esc(e.name)} kalmaya karar verdi.`); }}]}; },
+  () => { const a = S.prods.filter(p=>p.active && p.users>100); if (!a.length || hasInv('guvenlik')) return null; const p = pick(a);
+    const cost = Math.round(Math.max(15000, p.users*TYPES[p.type].arpu*3)/100)*100;
     return {ikon:'🖥️', title:'Sunucu Çöktü!', text:`<b>${esc(p.name)}</b> sunucuları çöktü! Acil ekip çağırırsan ${tl(cost)} tutacak. Çağırmazsan kullanıcıların %35'i kaçacak.`,
-      choices:[{label:`Acil ekip çağır (${tl(cost)})`, cls:'orange', fn:()=>{ S.money -= cost; toast('🛠️ Sunucular düzeldi.'); }},
-               {label:'Bekle, kendiliğinden düzelir', cls:'gray', fn:()=>{ p.peak *= 0.65; toast(`📉 ${esc(p.name)} kullanıcı kaybetti.`); }}]}; },
-  () => { if (S.day < 20) return null; const cost = Math.round((2000+S.rep*150)/100)*100; const gain = 3 + Math.floor(Math.random()*6);
+      choices:[{label:'Bekle, düzelir', cls:'gray', fn:()=>{ p.peak *= 0.65; toast(`📉 ${esc(p.name)} kullanıcı kaybetti.`); }},
+               {label:`Acil ekip (${tl(cost)})`, cls:'orange', fn:()=>{ S.money -= cost; toast('🛠️ Sunucular düzeldi.'); }}]}; },
+  () => { if (S.day < 20) return null; const cost = Math.round((25000+S.rep*1800)/100)*100; const gain = 3 + Math.floor(Math.random()*6);
     return {ikon:'🎪', title:'Teknoloji Fuarı', text:`Büyük teknoloji fuarına stand açabilirsin. Maliyeti ${tl(cost)}. Şirketin daha çok tanınır.`,
-      choices:[{label:`Katıl (${tl(cost)}, +${gain} ⭐)`, fn:()=>{ S.money -= cost; S.rep += gain; toast(`⭐ Fuarda çok ilgi gördün! +${gain} itibar`); }},
-               {label:'Bu sefer geç', cls:'gray'}]}; },
-  () => { const amt = Math.round((1000+S.rep*100)*(0.5+Math.random())/100)*100;
+      choices:[{label:'Bu sefer geç', cls:'gray'},{label:`Katıl (${tl(cost)}, +${gain} ⭐)`, cls:'blue', fn:()=>{ S.money -= cost; S.rep += gain; toast(`⭐ Fuarda çok ilgi gördün! +${gain} itibar`); }}]}; },
+  () => { const amt = Math.round((12000+S.rep*1200)*(0.5+Math.random())/100)*100;
     return {ikon:'🏆', title:'Hackathon Ödülü', text:`Ekibin hafta sonu katıldığı hackathonda birinci oldu! Ödül: <b>${tl(amt)}</b>`,
-      choices:[{label:'Ödülü al 💰', cls:'green', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
+      choices:[{label:'Ödülü al 💰', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
   () => { const a = S.projs.filter(p=>!devDone(p)); if (!a.length) return null; const p = pick(a);
     return {ikon:'⚡', title:'Elektrik Kesintisi', text:`Mahallede elektrikler kesildi! <b>${esc(p.name)}</b> projesinde kaydedilmemiş işler kayboldu (%10).`,
       choices:[{label:'Of ya... 😩', cls:'gray', fn:()=>{ p.kod*=0.9; p.tas*=0.9; }}]}; },
   () => { if (S.emps.length >= cap()) return null;
-    return {ikon:'🎓', title:'Stajyer Başvurusu', text:'Üniversiteden hevesli bir öğrenci staj yapmak istiyor. Yeteneği düşük ama maaşı çok az (₺300/ay).',
-      choices:[{label:'Kabul et', cls:'green', fn:()=>{ const e = genCand(); e.skill = Math.random()<.4?2:1; e.salary = 300; e.name += ' (Stajyer)'; S.emps.push(e); toast('🎓 Stajyer ekibe katıldı!'); }},
-               {label:'Teşekkürler, gerek yok', cls:'gray'}]}; },
+    return {ikon:'🎓', title:'Stajyer Başvurusu', text:'Üniversiteden hevesli bir öğrenci staj yapmak istiyor. Yeteneği düşük ama maaşı çok az (₺3.500/ay).',
+      choices:[{label:'Gerek yok', cls:'gray'},{label:'Kabul et', fn:()=>{ const e = genCand(); e.skill = Math.random()<.4?2:1; e.salary = 3500; e.name += ' (Stajyer)'; S.emps.push(e); toast('🎓 Stajyer ekibe katıldı!'); }}]}; },
   () => { if (S.rep < 20) return null;
     return {ikon:'🥇', title:'Yılın Girişimi Ödülü', text:'Şirketin "Yılın Girişimi" ödülünü kazandı! Herkes seni konuşuyor.',
-      choices:[{label:'Teşekkürler! (+6 ⭐)', cls:'green', fn:()=>{ S.rep += 6; snd('ok'); }}]}; },
-  () => { if (S.emps.length < 2) return null; const cost = round10(150*(S.emps.length+1));
+      choices:[{label:'Teşekkürler! (+6 ⭐)', cls:'gold', fn:()=>{ S.rep += 6; snd('ok'); }}]}; },
+  () => { if (S.emps.length < 2) return null; const cost = round10(1800*(S.emps.length+1));
     return {ikon:'🍕', title:'Ekip Yemeği', text:`Ekip çok yoruldu. Herkesi yemeğe çıkarırsan ${tl(cost)} tutar ama 20 gün boyunca herkes <b>%20 daha hızlı</b> çalışır.`,
-      choices:[{label:`Yemeğe çıkar (${tl(cost)})`, cls:'green', fn:()=>{ S.money -= cost; S.boost = 20; toast('🍕 Ekip motive oldu!'); }},
-               {label:'Şimdi olmaz', cls:'gray'}]}; },
+      choices:[{label:'Şimdi olmaz', cls:'gray'},{label:`Yemeğe çıkar (${tl(cost)})`, fn:()=>{ S.money -= cost; S.boost = 20; toast('🍕 Ekip motive oldu!'); for (const e of S.emps) setTimeout(()=>speak(e.id,'🍕'), Math.random()*1500); }}]}; },
   () => { const owned = BIZ.filter(b=>(S.biz[b.id]||0)>0); if (!owned.length) return null; const b = pick(owned); const amt = Math.round(bizIncome(b,S.biz[b.id])*5/100)*100;
     return {ikon:b.ikon, title:'Yoğun Gün!', text:`<b>${b.ad}</b> bugün çok kalabalıktı! Ekstra kazanç: <b>${tl(amt)}</b>`,
-      choices:[{label:'Süper! 💰', cls:'green', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
+      choices:[{label:'Süper! 💰', fn:()=>{ S.money += amt; S.stats.earned += amt; snd('cash'); }}]}; },
 ];
-function triggerEvent(){
-  const pool = EVENTS.map(f=>f()).filter(Boolean);
+function triggerEvent(list){
+  const pool = (list||EVENTS).map(f=>f()).filter(Boolean);
   if (!pool.length) return;
   const ev = pick(pool);
   curChoices = ev.choices.map(c=>c.fn);
   snd('event');
-  showModal(`<div class="ev">${ev.ikon}</div><h3>${ev.title}</h3><p>${ev.text}</p>` +
-    `<div class="grid2">${ev.choices.map((c,i)=>`<button class="btn ${c.cls||''} block" data-act="choice" data-i="${i}">${c.label}</button>`).join('')}</div>`);
+  showModal(ev.ikon, `<h3>${ev.title}</h3><p style="text-align:center">${ev.text}</p>` +
+    `<div class="${ev.choices.length===3?'grid3':'grid2'}" style="${ev.choices.length===1?'grid-template-columns:1fr':''}">${ev.choices.map((c,i)=>`<button class="btn ${c.cls||''} block" data-act="choice" data-i="${i}">${c.label}</button>`).join('')}</div>`);
 }
 function checkGoals(){
   while (S && S.goal < GOALS.length && GOALS[S.goal].c()){
@@ -632,73 +664,303 @@ function release(id){
   S.projs = S.projs.filter(x=>x!==p);
   S.stats.best = Math.max(S.stats.best, q);
   closePage();
+  for (const e of S.emps) setTimeout(()=>speak(e.id, pick(['🎉','🥳','👏','🙌'])), Math.random()*900);
+  speak('me','🎉');
   if (p.kind === 'is'){
-    let pay = p.pay*(0.7 + q/100*0.6);
-    let rep = Math.ceil(sm*1.5*T.tier*q/60);
-    const notes = [];
-    if (q < p.minQ){ pay *= 0.5; rep = -2; notes.push(`😠 Müşteri kaliteyi beğenmedi (en az ${p.minQ} istiyordu). Ödemenin yarısını aldın.`); }
-    if (S.day > p.deadline){ pay *= 0.6; rep -= 3; notes.push(`⏰ Teslim ${S.day-p.deadline} gün gecikti. Ödemeden %40 kesildi.`); }
-    pay = Math.round(pay);
+    const R = reviewScore(p, q), sc = R.score;
+    let pay = Math.round(p.pay * (0.5 + sc/10*0.8) * (1 + carPayBonus()));
+    let rep = sc >= 8 ? Math.ceil(sm*1.5*T.tier*sc/7) : sc >= 6 ? Math.ceil(sm*T.tier) : sc >= 4 ? 0 : -3;
     S.money += pay; S.stats.earned += pay; S.rep = Math.max(0, S.rep+rep); S.stats.done++;
-    snd(notes.length ? 'bad' : 'cash');
-    showModal(`<div class="ev">📦</div><h3>İş Teslim Edildi!</h3>
-      <p style="text-align:center" class="sub">${esc(p.client)}</p>
-      <div class="lbl"><span>Kalite</span>${qBadge(q)}</div>
-      <div class="lbl"><span>Ödeme</span><b class="green">+${tlFull(pay)}</b></div>
-      <div class="lbl"><span>İtibar</span><b>${rep>=0?'+':''}${rep} ⭐</b></div>
-      ${notes.map(n=>`<p class="sub">${n}</p>`).join('')}
-      <button class="btn green block" data-act="close">Devam</button>`);
+    S.stats.scoreSum = (S.stats.scoreSum||0) + sc;
+    S.goodStreak = sc >= 7 ? (S.goodStreak||0) + 1 : sc < 6 ? 0 : (S.goodStreak||0);
+    const letter = reviewLetter(p, q, R);
+    const msg = {id:S.idSeq++, day:S.day, from:p.client, who:(p.brief&&p.brief.contact)||'Müşteri', type:p.type, score:sc, q, pay, rep, lines:letter, read:true, replyable:true, answered:null};
+    S.inbox = [msg].concat(S.inbox||[]).slice(0, 30);
+    snd(sc >= 6 ? 'cash' : 'bad');
+    showModal('📩', messageHTML(msg, true).replace('<button', retroHTML(p) + '<button'));
+    if (sc >= 8) moodAll(6, 'Müşteri bayıldı, ekip gururlu'); else if (sc < 5) moodAll(-10, 'Kötü müşteri yorumu ekibi üzdü');
   } else {
-    const peak = Math.round(T.users*sm*Math.pow(q/100,2)*(1+S.rep/150)*(S.upg.pazarlama?1.3:1)*(0.8+Math.random()*0.45));
-    const pr = {id:S.idSeq++, name:p.name, type:p.type, size:p.size, q, peak, life:30+q*0.9, age:0, users:0, earned:0, ad:false, upd:0, viral:0, active:true, day:S.day};
+    const tf = p.topic ? TOPICS[p.topic].fit[p.type] : 1, af = p.topic ? audFit(p.topic, p.aud) : 1, trd = p.topic && p.topic===S.trend ? 1.4 : 1;
+    if (p.topic){ S.known = S.known || {}; S.known[p.type+':'+p.topic] = tf; }
+    const peak = Math.round(T.users*SIZES[p.size].um*Math.pow(q/100,2.4)*(1+Math.min(S.rep,600)/300)*(S.upg.pazarlama?1.3:1)*(hasInv('dil')?1.15:1)*tf*af*trd*(0.8+Math.random()*0.45));
+    const pr = {id:S.idSeq++, name:p.name, type:p.type, topic:p.topic, aud:p.aud, size:p.size, q, peak, life:(30+q*0.9)*(hasInv('oneri')?1.25:1), age:0, users:0, earned:0, ad:false, upd:0, viral:0, active:true, day:S.day};
     S.prods.unshift(pr);
     const rep = Math.max(-3, Math.round(q/25*Math.sqrt(sm)*T.tier) - (q<30?3:0));
     S.rep = Math.max(0, S.rep+rep); S.stats.prodsDone++;
+    S.goodStreak = q >= 70 ? (S.goodStreak||0) + 1 : q < 45 ? 0 : (S.goodStreak||0);
     snd('ok');
-    showModal(`<div class="ev">🚀</div><h3>${esc(p.name)} Yayında!</h3>
+    if (q >= 80) moodAll(6, 'Harika bir ürün çıkardık'); else if (q < 45) moodAll(-8, 'Ürün beklenenden kötü çıktı');
+    showModal('🚀', `<h3>${esc(p.name)} Yayında!</h3>
       <div class="lbl"><span>Kalite</span>${qBadge(q)}</div>
+      ${p.topic ? `<div class="lbl"><span>${TOPICS[p.topic].ikon} Konu & tür uyumu</span><b class="${tf>=1.1?'green':tf<0.95?'red':''}">${fitStars(tf)} ${fitWord(tf)}</b></div>
+      <div class="lbl"><span>${AUDS[p.aud].ikon} Hedef kitle</span><b class="${af>1?'green':af<1?'red':''}">${af>1?'Tam isabet!':af<1?'Bu konuya pek uymadı':'Herkese hitap ediyor'}</b></div>
+      ${trd>1?'<div class="lbl"><span>🔥 Trend bonusu</span><b class="green">+%40 kullanıcı</b></div>':''}`:''}
+      ${retroHTML(p)}
       <div class="lbl"><span>Beklenen zirve</span><b>~${fmt(peak)} kullanıcı</b></div>
       <div class="lbl"><span>İtibar</span><b>${rep>=0?'+':''}${rep} ⭐</b></div>
       <p class="sub">Ürünün her gün para kazandıracak. Zamanla ilgi azalır; reklam ve güncellemeyle canlı tut, yeni ürünler çıkar!</p>
-      <button class="btn green block" data-act="close">Süper!</button>`);
+      <button class="btn block lg" data-act="close">Süper!</button>`);
   }
   checkGoals();
 }
-function gameOver(){
-  curChoices = [()=>{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); showWelcome(); }];
+// iflas eşiği ofis büyüklüğüne göre: Garaj -25B … Ofis -1,5 Mn … Gökdelen -25 Mn
+const RESCUE = [300000, 1500000, 8000000, 40000000, 150000000];
+const rescueLimit = () => -RESCUE[S.office];
+// iyi giden dönemlerde deneyimli çalışanlar zam ister
+function checkRaise(){
+  if (!S || paused || (S.goodStreak||0) < 3 || S.day < (S.raiseCd||0) || Math.random() > 0.025) return;
+  const c = S.emps.filter(e => !isAway(e) && (e.mood??70) >= 55 && S.day - (e.since||0) >= 45 && S.day - (e.lastRaise||-999) >= 90);
+  if (!c.length) return;
+  const e = pick(c), pct = 10 + Math.floor(Math.random()*4)*5, raise = round10(e.salary*pct/100), half = round10(raise/2);
+  S.raiseCd = S.day + 70;
+  const why = pick(['Son projelerde gerçekten çok emek verdim.','Müşterilerden gelen güzel yorumlarda benim de payım var.','Piyasada benzer işlerin maaşları yükseldi.','Ekibe yeni gelenlere de yardım ediyorum.','Gece gündüz çalıştık, bunu görmenizi isterim.']);
+  curChoices = [
+    () => { e.salary += raise; e.mood = clamp(e.mood+20, 5, 100); e.lastRaise = S.day; toast(`🤝 ${esc(e.name)} çok mutlu! Yeni maaşı ${tl(e.salary)}/ay`); setTimeout(()=>speak(e.id,'🤩'),200); snd('ok'); },
+    () => { if (Math.random() < 0.6){ e.salary += half; e.mood = clamp(e.mood+6, 5, 100); e.lastRaise = S.day; toast(`🤝 ${esc(e.name)} yarı zamma razı oldu: ${tl(e.salary)}/ay`); setTimeout(()=>speak(e.id,'🙂'),200); }
+            else { e.mood = clamp(e.mood-12, 5, 100); e.lastRaise = S.day; toast(`😒 ${esc(e.name)} pazarlığı kabul etmedi, morali düştü.`); setTimeout(()=>speak(e.id,'😒'),200); } },
+    () => { e.mood = clamp(e.mood-25, 5, 100); e.lastRaise = S.day;
+            if (Math.random() < 0.2){ S.emps = S.emps.filter(x=>x!==e); sceneKey = ''; toast(`👋 ${esc(e.name)} zammı alamayınca istifa etti!`); snd('bad'); }
+            else { toast(`😞 ${esc(e.name)} çok kırıldı. Morali düştü.`); setTimeout(()=>speak(e.id,'😞'),200); } },
+  ];
+  snd('event');
+  showModal(avatarSVG(e.id, e.role, e.emo), `<h3>${esc(e.name)} zam istiyor</h3>
+    <p style="text-align:center" class="sub">${ROLES[e.role].ad} · Yetenek ${e.skill}/10 · ${S.day-(e.since||0)} gündür seninle</p>
+    <div class="letter brief" style="margin-top:6px">“Patron, işler çok iyi gidiyor. ${why} Maaşıma <b>%${pct}</b> zam istiyorum.”</div>
+    <div class="grid3" style="margin:8px 0">
+      <div class="kv"><b>${tl(e.salary)}</b><span>Şu anki maaş /ay</span></div>
+      <div class="kv"><b class="green">+${tl(raise)}</b><span>İstediği zam (%${pct})</span></div>
+      <div class="kv"><b>${tl(e.salary+raise)}</b><span>Yeni maaş olur</span></div>
+    </div>
+    <div class="grid3"><button class="btn red block" data-act="choice" data-i="2">Reddet</button><button class="btn teal block" data-act="choice" data-i="1">Pazarlık: +${tl(half)}</button><button class="btn block" data-act="choice" data-i="0">Kabul et</button></div>`);
+}
+function checkRescue(){
+  if (!S || paused || S.money >= rescueLimit()) return;
+  const limit = RESCUE[S.office];
+  const loan = Math.round(limit*2.333/1000)*1000, back = Math.round(loan*1.4286/1000)*1000, months = 8, inst = Math.ceil(back/months);
+  const can = (S.rescues||0) < 2;
+  curChoices = [
+    () => gameOver(),
+    () => {
+      S.rescues = (S.rescues||0) + 1;
+      S.loans.push({id:S.idSeq++, amount:loan, remaining:back, inst, months, rescue:true});
+      S.money += loan; S.score = clamp(S.score-120, 300, 1000); moodAll(-8);
+      toast(`🏦 Acil kurtarma kredisi hesabında: +${tl(loan)}. Kemerleri sıkma zamanı!`); snd('cash');
+    }
+  ];
   snd('bad');
-  showModal(`<div class="ev">💸</div><h3>İflas Ettin!</h3>
-    <p>Şirketin borçlarını ödeyemedi. Ama her büyük girişimci en az bir kez batar!</p>
+  showModal('🚨', `<h3>Şirket İflasın Eşiğinde!</h3>
+    <p style="text-align:center">Kasan <b class="red">${tlFull(S.money)}</b> oldu. Tedarikçiler ödeme bekliyor, çalışanlar maaşlarını soruyor…</p>
+    ${can ? `<p style="text-align:center">Bankalar sana <b>son bir şans</b> veriyor:</p>
+    <div class="grid4" style="margin:8px 0">
+      <div class="kv"><b class="green">${tl(loan)}</b><span>Hemen kasana</span></div>
+      <div class="kv"><b>${tl(back)}</b><span>Toplam geri ödeme</span></div>
+      <div class="kv"><b>${tl(inst)}</b><span>Aylık taksit (${months} ay)</span></div>
+      <div class="kv"><b class="red">%${Math.round((back/loan-1)*100)}</b><span>Toplam faiz · kredi puanı -120</span></div>
+    </div>` : `<p style="text-align:center" class="red">Bu iki kurtarma kredisinden sonra bankalar artık kredi vermiyor.</p>`}
+    <div class="grid2"><button class="btn red block" data-act="choice" data-i="0">💀 İflas et (baştan başla)</button>
+    ${can ? `<button class="btn block lg" data-act="choice" data-i="1">🏦 Krediyi al, devam et</button>` : ''}</div>`);
+}
+function gameOver(){
+  curChoices = [()=>{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); sceneKey=''; showWelcome(); }];
+  snd('bad');
+  showModal('💸', `<h3>İflas Ettin!</h3>
+    <p style="text-align:center">Şirketin borçlarını ödeyemedi. Ama her büyük girişimci en az bir kez batar!</p>
     <div class="grid4" style="margin:8px 0">
       <div class="kv"><b>${S.day}</b><span>Gün</span></div>
       <div class="kv"><b>${tl(S.stats.earned)}</b><span>Toplam kazanç</span></div>
       <div class="kv"><b>${S.stats.done+S.stats.prodsDone}</b><span>Proje</span></div>
       <div class="kv"><b>${S.stats.best}</b><span>En iyi kalite</span></div>
     </div>
-    <button class="btn green block" data-act="choice" data-i="0">🔄 Yeniden Başla</button>`);
+    <button class="btn block lg" data-act="choice" data-i="0">🔄 Yeniden Başla</button>`);
 }
 function confirmBox(ikon, titleTxt, text, yesLabel, yesFn){
   curChoices = [yesFn, null];
-  showModal(`<div class="ev">${ikon}</div><h3>${titleTxt}</h3><p>${text}</p>
+  showModal(ikon, `<h3>${titleTxt}</h3><p style="text-align:center">${text}</p>
     <div class="grid2"><button class="btn gray block" data-act="choice" data-i="1">Vazgeç</button><button class="btn red block" data-act="choice" data-i="0">${yesLabel}</button></div>`);
 }
 
-const trainCost = e => round10(e.skill*e.skill*250 + 500);
-const adCost = p => Math.round(Math.max(800, p.peak*TYPES[p.type].arpu*4)/100)*100;
-const updCost = p => Math.round(Math.max(1500, p.peak*TYPES[p.type].arpu*8*(1+p.upd*0.5))/100)*100;
+/* ---- çalışan görevleri ---- */
+const kursCost = e => round10((18000 + e.skill*5000) * (1 + S.office*0.6));
+const konfCost = () => round10(15000 * (1 + S.office*0.8));
+const mentees = e => S.emps.filter(x => x!==e && !x.task && x.skill <= e.skill-2 && x.skill < 10 && !S.emps.some(y=>y.task&&y.task.type==='mentor'&&y.task.target===x.id));
+function taskText(e){
+  const t = e.task; if (!t) return '💻 Projelerde çalışıyor';
+  const left = t.until ? ` · ${Math.max(0,t.until-S.day)} gün kaldı` : '';
+  if (t.type==='kurs') return `🎓 ${TYPES[t.spec].ad} kursunda${left}`;
+  if (t.type==='izin') return `🏖️ İzinde${left}`;
+  if (t.type==='konf') return `🎤 Konferansta${left}`;
+  if (t.type==='mentor'){ const m = S.emps.find(x=>x.id===t.target); return `🧑‍🏫 ${m?esc(m.name.split(' ')[0]):'?'} adlı çalışana mentorluk${left}`; }
+  if (t.type==='ogren') return `📖 ${LEARN_BY[t.item].ad} öğreniyor${left}`;
+  if (t.type==='arge'){ const i = INNOV.find(x=>x.id===t.innov); const st = S.innov[t.innov]||{pts:0}; return `🔬 Ar-Ge: ${i?i.ad:''} (%${i?Math.floor(st.pts/i.puan*100):0})`; }
+  return '';
+}
+function badges(e){
+  return (e.lead?'<span class="pill gold">⭐ LİDER</span> ':'') + (e.spec?`<span class="pill blue">${TYPES[e.spec].ikon} ${TYPES[e.spec].ad.toUpperCase()} UZMANI</span> `:'') + ((e.fresh||0)>0?'<span class="pill green">⚡ DİNÇ</span>':'') + (e.know&&e.know.length?' '+badgesOf(e.know, 17):'');
+}
+function empMenu(id){
+  const e = S.emps.find(x=>x.id===id); if (!e) return;
+  const tc = trainCost(e), kc = kursCost(e), cc = konfCost();
+  const act = (k, ic, t, sm, dis, cls='') => `<button class="erow ${cls}" data-act="ea" data-k="${k}" data-id="${e.id}" ${dis?'disabled':''}><b>${t}</b><small>${sm}</small><span class="echev">›</span></button>`;
+  const leaderTaken = S.emps.some(x=>x.lead && x.role===e.role);
+  const raise = round10(e.salary*0.1);
+  const pay = act('zam','','Maaşına zam yap', `+%10 · ${tl(e.salary)} → ${tl(e.salary+raise)} · moral artar`, false, 'good') +
+              act('kes','','Maaşını düşür', `−%10 · ${tl(e.salary)} → ${tl(e.salary-raise)} · moral düşer`, e.salary <= salaryFor(1)*0.6, 'bad');
+  let acts;
+  if (e.task){
+    acts = act('recall','','Geri çağır', 'Görevi bırakır, projelere döner', false) + act('train','','Eğit', e.skill<10?`${tl(tc)} · +1 yetenek`:'Usta seviye', e.skill>=10||S.money<tc) + pay;
+  } else {
+    acts =
+      act('izin','','Tatile yolla', '5 gün izin · moral dolu, dinç döner', false) +
+      act('train','','Eğit', e.skill<10?`${tl(tc)} · +1 yetenek`:'Usta seviye', e.skill>=10||S.money<tc) +
+      act('ogren','','Programlama dili / beceri öğret', learnable(e.know, e.role).length ? `Python, JavaScript, SQL… · ${learnable(e.know, e.role).length} seçenek` : 'Öğrenecek bir şey kalmadı', !learnable(e.know, e.role).length) +
+      act('arge','','Araştırmaya ata (Ar-Ge)', INNOV.some(canResearch)?'Kalıcı yenilik geliştirir':'Araştırılacak yenilik yok', !INNOV.some(canResearch)) +
+      pay +
+      act('kurs','','Uzmanlık kursu', `${tl(kc)} · 6 gün · bir türde %35 hız`, S.money<kc) +
+      act('mentor','','Mentor ol', e.skill<6?'Yetenek 6 gerekir':mentees(e).length?'10 gün · çırağa +1 yetenek':'Uygun çırak yok', e.skill<6||!mentees(e).length) +
+      act('lead','','Takım lideri yap', e.lead?'Zaten lider':e.skill<7?'Yetenek 7 gerekir':leaderTaken?'Bu rolde lider var':'Ekibine +%10 hız', e.lead||e.skill<7||leaderTaken) +
+      act('konf','','Konferansa gönder', `${tl(cc)} · 3 gün · +itibar`, S.money<cc);
+  }
+  curChoices = [];
+  showModal('', `<div class="ehead"><div class="mav">${avatarSVG(e.id, e.role, e.emo)}</div><div class="grow"><h3>${esc(e.name)}</h3>
+      <div class="pxmeta">${ROLES[e.role].ad} · Yetenek ${e.skill}/10 · ${tl(e.salary)}/ay</div><div style="margin-top:2px">${badges(e)}</div></div>
+      <button class="npx" data-act="close" aria-label="Kapat">✕</button></div>
+    <dl class="npdl"><div><dt>Durum</dt><dd>${taskText(e)}</dd></div>
+      <div><dt>Moral</dt><dd><span class="mood" style="width:110px;margin:0"><i style="width:${e.mood}%"></i></span> ${Math.round(e.mood)}/100</dd></div></dl>
+    ${skillRows(e, 'inmenu')}
+    <div class="elist">${acts}</div>
+    <button class="erow danger" data-act="fire" data-id="${e.id}"><b>İşten çıkar</b><small>Ekibin morali düşer</small><span class="echev">›</span></button>`, 'pro');
+}
+function chooser(icon, title, sub, items){
+  showModal(icon, `<h3>${title}</h3><p class="sub" style="text-align:center">${sub}</p><div class="grid2" style="margin-top:6px">${items}</div><button class="btn gray block" data-act="close">Vazgeç</button>`);
+}
+const trainCost = e => round10(e.skill*e.skill*3000 + 6000);
+const adCost = p => Math.round(Math.max(10000, p.peak*TYPES[p.type].arpu*4)/100)*100;
+const updCost = p => Math.round(Math.max(20000, p.peak*TYPES[p.type].arpu*8*(1+p.upd*0.5))/100)*100;
 
 const ACTIONS = {
-  page: el => openPage(el.dataset.v, el.dataset.id ? +el.dataset.id : null),
+  page: el => { if (!$('modal').classList.contains('hidden')) closeModal(); openPage(el.dataset.v, el.dataset.id ? +el.dataset.id : null); },
   home: () => closePage(),
   close: () => { closeModal(); },
   choice: el => { const fn = curChoices[+el.dataset.i]; closeModal(); if (fn) fn(); if (S) checkGoals(); },
   begin: () => {
-    const n = ($('cname').value || '').trim() || 'Garaj Yazılım';
+    const n = (setup && setup.co || '').trim() || 'Garaj Yazılım', b = (setup && setup.boss || '').trim();
     S = newState(n.slice(0,24)); refreshOffers(); refreshCands();
-    closeModal(); save();
-    toast('👋 Hoş geldin patron! "Müşteri İşleri"nden ilk işini al.');
+    if (setup){ S.me = setupLook(); S.boss = b.slice(0,16); }
+    setup = null; closeModal(); save(); sceneKey = ''; $('app').classList.remove('nogame'); updateAll(true);
+    toast(`👋 Hoş geldin ${b ? esc(b) : 'patron'}!`); setTimeout(() => { if (S && $('modal').classList.contains('hidden')) tutorAsk(); }, 700);
+  },
+  intro: el => { const i = +el.dataset.v; closeModal(); if (i < INTRO.length) showWelcome(i); else showSetup(false); },
+  'su-pick': el => setupPick(el.dataset.k, +el.dataset.v),
+  'su-g': el => setupGender(el.dataset.v),
+  'su-rand': () => { Object.assign(setup, setupRandomLook(setup.g)); setupRender(); },
+  'su-dice': el => setupDice(el.dataset.k),
+  'mgr-open': () => mgrMenu(),
+  'mgr-reroll': () => { if (S.money < MGR_REROLL) return; S.money -= MGR_REROLL; S.mgrCands = null; toast('Yeni yönetici adayları geldi.'); },
+  'mgr-hire': el => {
+    if (S.office < 4 || S.mgr) return;
+    const c = mgrCands()[+(el && el.dataset.v) || 0], fee = round10(c.salary*0.5); if (!c || S.money < fee) return;
+    S.money -= fee; S.mgr = Object.assign({}, c, {since:S.day, set:{maas:'dengeli', mail:'iyi', moral:'acik', sprint:'kapali', is:'sor'}}); S.mgrCands = null; sceneKey = '';
+    toast(`👔 ${esc(c.name)} yönetici olarak işe başladı! Ayarlarını yapmak için ona dokun.`); snd('ok');
+    setTimeout(mgrMenu, 400);
+  },
+  'mgr-set': el => { if (!S.mgr) return; S.mgr.set[el.dataset.k] = el.dataset.v; mgrMenu(); },
+  'mgr-fire': () => { if (!S.mgr) return; toast(`👋 ${esc(S.mgr.name)} şirketten ayrıldı.`); S.mgr = null; sceneKey = ''; closeModal(); },
+  'mgr-yes': () => { const o = S.mgr && S.offers.find(x => x.id===S.mgr.pending); if (S.mgr) S.mgr.pending = null; closeModal(); if (o) mgrStartOffer(o); },
+  'mgr-no': () => { if (S.mgr){ S.mgr.pending = null; S.mgr.nextJob = S.day + 6; } closeModal(); },
+  'side-toggle': () => { $('app').classList.toggle('sideopen'); },
+  'tut-start': () => tutorStart(),
+  'tut-skip': () => { closeModal(); if (S) S.tutorDone = true; toast("İstediğin zaman Ayarlar'dan oyun rehberini açabilirsin."); },
+  'tut-next': () => { tutI++; tutorShow(); },
+  'tut-prev': () => { tutI = Math.max(0, tutI-1); tutorShow(); },
+  'tut-end': () => tutorEnd(),
+  'su-save': () => {
+    const n = (setup.co||'').trim(); if (n) S.name = n.slice(0,24);
+    S.me = setupLook(); S.boss = (setup.boss||'').trim().slice(0,16);
+    setup = null; closeModal(); sceneKey = ''; toast('✨ Yeni görünüşün hazır!');
+  },
+  look: () => { closeModal(); showSetup(true); },
+  newproj: () => {
+    if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu! Önce bir projeyi bitir ya da ofisi büyüt.'); snd('bad'); return; }
+    showModal('', newProjHTML(), 'pro');
   },
   proj: el => { S.sel = +el.dataset.id; openPage('proje', +el.dataset.id); },
+  flearn: () => learnChooser('me'),
+  fkurs: el => { closeModal(); ACTIONS.upg(el); },
+  learn: el => {
+    const it = LEARN_BY[el.dataset.v]; if (!it) return;
+    const c = learnCost(it); if (S.money < c) return;
+    if (el.dataset.id === 'me'){
+      if (S.ftask) return;
+      S.money -= c; S.ftask = {item:it.id, until:S.day+it.gun};
+      toast(`📖 ${it.ad} öğrenmeye başladın (${it.gun} gün).`);
+    } else {
+      const e = S.emps.find(x=>x.id===+el.dataset.id); if (!e || e.task) return;
+      S.money -= c; e.task = {type:'ogren', item:it.id, until:S.day+it.gun};
+      toast(`📖 ${esc(e.name)} ${it.ad} öğreniyor (${it.gun} gün).`); setTimeout(()=>speak(e.id,'📖'), 250);
+    }
+    closeModal(); sceneKey = ''; snd('ok');
+  },
+  emp: el => { S.seenEmp = true; empMenu(+el.dataset.id); },
+  ea: el => {
+    const e = S.emps.find(x=>x.id===+el.dataset.id); if (!e) return;
+    const k = el.dataset.k, v = el.dataset.v;
+    const start = (task, emo, txt) => { e.task = task; sceneKey = ''; closeModal(); toast(txt); snd('ok'); setTimeout(()=>speak(e.id, emo), 200); };
+    if (k==='ogren'){ learnChooser(e.id); return; }
+    if (k==='recall'){ e.task = null; sceneKey = ''; closeModal(); toast(`↩️ ${esc(e.name)} projelere döndü.`); return; }
+    if (k==='train'){ closeModal(); ACTIONS.train(el); return; }
+    if (k==='kurs'){
+      if (!v){
+        chooser('🎓', 'Uzmanlık Kursu', `${esc(e.name)} hangi alanda uzmanlaşsın? Uzman olduğu türdeki projelerde %35 daha hızlı çalışır. Ücret: ${tl(kursCost(e))}`,
+          Object.entries(TYPES).filter(([t])=>S.tech[t]).map(([t,T])=>`<button class="act" data-act="ea" data-k="kurs" data-v="${t}" data-id="${e.id}" ${e.spec===t?'disabled':''}><span>${T.ikon}</span>${T.ad}<small>${e.spec===t?'Zaten uzman':'6 gün sürer'}</small></button>`).join(''));
+        return;
+      }
+      const c = kursCost(e); if (S.money < c) return; S.money -= c;
+      start({type:'kurs', spec:v, until:S.day+6}, '🎓', `🎓 ${esc(e.name)} ${TYPES[v].ad} kursuna gitti (6 gün).`);
+    }
+    else if (k==='arge'){
+      if (!v){
+        chooser('🔬', 'Ar-Ge Görevi', `${esc(e.name)} hangi yenilik üzerinde çalışsın? Bitince kalıcı avantaj kazanırsın.`,
+          INNOV.filter(canResearch).map(i=>{ const st = S.innov[i.id]||{pts:0}; return `<button class="act" data-act="ea" data-k="arge" data-v="${i.id}" data-id="${e.id}"><span>${i.ikon}</span>${i.ad}<small>${i.acik} · %${Math.floor(st.pts/i.puan*100)}</small></button>`; }).join(''));
+        return;
+      }
+      const i = INNOV.find(x=>x.id===v);
+      start({type:'arge', innov:v}, '🔬', `🔬 ${esc(e.name)} artık "${i.ad}" üzerinde çalışıyor.`);
+    }
+    else if (k==='mentor'){
+      if (!v){
+        chooser('🧑‍🏫', 'Mentorluk', `${esc(e.name)} kimi yetiştirsin? 10 gün sonra çırak +1 yetenek kazanır.`,
+          mentees(e).map(m=>`<button class="act" data-act="ea" data-k="mentor" data-v="${m.id}" data-id="${e.id}"><span>${m.emo}</span>${esc(m.name)}<small>${ROLES[m.role].ad} · yetenek ${m.skill}</small></button>`).join(''));
+        return;
+      }
+      const m = S.emps.find(x=>x.id===+v); if (!m) return;
+      start({type:'mentor', target:m.id, until:S.day+10}, '🧑‍🏫', `🧑‍🏫 ${esc(e.name)}, ${esc(m.name)} adlı çalışanı yetiştiriyor.`);
+      setTimeout(()=>speak(m.id,'🤓'), 600);
+    }
+    else if (k==='lead'){
+      if (e.skill < 7 || S.emps.some(x=>x.lead && x.role===e.role)) return;
+      e.lead = true; e.salary = round10(e.salary*1.4); sceneKey = ''; closeModal();
+      toast(`⭐ ${esc(e.name)} artık ${ROLES[e.role].ad} takım lideri! Ekibi %10 daha hızlı.`); snd('ok');
+      setTimeout(()=>speakAll('👏'), 200);
+    }
+    else if (k==='konf'){
+      const c = konfCost(); if (S.money < c) return; S.money -= c;
+      start({type:'konf', until:S.day+3}, '🎤', `🎤 ${esc(e.name)} konferansa gitti (3 gün).`);
+    }
+    else if (k==='izin'){
+      start({type:'izin', until:S.day+5}, '🏖️', `🏖️ ${esc(e.name)} 5 günlük tatile çıktı.`);
+    }
+    else if (k==='zam'){
+      const r = round10(e.salary*0.1); e.salary += r; e.lastRaise = S.day;
+      moodOne(e, (e.mood ?? 70) < 60 ? 18 : 12); closeModal(); snd('cash');
+      toast(`💰 ${esc(e.name)}: "Hiç beklemiyordum, çok teşekkürler patron!" (maaş +${tl(r)})`);
+    }
+    else if (k==='kes'){
+      const r = round10(e.salary*0.1); e.salary -= r;
+      moodOne(e, -20); moodAll(-3); closeModal(); snd('bad');
+      toast(`📉 ${esc(e.name)} maaşının düşmesine çok bozuldu. Ekip de tedirgin.`);
+    }
+  },
+  selp: el => { S.sel = +el.dataset.id; },
   daily: () => {
     if (!dailyReady()){ toast('🎁 Bugünkü ödülünü aldın. Yarın tekrar gel!'); return; }
     const streak = S.lastDaily === todayStr(-1) ? Math.min(7, S.streak+1) : 1;
@@ -706,31 +968,111 @@ const ACTIONS = {
     let row = '';
     for (let i=1;i<=7;i++) row += `<div class="${i<streak?'got':i===streak?'now':''}">${i}. gün<b>${i<streak?'✅':i===streak?'🎁':'🔒'}</b></div>`;
     curChoices = [()=>{ S.lastDaily = todayStr(); S.streak = streak; S.money += amt; S.stats.earned += amt; snd('cash'); toast(`🎁 +${tlFull(amt)} günlük ödül!`); }];
-    showModal(`<div class="ev">🎁</div><h3>Günlük Ödül</h3><p style="text-align:center">Her gün gir, ödülün büyüsün! 7 gün üst üste gelirsen 7 kat ödül.</p>
-      <div class="days7">${row}</div><p style="text-align:center;font-size:22px;font-weight:900" class="green">+${tlFull(amt)}</p>
-      <button class="btn goldb block" data-act="choice" data-i="0">Ödülü Al</button>`);
+    showModal('🎁', `<h3>Günlük Ödül</h3><p style="text-align:center" class="sub">Her gün gir, ödülün büyüsün! 7 gün üst üste gelirsen 7 kat ödül.</p>
+      <div class="days7">${row}</div><p style="text-align:center;font-size:24px;font-weight:900" class="green">+${tlFull(amt)}</p>
+      <button class="btn gold block lg" data-act="choice" data-i="0">Ödülü Al</button>`);
   },
   sound: () => { S.sound = !S.sound; snd('click'); },
+  theme: el => { S.theme = el.dataset.v; applyTheme(); toast('🎨 Tema değişti!'); },
   'f-type': el => { const t = el.dataset.v; if (!S.tech[t]){ toast(`🔒 ${TYPES[t].ad} teknolojisini 🧬 Teknoloji'den açmalısın.`); return; } form.type = t; form.name=''; renderPage(true); },
   'f-size': el => { const k = el.dataset.v; if (S.rep < SIZES[k].rep){ toast(`🔒 ${SIZES[k].ad} ürün için ${SIZES[k].rep} itibar gerekir.`); return; } form.size = k; renderPage(true); },
   'f-focus': el => { form.focus = el.dataset.v; renderPage(true); },
-  'f-dice': () => { form.name = randProdName(form.type); const i=$('pname'); if (i) i.value = form.name; },
+  'f-topic': el => { form.topic = el.dataset.v; form.name = ''; renderPage(true); },
+  'f-aud': el => { form.aud = el.dataset.v; renderPage(true); },
+  'f-dice': () => { form.name = form.topic ? topicProdName(form.topic, form.type) : randProdName(form.type); const i=$('pname'); if (i) i.value = form.name; },
   'start-prod': () => {
     if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu! Büyük ofise taşınarak slot aç.'); snd('bad'); return; }
-    const name = (form.name||'').trim() || randProdName(form.type);
-    const p = makeProj('urun', form.type, form.size, form.focus, name.slice(0,28));
+    if (!form.topic){ toast('📝 Önce bir konu seç.'); return; }
+    if (!pcOk(form.type)){ toast(`🖥️ Bilgisayarların bu iş için yetersiz: ${pcLockText(form.type)}. (Geliştir)`); snd('bad'); return; }
+    const budget = prodBudget(form.type, form.size);
+    if (S.money < budget){ toast(`💸 Bu ürün için ${tl(budget)} geliştirme bütçesi gerekiyor. Önce müşteri işleriyle para biriktir!`); snd('bad'); return; }
+    S.money -= budget;
+    const name = (form.name||'').trim() || topicProdName(form.topic, form.type);
+    const p = makeProj('urun', form.type, form.size, form.focus, name.slice(0,28), {topic:form.topic, aud:form.aud});
     S.projs.push(p); S.sel = p.id; form.name = '';
-    toast(`🛠️ ${esc(p.name)} geliştirilmeye başlandı!`); closePage(); checkGoals();
+    toast(`🛠️ ${esc(p.name)} için ilk sprinti planla!`); checkGoals(); speakAll('💡'); openSprint(p.id);
   },
+  'sp-open': el => openSprint(+el.dataset.id),
+  team: () => teamMenu(),
+  'team-act': el => doTeamAct(el.dataset.v),
+  'sp-pt': el => {
+    const f = spForm, j = +el.dataset.i, d = +el.dataset.d, used = f.pts.reduce((a,b)=>a+b,0), v = f.pts[j] + d;
+    if (v < 0 || v > SPR_MAX || (d > 0 && used >= SPR_BUDGET)) return;
+    f.pts[j] = v; renderPage(true);
+  },
+  'sp-lead': el => { spForm.lead = el.dataset.v==='me' ? 'me' : +el.dataset.v; renderPage(true); },
+  'sp-ex': el => { const v = el.dataset.v, k = spForm.ex.indexOf(v); if (k >= 0) spForm.ex.splice(k, 1); else spForm.ex.push(v); renderPage(true); },
+  'sp-quick': () => { const p = S.projs.find(x=>x.id===spForm.pid); spForm.focus = sprBest(p, spForm.i); spForm.pace = 'dengeli'; spForm.ex = []; startSprint(); },
+  'sp-focus': el => { spForm.focus = +el.dataset.v; renderPage(true); },
+  'sp-pace': el => { spForm.pace = el.dataset.v; renderPage(true); },
+  'sp-go': () => startSprint(),
   'take-offer': el => {
     if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu! Önce bir projeyi bitir.'); snd('bad'); return; }
     const o = S.offers.find(x=>x.id===+el.dataset.id); if (!o) return;
-    S.offers = S.offers.filter(x=>x!==o);
-    const p = makeProj('is', o.type, o.size, 'dengeli', `${o.client}`, {client:o.client, pay:o.pay, minQ:o.minQ, deadline:S.day+o.days});
-    S.projs.push(p); S.sel = p.id;
-    toast(`🤝 ${esc(o.client)} ile anlaştın!`); closePage(); checkGoals();
+    if (!pcOk(o.type)){ toast(`🖥️ Bilgisayarların bu iş için yetersiz: ${pcLockText(o.type)}. (Geliştir)`); snd('bad'); return; }
+    if (!o.brief){ const cl = CLIENT_LIST.find(c=>c.ad===o.client) || pick(CLIENT_LIST); o.brief = makeBrief(cl, o.type); }
+    briefForm = {st:null, feats:[], f:null, focus:'dengeli'};
+    openPage('brif', o.id);
   },
-  'refresh-offers': () => { if (S.money < 300) return; S.money -= 300; refreshOffers(); },
+  'bf-st': el => { briefForm.st = el.dataset.v; renderPage(true); },
+  'bf-f': el => { briefForm.f = el.dataset.v; renderPage(true); },
+  'bf-focus': el => { briefForm.focus = el.dataset.v; renderPage(true); },
+  'bf-feat': el => {
+    const v = el.dataset.v, i = briefForm.feats.indexOf(v);
+    if (i >= 0) briefForm.feats.splice(i, 1);
+    else { if (briefForm.feats.length >= 2) briefForm.feats.shift(); briefForm.feats.push(v); }
+    renderPage(true);
+  },
+  'bf-start': () => {
+    const o = S.offers.find(x=>x.id===pageArg); if (!o) return;
+    if (!briefForm.st || !briefForm.f || briefForm.feats.length < 2){ toast('📝 Stil, öncelik ve 2 özellik seçmelisin.'); snd('bad'); return; }
+    if (S.projs.length >= slots()){ toast('📋 Proje slotun dolu!'); return; }
+    S.offers = S.offers.filter(x=>x!==o);
+    const p = makeProj('is', o.type, o.size, briefForm.focus, `${o.client}`, {client:o.client, pay:o.pay, minQ:o.minQ, deadline:S.day+o.days, brief:o.brief, cfg:{st:briefForm.st, f:briefForm.f, feats:briefForm.feats.slice()}});
+    S.projs.push(p); S.sel = p.id;
+    toast(`🤝 ${esc(o.client)} ile anlaştın! Şimdi ilk sprinti planla.`); checkGoals(); speakAll('💪'); openSprint(p.id);
+  },
+  'rp-spend': el => {
+    const i = INNOV.find(x=>x.id===el.dataset.v); if (!i || hasInv(i.id) || !canResearch(i)) return;
+    const st = S.innov[i.id] = S.innov[i.id] || {pts:0};
+    const use = Math.min(Math.floor(S.rp||0), Math.ceil(i.puan - st.pts)); if (use <= 0) return;
+    S.rp -= use; st.pts += use;
+    if (st.pts >= i.puan - 0.01){ st.done = true; st.pts = i.puan; for (const x of S.emps) if (x.task && x.task.type==='arge' && x.task.innov===i.id) x.task = null; sceneKey = ''; toast(`🔬 Yenilik tamamlandı: ${i.ikon} ${i.ad}!`); snd('ok'); checkGoals(); }
+    else toast(`🔬 ${use} Ar-Ge puanı yatırıldı: ${i.ad} %${Math.floor(st.pts/i.puan*100)}`);
+  },
+  zin: () => setSceneZoom(sceneZoom + 0.5),
+  zout: () => setSceneZoom(sceneZoom - 0.5),
+  'stock-mul': el => { stockMul = el.dataset.v==='max' ? 'max' : +el.dataset.v; },
+  'inv-tab': el => { invTab = el.dataset.v; },
+  'stock-buy': el => stockTrade(el.dataset.v, 'al'),
+  'stock-sell': el => stockTrade(el.dataset.v, 'sat'),
+  'stock-q': el => { const inp = document.getElementById('stqty'); if (!inp) return; inp.value = el.dataset.v; inp.dispatchEvent(new Event('input')); },
+  'stock-do': el => {
+    const s = STOCKS.find(x=>x.k===el.dataset.v), x = stockState()[s.k], mode = el.dataset.m;
+    const n = Math.floor(+(document.getElementById('stqty') || {}).value || 0);
+    if (n <= 0){ toast('Bir miktar yaz.'); snd('bad'); return; }
+    if (mode === 'al'){
+      const price = x.p*1.002; if (S.money < n*price){ toast('💸 Bu kadar hisseye paran yetmiyor.'); snd('bad'); return; }
+      S.money -= n*price; x.cost += n*price; x.own += n; snd('cash');
+      toast(`📈 ${fmt(n)} adet ${s.ad} aldın: ${tl(n*price)}`);
+    } else {
+      if (n > x.own){ toast(`Elinde sadece ${fmt(x.own)} adet var.`); snd('bad'); return; }
+      const gain = n*x.p*0.998, avg = x.cost/x.own;
+      x.cost -= avg*n; x.own -= n; S.money += gain; S.stats.earned += Math.max(0, gain - avg*n); snd('cash');
+      toast(`📉 ${fmt(n)} adet ${s.ad} sattın: ${tl(gain)} (${gain-avg*n>=0?'kâr':'zarar'} ${tl(Math.abs(gain-avg*n))})`);
+    }
+    closeModal();
+  },  'car-buy': el => {
+    const c = CARS.find(x=>x.id===el.dataset.v); if (!c || (S.cars||{})[c.id] || S.money < c.fiyat) return;
+    S.cars = S.cars || {}; S.cars[c.id] = true; S.money -= c.fiyat; S.rep += c.rep;
+    toast(`${c.ikon} ${c.ad} şirketin oldu! +${c.rep} ⭐`); snd('ok'); speakAll('😍');
+  },
+  inbox: () => { mailSel = null; openPage('mesaj'); },
+  'mail-open': el => { mailSel = +el.dataset.id; renderPage(true); },
+  'note-rep': el => noteReply(+el.dataset.id, +el.dataset.v),
+  'client-rep': el => clientReply(+el.dataset.id, +el.dataset.v),
+  'mail-rep': el => staffReply(+el.dataset.id, +el.dataset.v),
+  'refresh-offers': () => { if (S.money < 3000) return; S.money -= 3000; refreshOffers(); },
   release: el => release(+el.dataset.id),
   cancel: el => {
     const p = S.projs.find(x=>x.id===+el.dataset.id); if (!p) return;
@@ -741,15 +1083,18 @@ const ACTIONS = {
   hire: el => {
     const c = S.cands.find(x=>x.id===+el.dataset.id); if (!c) return;
     if (S.emps.length >= cap()){ toast('🪑 Ofiste yer yok! Ofisim\'den büyük ofise taşın.'); return; }
+    if (c.skill >= 7 && eqBehindAll() > 0){ toast(`🙅 ${esc(c.name)}: "Ekipmanlarınız çok eski, böyle bir yerde çalışamam." Önce ekipmanları yenile (Geliştir).`); snd('bad'); return; }
     const cost = round10(c.salary*0.5);
     if (S.money < cost){ toast('💸 Yeterli paran yok.'); return; }
-    S.money -= cost; S.cands = S.cands.filter(x=>x!==c); S.emps.push(c);
-    toast(`🤝 ${esc(c.name)} ekibe katıldı!`); snd('ok'); checkGoals();
+    S.money -= cost; S.cands = S.cands.filter(x=>x!==c); c.since = S.day; S.emps.push(c);
+    toast(`🤝 ${esc(c.name)} ekibe katıldı! Ofiste masasına oturdu.`); snd('ok'); checkGoals();
+    setTimeout(()=>speak(c.id,'👋'), 400);
   },
   fire: el => {
     const e = S.emps.find(x=>x.id===+el.dataset.id); if (!e) return;
     confirmBox('😬','Emin misin?', `<b>${esc(e.name)}</b> işten çıkarılacak. Tazminat olarak 1 maaş (${tl(e.salary)}) ödersin.`, 'Evet, çıkar', ()=>{
-      S.money -= e.salary; S.emps = S.emps.filter(x=>x!==e); toast(`👋 ${esc(e.name)} işten çıkarıldı.`);
+      S.money -= e.salary; S.emps = S.emps.filter(x=>x!==e); sceneKey = ''; toast(`👋 ${esc(e.name)} işten çıkarıldı.`);
+      onFire(e);
     });
   },
   train: el => {
@@ -757,20 +1102,28 @@ const ACTIONS = {
     const cost = trainCost(e); if (S.money < cost) return;
     S.money -= cost;
     e.salary = round10(e.salary * salaryFor(e.skill+1)/salaryFor(e.skill));
-    e.skill++;
-    toast(`📚 ${esc(e.name)} eğitimi bitirdi! Yetenek ${e.skill}`);
+    e.skill++; skillUp(e);
+    toast(`📚 ${esc(e.name)} eğitimi bitirdi! Yetenek ${e.skill}`); speak(e.id,'🎓');
   },
-  'refresh-cands': () => { if (S.money < 500) return; S.money -= 500; refreshCands(); },
+  'refresh-cands': () => { if (S.money < 5000) return; S.money -= 5000; refreshCands(); },
   'office-up': () => {
     const n = OFFICES[S.office+1]; if (!n || S.money < n.fiyat) return;
     S.money -= n.fiyat; S.office++;
-    toast(`${n.ikon} ${n.ad}'e taşındın! ${n.kap} çalışan, ${n.slot} proje slotu.`); snd('ok'); checkGoals();
+    toast(`${n.ikon} Yeni adres: ${n.ad}! ${n.kap} çalışan, ${n.slot} proje slotu.`); snd('ok'); checkGoals(); closePage();
+    setTimeout(()=>speakAll('😍'), 300);
   },
   tech: el => {
     const t = el.dataset.v, T = TYPES[t];
     if (S.tech[t] || S.money < T.fiyat || S.rep < T.rep) return;
     S.money -= T.fiyat; S.tech[t] = true;
     toast(`${T.ikon} ${T.ad} teknolojisi açıldı!`); snd('ok'); checkGoals();
+  },
+  buyback: el => buyback(+el.dataset.id),
+  'eq-up': el => {
+    const k = el.dataset.v, t = eqTier(k); if (t >= 4) return;
+    const c = eqCost(k, t+1); if (S.money < c){ toast('💸 Yeterli paran yok.'); return; }
+    S.money -= c; S.eq = S.eq || {pc:0, klavye:0, koltuk:0}; S.eq[k] = t+1; sceneKey = '';
+    toast(` Yeni ekipman geldi: ! Ofise bak.`); snd('ok'); setTimeout(()=>speakAll('🤩'), 300);
   },
   upg: el => {
     const u = UPGRADES.find(x=>x.id===el.dataset.v); const l = S.upg[u.id]||0;
@@ -791,19 +1144,29 @@ const ACTIONS = {
   },
   'bank-pct': el => { bankForm.pct = +el.dataset.v; },
   'bank-term': el => { bankForm.term = +el.dataset.v; },
+  'bank-pick': el => { bankForm.bank = el.dataset.v; const b = BANKS.find(x=>x.id===bankForm.bank); if (!b.terms.includes(bankForm.term)) bankForm.term = b.terms[0]; },
   loan: () => {
-    if (S.loans.length >= 3){ toast('🏦 En fazla 3 kredin olabilir.'); return; }
-    const amount = Math.round(loanLimit()*bankForm.pct/1000)*1000;
-    const total = Math.round(amount*(1+loanRate()*bankForm.term/12));
+    const b = BANKS.find(x=>x.id===bankForm.bank) || BANKS[0];
+    if (bankLoan(b.id)){ toast(`🏦 ${b.ad}'tan zaten bir kredin var. Önce onu kapatmalısın.`); snd('bad'); return; }
+    if (S.score < b.minScore){ toast(`🏦 ${b.ad} en az ${b.minScore} kredi puanı istiyor.`); snd('bad'); return; }
+    const amount = Math.round(bankLimit(b)*bankForm.pct/1000)*1000;
+    const total = Math.round(amount*(1+bankRate(b)*bankForm.term/12));
     const inst = Math.ceil(total/bankForm.term);
-    S.loans.push({id:S.idSeq++, amount, remaining:total, inst, months:bankForm.term});
+    S.loans.push({id:S.idSeq++, bank:b.id, amount, remaining:total, inst, months:bankForm.term});
     S.money += amount;
     toast(`🏦 ${tlFull(amount)} kredi hesabına yattı.`); snd('cash');
+  },
+  'pay-inst': el => {
+    const l = S.loans.find(x=>x.id===+el.dataset.id); if (!l) return;
+    const pay = Math.min(l.inst, l.remaining); if (S.money < pay) return;
+    S.money -= pay; l.remaining -= pay; l.months = Math.max(0, l.months-1); l.paidN = (l.paidN||0) + 1; S.score = clamp(S.score+6, 300, 1000);
+    if (l.remaining <= 1 || l.months <= 0){ S.loans = S.loans.filter(x=>x!==l); S.score = clamp(S.score+20, 300, 1000); toast('🏦 Son taksiti de ödedin, kredi kapandı! Kredi puanın arttı.'); snd('ok'); }
+    else { toast(`🏦 Bir taksit erken ödendi (${tl(pay)}). ${l.months} taksit kaldı.`); snd('cash'); }
   },
   payoff: el => {
     const l = S.loans.find(x=>x.id===+el.dataset.id); if (!l) return;
     const c = Math.round(l.remaining*0.95); if (S.money < c) return;
-    S.money -= c; S.loans = S.loans.filter(x=>x!==l); S.score = clamp(S.score+25, 300, 900);
+    S.money -= c; S.loans = S.loans.filter(x=>x!==l); S.score = clamp(S.score+25, 300, 1000);
     toast('🏦 Kredi erken kapatıldı (%5 indirim). Kredi puanın arttı!'); snd('ok');
   },
   'biz-mul': el => { bizMul = el.dataset.v==='max' ? 'max' : +el.dataset.v; },
@@ -816,102 +1179,187 @@ const ACTIONS = {
     toast(l===0 ? `${b.ikon} ${b.ad} açıldı!` : `${b.ikon} ${b.ad} → Sv. ${l+n}`); snd(l===0?'ok':'cash'); checkGoals();
   },
   reset: () => confirmBox('⚠️','Baştan başlansın mı?','Tüm ilerlemen silinecek. Bu geri alınamaz!','Evet, sıfırla', ()=>{
-    localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); showWelcome();
+    localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); S = null; closePage(); sceneKey=''; $('scene').innerHTML=''; showWelcome();
   }),
 };
 
-/* ---- dokunma yönetimi: kaydırırken basılmasın, yeniden çizimde tık kaybolmasın ---- */
-let downX = 0, downY = 0;
+/* ---- dokunma: kaydırırken basılmasın, yeniden çizimde tık kaybolmasın ---- */
+let downX = 0, downY = 0, skipUp = false, downSig = null, emptyTap = false;
+const actSig = el => el ? [el.dataset.act, el.dataset.id||'', el.dataset.v||'', el.dataset.k||'', el.dataset.i||''].join('|') : null;
+document.addEventListener('pointerdown', e => { const a = $('app'); if (a && a.classList.contains('sideopen') && !e.target.closest('#side') && !e.target.closest('[data-act="side-toggle"]') && !e.target.closest('#modal') && !e.target.closest('#page')) a.classList.remove('sideopen'); }, true);
 document.addEventListener('pointerdown', e => {
-  downX = e.clientX; downY = e.clientY;
+  downX = e.clientX; downY = e.clientY; skipUp = false; emptyTap = false;
+  downSig = actSig(e.target.closest('[data-act]'));
+  // 3D sahne: dokunulan yer karakter mi, oda mı, boşluk mu?
+  if (window.S3D && S3D.ok && e.target.classList && e.target.classList.contains('scene3d') && S && !paused){
+    e.preventDefault();
+    const h = S3D.pick(e);
+    if (h.cid){ skipUp = true; S.seenEmp = true; snd('click'); if (h.cid === 'me') founderMenu(); else if (h.cid === 'mgr') mgrMenu(); else empMenu(+h.cid); return; }
+    panStart(e);
+    if (h.empty) emptyTap = true;     // boşluk: ekip aktivitesi menüsü (odaya dokunmak artık iş yapmaz)
+    return;
+  }
+  const ch = e.target.closest('#scene .ch');
+  if (ch && S && !paused){ e.preventDefault(); skipUp = true; S.seenEmp = true; snd('click'); if (ch.dataset.cid === 'me') founderMenu(); else empMenu(+ch.dataset.cid); return; }
   const t = e.target.closest('.tapper');
-  if (t && S && !paused){ e.preventDefault(); doTap(t, e); }
+  if (t && S && !paused){
+    e.preventDefault();
+    if (t.id === 'scene'){ panStart(e); if (e.target === t || e.target.tagName === 'svg') emptyTap = true; } // ofisin dışındaki boşluk
+  }
 });
+document.addEventListener('pointermove', e => panMove(e));
+document.addEventListener('pointercancel', panEnd);
 document.addEventListener('pointerup', e => {
+  panEnd();
+  if (emptyTap){ emptyTap = false; if (S && !paused && Math.hypot(e.clientX-downX, e.clientY-downY) <= 12){ snd('click'); teamMenu(); } return; }
+  if (skipUp){ skipUp = false; return; }
   if (Math.hypot(e.clientX-downX, e.clientY-downY) > 12) return;
   const el = e.target.closest('[data-act]');
+  // sadece basılan butonun üstünde bırakılınca çalışsın (menü açılırken alttaki butona sızmasın)
+  if (!el || actSig(el) !== downSig) return;
   if (!el || el.disabled) return;
-  if (!S && el.dataset.act !== 'begin') return;
+  if (!S && !['begin','intro'].includes(el.dataset.act) && !el.dataset.act.startsWith('su-')) return;
   const fn = ACTIONS[el.dataset.act];
   if (!fn) return;
   if (!['choice','daily','begin'].includes(el.dataset.act)) snd('click');
   fn(el);
   updateAll(true);
 });
-document.addEventListener('input', e => { if (e.target.id === 'pname') form.name = e.target.value; });
+document.addEventListener('input', e => {
+  if (e.target.id === 'pname') form.name = e.target.value;
+  if (e.target.id === 'cname' || e.target.id === 'bname') setupTyped(e.target.id, e.target.value);
+  if (e.target.dataset.sp !== undefined){ e.target.style.setProperty('--v', e.target.value+'%'); sprSlide(+e.target.dataset.sp, +e.target.value); }
+});
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 /* ================= ARAYÜZ ================= */
 function setHTML(el, html){ if (el && el._h !== html){ el.innerHTML = html; el._h = html; } }
-function updateAll(force){ if (!S) return; updateHeader(); updateHome(); renderPage(force); }
+function applyTheme(){ const c = 'th-lacivert';   /* oyunun teması sabit: lacivert */ const app = $('app'); if (!app.classList.contains(c)){ [...app.classList].filter(x => x.startsWith('th-')).forEach(x => app.classList.remove(x)); app.classList.add(c); } }
+function updateAll(force){ if (!S) return; applyTheme(); updateHeader(); updateHome(); renderPage(force); }
 function updateHeader(){
-  const k = $('hKasa'); $('hMoney').textContent = tlFull(S.money); k.classList.toggle('neg', S.money<0);
+  $('hName').textContent = S.name;
+  $('hTitle').textContent = title();
+  $('hMoney').textContent = tlFull(S.money);
+  $('hMoneyP').classList.toggle('neg', S.money<0);
+  $('hInc').textContent = S.lastDayInc>0 ? `+${tl(S.lastDayInc)}/gün` : 'kasa';
+  $('hRep').textContent = S.rep;
+  $('hRp').textContent = Math.floor(S.rp||0);
   $('pMoney').textContent = tl(S.money);
   const d = S.day-1;
-  $('hDate').textContent = `📅 Gün ${S.day} · ${MONTHS[Math.floor(d/30)%12]} · ${WEEKDAYS[d%7]}`;
+  $('hDay').textContent = `Gün ${S.day}`;
+  $('hDate').textContent = `${MONTHS[Math.floor(d/30)%12]} · ${WEEKDAYS[d%7]}`;
   $('dailyBtn').classList.toggle('glow', dailyReady());
+  { const nu = unreadMails(), ib = $('inboxBtn'); ib.classList.toggle('glow', nu > 0); if (ib.dataset.n !== String(nu)) ib.dataset.n = nu; }
 }
-function updateHome(){
-  const inc = S.lastDayInc, dbt = debt(), g = GOALS[S.goal];
-  const loanInfo = S.loans.length ? `🏦 ${S.loans.length} aktif kredi · aylık taksit ${tl(S.loans.reduce((a,l)=>a+l.inst,0))}` : '';
-  setHTML($('dash'), `<div class="dcard">
-    <div class="drow"><div><div class="cname">${esc(S.name)}</div><div class="sub">${title()} · ⭐ ${S.rep} itibar · Kredi puanı ${S.score} (${scoreWord(S.score)})</div></div>
-      <div class="val">Şirket değeri<br><b>${tl(valuation())}</b></div></div>
-    <div class="kbox"><small>KASA</small><div class="bigmoney ${S.money<0?'neg':''}">${tlFull(S.money)}</div>
-      <div class="k3"><div><small>BORÇ</small><b class="red">${tl(dbt)}</b></div><div><small>GÜNLÜK GELİR</small><b class="green">+${tl(inc)}</b></div><div><small>AYLIK GİDER</small><b class="orange">-${tl(monthlyCost())}</b></div></div>
-    </div>
-    <div class="strip">${g ? `🎯 <b>Hedef:</b> ${g.t} <span class="gold">· Ödül ${tl(g.r)}</span>` : '🏆 Tüm hedefler tamam. Sen bir efsanesin!'}${loanInfo?'<br>'+loanInfo:''}</div>
-  </div>`);
-  const n = OFFICES[S.office+1];
-  const dots = {
-    ofis: n && S.money >= n.fiyat,
-    ekip: S.emps.length < cap() && S.cands.some(c=>S.money >= round10(c.salary*0.5)) && S.emps.length===0,
-    tekno: Object.entries(TYPES).some(([k,t])=>!S.tech[k] && S.rep>=t.rep && S.money>=t.fiyat),
-    gelis: UPGRADES.some(u=>(S.upg[u.id]||0)<u.max && S.money>=u.fiyat(S.upg[u.id]||0)),
-    yatir: BIZ.some(b=>S.rep>=b.rep && (S.biz[b.id]||0)<BIZ_MAX && S.money>=bizCost(b,S.biz[b.id]||0)),
-  };
-  const active = S.prods.filter(p=>p.active).length;
-  const bizCount = BIZ.filter(b=>(S.biz[b.id]||0)>0).length;
-  const tile = (cls, v, ti, b, sm, dot) => `<button class="tile ${cls}" data-act="page" data-v="${v}">${dot?'<span class="dot"></span>':''}<span class="ti">${ti}</span><b>${b}</b><small>${sm}</small></button>`;
-  setHTML($('tiles'),
-    tile('c-purple','ofis','🏢','Ofisim',OFFICES[S.office].ad,dots.ofis) +
-    tile('c-teal','ekip','👥','Personel',`${S.emps.length}/${cap()} kişi`,dots.ekip) +
-    tile('c-orange','urunler','📦','Ürünlerim',`${active} yayında`,false) +
-    tile('c-blue','banka','🏦','Banka',S.loans.length?`${S.loans.length} aktif kredi`:'Kredi çek',false) +
-    tile('c-pink','tekno','🧬','Teknoloji',`${Object.keys(S.tech).length}/4 açık`,dots.tekno) +
-    tile('c-yellow','gelis','🛒','Geliştirme','Ofis ekipmanı',dots.gelis) +
-    tile('c-green','yatirim','💼','Yatırımlar',`${bizCount} işletme`,dots.yatir) +
-    tile('c-red','sirala','🏆','Sıralama',`${myRank()}. sıradasın`,false));
-  $('offCount').textContent = `${S.offers.length} teklif bekliyor`;
-  $('slotInfo').textContent = `${S.projs.length}/${slots()} slot ›`;
-  const sel = selProj();
-  let list = S.projs.map(p => {
-    const T = TYPES[p.type], [st, cls] = projStatus(p);
-    const pct = (p.kod+p.tas)/(p.kodReq+p.tasReq)*100;
-    const colors = {blue:'#60a5fa', orange:'#fb923c', green:'#34d399', red:'#f87171'};
-    let subTxt;
-    if (p.kind==='is'){ const left = p.deadline-S.day; subTxt = `👔 ${tl(p.pay)} · ${left>=0?`⏰ ${left} gün kaldı`:`⚠️ ${-left} gün gecikti`}`; }
-    else subTxt = `🛠️ ${T.ad} · %${Math.floor(pct)} · 🐞 ${Math.ceil(p.bugs)}`;
-    return `<div class="prow ${sel&&sel.id===p.id?'sel':''}" data-act="proj" data-id="${p.id}" style="--c:${colors[cls]}">
-      <div class="pi">${T.ikon}</div><div class="grow"><b>${esc(p.name)}</b><div class="sub">${subTxt}</div><div class="mbar"><i style="width:${pct}%"></i></div></div>
-      <span class="pill ${cls}">${st}</span></div>`;
-  }).join('');
-  for (let i=S.projs.length; i<slots(); i++) list += `<div class="prow empty" data-act="page" data-v="isler">➕ Boş proje slotu: müşteri işi al ya da yeni ürün başlat</div>`;
-  if (active) list += `<div class="prow" data-act="page" data-v="urunler" style="--c:#f5b83d"><div class="pi">📈</div><div class="grow"><b>Yayındaki ürünler: ${active}</b><div class="sub">${fmt(S.prods.reduce((a,p)=>a+p.users,0))} kullanıcı</div></div><span class="pill gold">YAYINDA</span></div>`;
-  setHTML($('projList'), list);
-  const b = $('tapBtn');
-  let html, cls;
-  if (!sel){ cls = 'tapper idle'; html = `<div>😴 Boştasın<small>Müşteri işi al ya da yeni ürün başlat</small></div><span class="arrow">→</span>`; }
-  else if (!devDone(sel)){ cls = 'tapper'; html = `<div>⌨️ KOD YAZ!<small>${esc(sel.name)} · dokunuş başı +${r1(tapPower())}</small></div><span class="arrow">→</span>`; }
-  else if (sel.bugs > 0.001){ cls = 'tapper bug'; html = `<div>🐞 HATA AYIKLA!<small>${esc(sel.name)} · ${Math.ceil(sel.bugs)} hata kaldı</small></div><span class="arrow">→</span>`; }
-  else { cls = 'tapper'; html = `<div>✅ HAZIR!<small>${esc(sel.name)} · projeye dokun ve yayınla</small></div><span class="arrow">→</span>`; }
-  if (b.className !== cls) b.className = cls;
-  setHTML(b, html);
-}
+const STAGES = ['Analiz','Geliştirme','Test','Yayın'];
+function projStage(p){ if (!devDone(p)) return (p.kod+p.tas)/(p.kodReq+p.tasReq) < 0.15 ? 0 : 1; return p.bugs > 0.001 ? 2 : 3; }
 function projStatus(p){
   if (!devDone(p)) return (p.kind==='is' && S.day>p.deadline) ? ['GECİKTİ','red'] : ['GELİŞTİRME','blue'];
   if (p.bugs > 0.001) return ['TEST','orange'];
-  return ['HAZIR ✓','green'];
+  return ['HAZIR','green'];
+}
+const STC = {blue:'linear-gradient(90deg,var(--t4),var(--t6))', orange:'linear-gradient(90deg,var(--o4),var(--o6))', green:'linear-gradient(90deg,var(--t3),var(--t5))', red:'linear-gradient(90deg,var(--o6),var(--o8))'};
+function updateHome(){
+  renderScene();
+  updateSceneStates();
+  const sel = selProj();
+  // proje başlığı: tür simgesi, ad, aşama göstergesi ve Kod / Arayüz / Hata puanları
+  let ban;
+  if (!sel){
+    ban = `<div class="ban idleban"><span>😴 Ekip boşta</span><button class="btn sm" data-act="newproj">＋ Proje başlat</button></div>`;
+  } else {
+    const T = TYPES[sel.type], stg = projStage(sel), done = devDone(sel);
+    const left = sel.kind==='is' ? sel.deadline - S.day : null;
+    const devPct = (sel.kod+sel.tas)/(sel.kodReq+sel.tasReq);
+    let fill = [Math.min(1, devPct/0.15), Math.min(1, devPct), done ? 1 : 0, stg===3 ? 1 : 0], names = STAGES, sg = stg;
+    if (sel.spr){
+      names = ['Altyapı','Özellikler','Arayüz','Test'];
+      fill = [0,1,2].map(k => clamp(devPct*3 - k, 0, 1)).concat(done ? (sel.bugs > 0.001 ? 0.5 : 1) : 0);
+      sg = done ? (sel.bugs > 0.001 ? 3 : 4) : sprCur(sel);
+    }
+    const wait = sprWait(sel);
+    const meta = sel.kind==='is'
+      ? `${esc(sel.client)} · ${left>=0?`${left} gün kaldı`:`<b class="late">${-left} gün gecikti</b>`} · ${tl(sel.pay)}`
+      : `Kendi ürünün · ${SIZES[sel.size].ad} ${T.ad}`;
+    ban = `<div class="ban">
+      <div class="bt-ic" data-act="proj" data-id="${sel.id}">${IC['t_'+sel.type]}</div>
+      <div class="grow" data-act="proj" data-id="${sel.id}">
+        <div class="row" style="gap:6px"><div class="nm grow">${esc(sel.name)}</div><span class="qtag">Kalite ${calcQuality(sel)}</span></div>
+        <div class="sb">${meta}</div>
+        <div class="stepper">${names.map((n,i)=>`<span class="st ${i<sg?'done':i===sg?'cur':''}" style="--p:${Math.round(fill[i]*100)}%"><i></i>${n}</span>`).join('')}</div>
+      </div>
+      <div class="pts">
+        <div class="pt pt-kod">${IC.kod}<b>${Math.floor(sel.kod)}</b><small>/${sel.kodReq}</small></div>
+        <div class="pt pt-ui">${IC.ui}<b>${Math.floor(sel.tas)}</b><small>/${sel.tasReq}</small></div>
+        <div class="pt pt-bug">${IC.bug}<b>${Math.ceil(sel.bugs)}</b><small>hata</small></div>
+      </div>
+      ${done?`<button class="btn sm" data-act="release" data-id="${sel.id}">${sel.kind==='is'?'Teslim Et':'Yayınla'}</button>`:''}
+      ${wait?`<button class="btn sm glowb" data-act="sp-open" data-id="${sel.id}">📋 Planla</button>`:''}
+    </div>`;
+  }
+  setHTML($('banner'), ban);
+  // ipucu
+  const hint = $('hintp');
+  let ht = '';
+  // oyuncuyu adım adım yönlendiren ipuçları (o an yapılacak en önemli şey)
+  const waitP = S.projs.find(sprWait), readyP = S.projs.find(p => devDone(p) && p.bugs <= 0.001);
+  const nOff = OFFICES[S.office+1];
+  if (waitP) ht = `🧭 "${waitP.name}" için karar bekleniyor → sağdaki "Karar ver"`;
+  else if (readyP) ht = `✅ "${readyP.name}" hazır → sağdaki "${readyP.kind==='is'?'Teslim et':'Yayınla'}" ile kazancını al`;
+  else if (!S.projs.length && S.stats.done === 0) ht = '👉 1. adım: sağ alttaki "Yeni Proje" → bir müşteri işi al';
+  else if (!S.projs.length) ht = '😴 Ekip boşta! "Yeni Proje" ile iş al ya da kendi ürününü yap';
+  else if (S.office === 0 && S.offered[1]) ht = '🏢 Stüdyo daireye taşınabilirsin (Ofisim) → çalışan alabilirsin';
+  else if (S.office >= 1 && !S.emps.length) ht = '👥 Personel menüsünden ilk çalışanını al: işler hızlanır';
+  else if (S.emps.length && !S.seenEmp && S.day > 20) ht = '👆 Bir karaktere dokun: yeni dil öğret, Ar-Ge, kurs!';
+  else if (S.emps.length && teamMood() < 45 && !S.seenTeam) ht = '😟 Ekip mutsuz! Ofisin dışındaki boşluğa dokun: aktivite yap';
+  else if (typeof eqBehindAll === 'function' && eqBehindAll() > 0) ht = '🐌 Ekipmanların eskidi, ekip yavaşladı → Geliştir';
+  else if (S.stats.done >= 3 && S.stats.prodsDone === 0 && S.money >= prodBudget('web','kucuk')) ht = '💡 Paran yetiyor: kendi ürününü yap (Yeni Proje → Kendi Ürünün)';  hint.style.display = ht ? '' : 'none'; if (ht && hint.textContent !== ht) hint.textContent = ht;
+  // sprint panosu
+  // ---- projeler panosu: her projenin aşaması, ilerlemesi, kalan süresi ve yapılacak işi ----
+  $('slotInfo').textContent = `${S.projs.length}/${slots()} slot`;
+  const workers = S.emps.filter(e => !isAway(e) && !(e.task && e.task.type!=='mentor')).length + (S.ftask ? 0 : 1);
+  let list = S.projs.map(p => {
+    const prog = Math.min(1, (p.kod+p.tas)/(p.kodReq+p.tasReq)), done = devDone(p), wait = sprWait(p), bug = done && p.bugs > 0.001;
+    const late = p.kind==='is' && S.day > p.deadline, isSel = sel && sel.id===p.id;
+    const ph = p.spr ? SPRINTS[sprCur(p)] : null;
+    const phase = wait ? '🧭 Karar bekliyor' : !done ? (ph ? `${sprCur(p)+1}/3 · ${ph.ikon} ${ph.ad}` : '⌨️ Geliştirme') : bug ? `🐞 Hata ayıklama (${Math.ceil(p.bugs)})` : '✅ Hazır!';
+    const pl = p.spr && p.spr.plans[sprCur(p)], focus = pl && pl.focus !== undefined && !done ? sprTask(p.type, pl.i, pl.focus) : null;
+    const rate = p.rate || 0, eta = !done && rate > 0.0005 ? Math.ceil((1-prog)/rate) : null;
+    const pctTxt = done ? (bug ? 'Test' : '%100') : `%${Math.floor(prog*100)}`;
+    const meta = p.kind==='is'
+      ? (late ? `<b class="late">⏰ ${S.day-p.deadline} gün gecikti</b>` : `⏰ ${p.deadline-S.day} gün · ${tl(p.pay)}`)
+      : `🛠️ Kendi ürünün`;
+    const btn = wait ? `<button class="btn sm glowb" data-act="sp-open" data-id="${p.id}">Karar ver</button>`
+      : (done && !bug) || (done && bug) ? `<button class="btn sm ${bug?'gray':''}" data-act="release" data-id="${p.id}">${p.kind==='is'?'Teslim et':'Yayınla'}</button>` : '';
+    return `<div class="pc2 ${isSel?'sel':''} ${wait?'wait':''} ${done&&!bug?'ready':''}" data-act="${isSel?'proj':'selp'}" data-id="${p.id}">
+      <div class="pc2h"><div class="pi">${IC['t_'+p.type]}</div><div class="grow"><b>${esc(p.name)}</b><div class="pmeta2">${meta}</div></div><span class="qtag2">K ${calcQuality(p)}</span></div>
+      <div class="pc2p"><span>${phase}</span><b>${pctTxt}</b></div>
+      <div class="pbar"><i style="width:${done?100:prog*100}%"></i>${p.spr?'<em style="left:33.3%"></em><em style="left:66.6%"></em>':''}</div>
+      <div class="pc2f"><span>${wait ? 'Ekip bekliyor, aşama seç' : done ? (bug ? 'Testçi hataları ayıklıyor' : 'Teslime hazır') : `👥 ${workers} kişi${focus ? ` · odak ${focus.ikon} ${focus.ad}` : ''}${eta ? ` · ~${eta} gün` : ''}`}</span>${btn}</div>
+    </div>`;
+  }).join('');
+  for (let i=S.projs.length; i<slots(); i++) list += `<div class="pc2 empty" data-act="newproj">＋ Yeni proje başlat<small>Boş slot · müşteri işi ya da kendi ürünün</small></div>`;
+  const active = S.prods.filter(p=>p.active);
+  if (active.length) list += `<div class="pc2 live" data-act="page" data-v="urunler"><div class="pc2h"><div class="pi">${IC.urunler}</div><div class="grow"><b>${active.length} ürün yayında</b><div class="pmeta2">👥 ${fmt(active.reduce((a,p)=>a+p.users,0))} kullanıcı · 💰 ${tl(prodIncome())}/gün</div></div><span class="stg s3">Canlı</span></div></div>`;
+  setHTML($('plist'), list);
+  const g = GOALS[S.goal];
+  setHTML($('goal'), g ? `🎯 <b>HEDEF</b><br>${g.t}<br><span class="gr">Ödül ${tl(g.r)}</span>` : '🏆 Tüm hedefler tamam!');
+  // alt menü
+  const n = OFFICES[S.office+1];
+  const dots = {
+    ofis: n && (S.offered[S.office+1] || S.money >= n.esik) && S.money >= n.fiyat,
+    ekip: S.emps.length < cap() && S.cands.some(c=>S.money >= round10(c.salary*0.5)) && S.emps.length < 2,
+    tekno: Object.entries(TYPES).some(([k,t])=>!S.tech[k] && S.rep>=t.rep && S.money>=t.fiyat),
+    gelis: eqBehindAll() > 0 || UPGRADES.some(u=>(S.upg[u.id]||0)<u.max && S.money>=u.fiyat(S.upg[u.id]||0)),
+    yatirim: BIZ.some(b=>S.rep>=b.rep && (S.biz[b.id]||0)<BIZ_MAX && S.money>=bizCost(b,S.biz[b.id]||0)),
+  };
+  const db = (v, t, dot) => `<button class="db" data-act="page" data-v="${v}">${dot?'<span class="badge-dot">!</span>':''}<span class="ci">${IC[v]}</span><span>${t}</span></button>`;
+  setHTML($('dock'),
+    db('ofis','Ofisim',dots.ofis) + db('ekip','Personel',dots.ekip) + db('urunler','Ürünler',false) + db('banka','Banka',false) +
+    db('tekno','Teknoloji',dots.tekno) + db('gelis','Geliştir',dots.gelis) + db('yatirim','Yatırım',dots.yatirim) + db('sirala','Sıralama',false) +
+    `<button class="db dbproj" data-act="side-toggle">${S.projs.some(p => sprWait(p) || devDone(p) && !needsWork(p)) ? '<span class="badge-dot">!</span>' : ''}<span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span><span>Projeler ${S.projs.length}/${slots()}</span></button>` +
+    `<button class="btn newp" data-act="newproj" ${S.projs.length>=slots()?'disabled':''}><span class="pi2">${IC.arti}</span>Yeni Proje</button>`);
+  fillIcons();
 }
 
 /* ---- sayfalar ---- */
@@ -925,8 +1373,12 @@ const PAGES = {
   banka:   {t:'🏦 Banka', html:()=>bankHTML()},
   tekno:   {t:'🧬 Teknoloji', html:()=>techHTML()},
   gelis:   {t:'🛒 Geliştirmeler', html:()=>upgHTML()},
-  yatirim: {t:'💼 Yatırımlar', html:()=>bizHTML()},
+  yatirim: {t:'💼 Yatırımlar', html:()=>invHTML()},
+  brif:    {t:'📝 İş Brifi', html:()=>briefHTML(), stat:true},
+  sprint:  {t:'🧭 Geliştirme Aşaması', html:()=>sprintHTML(), stat:true},
+  mesaj:   {t:'📩 Gelen Kutusu', html:()=>inboxHTML()},
   sirala:  {t:'🏆 Sıralama', html:()=>rankHTML()},
+  finans:  {t:'📊 Şirket Durumu', html:()=>financeHTML()},
   ayarlar: {t:'⚙️ Ayarlar', html:()=>settingsHTML()},
 };
 function openPage(name, arg){
@@ -944,204 +1396,251 @@ function renderPage(force){
   const el = $('pInner');
   if (force && P.stat) el._h = null;
   setHTML(el, P.html());
+  artIcons(el);
 }
 
 function offersHTML(){
   const full = S.projs.length >= slots();
   const cards = S.offers.map(o => {
-    const t = TYPES[o.type];
-    return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow">
-      <b>${esc(o.client)}</b><div class="sub">${t.ad} · ${SIZES[o.size].ad} · ${(t.kod+t.tas)*SIZES[o.size].m} iş puanı</div>
-      <div class="sub">⏰ ${o.days} gün · 💎 Min. kalite: ${o.minQ||'yok'}</div></div>
-      <div style="text-align:right"><b class="green" style="font-size:15px">${tl(o.pay)}</b><br><button class="btn sm green" data-act="take-offer" data-id="${o.id}" style="margin-top:5px" ${full?'disabled':''}>Kabul Et</button></div></div></div>`;
+    const t = TYPES[o.type], ok = pcOk(o.type);
+    return `<div class="pxcard">
+      <div class="pxtop"><div class="npic">${TYPE_SVG[o.type]||NP_ICON.is}</div><div class="grow"><b class="npt">${esc(o.client)}</b><div class="pxmeta">${t.ad} · ${SIZES[o.size].ad}</div></div>
+        <div class="pxpay"><span>Ödeme</span><b>${tl(o.pay)}</b></div></div>
+      <dl class="npdl"><div><dt>Teslim süresi</dt><dd>${o.days} gün</dd></div><div><dt>İş miktarı</dt><dd>${(t.kod+t.tas)*SIZES[o.size].m} puan</dd></div><div><dt>Min. kalite</dt><dd>${o.minQ||'Yok'}</dd></div></dl>
+      ${ok ? `<button class="npgo" data-act="take-offer" data-id="${o.id}" ${full?'disabled':''}>Brifi incele ${NP_ICON.ok}</button>` : `<button class="npgo" disabled>Bilgisayar yetersiz</button><div class="pxwarn">${pcLockText(o.type)}</div>`}
+    </div>`;
   }).join('');
-  return `<p class="sub" style="margin-bottom:8px">Güvenli para! Zamanında ve kaliteli teslim edersen itibarın artar. Proje slotun: <b>${S.projs.length}/${slots()}</b>${full?' <span class="red">(dolu, önce bir projeyi bitir)</span>':''}</p>
-    ${cards ? `<div class="cards">${cards}</div>` : '<div class="empty-msg">Şu an teklif yok. Ay başında yenileri gelir.</div>'}
-    <button class="btn gray" data-act="refresh-offers" ${S.money<300?'disabled':''}>🔄 Yeni teklifler bul (₺300)</button>`;
+  return `<div class="pxhead"><div><div class="npey">MÜŞTERİ İŞLERİ</div><div class="pxsub">Güvenli gelir. Zamanında ve kaliteli teslim edersen itibarın artar.</div></div>
+      <div class="pxstat ${full?'bad':''}"><span>Proje slotu</span><b>${S.projs.length}/${slots()}</b></div></div>
+    ${full ? '<div class="pxwarn" style="margin-bottom:10px">Slotların dolu: yeni iş almak için önce bir projeyi bitir.</div>' : ''}
+    ${cards ? `<div class="pxgrid">${cards}</div>` : '<div class="empty-msg">Şu an teklif yok. Ay başında yenileri gelir.</div>'}
+    <button class="pxghost" data-act="refresh-offers" ${S.money<3000?'disabled':''}>Yeni teklifler bul · ₺3.000</button>`;
 }
 function newProdHTML(){
+  if (!S.trend) rollTrend();
   const T = TYPES[form.type], m = SIZES[form.size].m*FOCUS[form.focus].work;
   const work = Math.round((T.kod+T.tas)*m);
-  const typeChips = Object.entries(TYPES).map(([k,t]) =>
-    `<button class="chip ${form.type===k?'on':''} ${S.tech[k]?'':'lock'}" data-act="f-type" data-v="${k}">${S.tech[k]?t.ikon:'🔒'} ${t.ad}</button>`).join('');
-  const sizeChips = Object.entries(SIZES).map(([k,s]) =>
-    `<button class="chip ${form.size===k?'on':''} ${S.rep>=s.rep?'':'lock'}" data-act="f-size" data-v="${k}">${S.rep>=s.rep?'':'🔒 '}${s.ad}${s.rep&&S.rep<s.rep?` (${s.rep}⭐)`:''}</button>`).join('');
-  const focusChips = Object.entries(FOCUS).map(([k,f]) =>
-    `<button class="chip ${form.focus===k?'on':''}" data-act="f-focus" data-v="${k}">${f.ad}</button>`).join('');
-  const full = S.projs.length >= slots();
-  return `<div class="cards" style="grid-template-columns:1.3fr 1fr">
-    <div class="card">
-      <div class="sub">Tür</div><div class="chips">${typeChips}</div>
-      <div class="sub">Büyüklük</div><div class="chips">${sizeChips}</div>
-      <div class="sub">Çalışma tarzı · ${FOCUS[form.focus].acik}</div><div class="chips">${focusChips}</div>
+  const chip = (act, k, on, label, extra='') => `<button class="chip ${on?'on':''} ${extra}" data-act="${act}" data-v="${k}">${label}</button>`;
+  const typeChips = Object.entries(TYPES).map(([k,t]) => chip('f-type', k, form.type===k, `${S.tech[k]?'':LOCK_SVG}${t.ad}`, S.tech[k]?'':'lock')).join('');
+  const topicChips = Object.entries(TOPICS).map(([k,t]) => {
+    const kn = (S.known||{})[form.type+':'+k];
+    return chip('f-topic', k, form.topic===k, `${t.ad}${k===S.trend?' <i class="ttag">TREND</i>':''}${kn!==undefined?` <b class="kst">${fitStars(kn)}</b>`:''}`);
+  }).join('');
+  const audChips = Object.entries(AUDS).map(([k,a]) => chip('f-aud', k, form.aud===k, a.ad)).join('');
+  const sizeChips = Object.entries(SIZES).map(([k,s]) => chip('f-size', k, form.size===k, `${S.rep>=s.rep?'':LOCK_SVG}${s.ad}${s.rep&&S.rep<s.rep?` · ${s.rep} itibar`:''}`, S.rep>=s.rep?'':'lock')).join('');
+  const focusChips = Object.entries(FOCUS).map(([k,f]) => chip('f-focus', k, form.focus===k, noEmo(f.ad))).join('');
+  const budget = prodBudget(form.type, form.size);
+  const full = S.projs.length >= slots(), ready = !!form.topic && S.money >= budget && pcOk(form.type);
+  const tr = TOPICS[S.trend];
+  const step = (n, t, extra='') => `<div class="pxstep"><i>${n}</i><b>${t}</b>${extra}</div>`;
+  return `<div class="pxprod">
+    <div class="pxpanel">
+      <div class="pxtrend"><span class="pxdot"></span>Bu dönemin trendi: <b>${tr.ad}</b><span class="pxmeta"> · ${Math.max(0,(S.trendUntil||0)-S.day)} gün daha</span></div>
+      ${step(1, 'Ürün türü')}<div class="chips">${typeChips}</div>
+      ${step(2, 'Konu', `<span class="pxmeta">★ daha önce denediğin ${T.ad.toLowerCase()} uyumu</span>`)}<div class="chips">${topicChips}</div>
+      ${step(3, 'Hedef kitle')}<div class="chips">${audChips}</div>
     </div>
-    <div class="card">
-      <div class="sub" style="margin-bottom:4px">Ürün adı</div>
-      <div class="row"><input type="text" id="pname" maxlength="28" placeholder="Bir isim yaz ya da zar at" value="${esc(form.name)}"><button class="btn gray" data-act="f-dice">🎲</button></div>
-      <div class="grid2" style="margin-top:8px"><div class="kv"><b>${work}</b><span>İş puanı</span></div><div class="kv"><b>${fmt(T.users*SIZES[form.size].m)}</b><span>Kullanıcı potansiyeli</span></div></div>
-      <button class="btn goldb block" data-act="start-prod" ${full?'disabled':''}>🚀 Geliştirmeye Başla</button>
-      <p class="hint">${full?'<span class="red">Proje slotun dolu!</span> ':''}Yayınlanan ürünler her gün para kazandırır. Kalite ne kadar yüksekse o kadar çok kullanıcı gelir!</p>
+    <div class="pxpanel">
+      <div class="npey" style="margin-bottom:6px">ÜRÜN ÖZETİ</div>
+      <div class="pxlbl">Ürün adı</div>
+      <div class="pxname"><input type="text" id="pname" maxlength="28" placeholder="${form.topic?'Bir isim yaz ya da zar at':'Önce bir konu seç'}" value="${esc(form.name)}"><button class="pxdice" data-act="f-dice" aria-label="Rastgele isim">${DICE_SVG}</button></div>
+      <div class="pxlbl">Büyüklük</div><div class="chips">${sizeChips}</div>
+      <div class="pxlbl">Çalışma tarzı <span class="pxmeta">· ${FOCUS[form.focus].acik}</span></div><div class="chips">${focusChips}</div>
+      <dl class="npdl" style="margin-top:6px"><div><dt>Geliştirme bütçesi</dt><dd class="${S.money<budget?'red':''}">${tl(budget)}</dd></div><div><dt>İş miktarı</dt><dd>${work} puan</dd></div><div><dt>Kullanıcı potansiyeli</dt><dd>${fmt(T.users*SIZES[form.size].um)}</dd></div></dl>
+      <button class="npgo" data-act="start-prod" ${full||!ready?'disabled':''}>Geliştirmeye başla ${NP_ICON.ok}</button>
+      <p class="pxnote">${full?'<span class="red">Proje slotun dolu!</span> ':''}${!form.topic ? 'Başlamak için bir konu seç.' : !pcOk(form.type) ? `<span class="red">${pcLockText(form.type)}. Geliştir'den bilgisayarları yükselt.</span>` : S.money < budget ? `<span class="red">Bu ürün için ${tl(budget)} gerekiyor. Müşteri işleriyle para biriktir.</span>` : 'Bütçe başlarken ödenir. Konu-tür uyumu, doğru kitle ve trend kullanıcı sayısını katlar.'}</p>
     </div></div>`;
-}
-function projHTML(){
+}function projHTML(){
   const p = S.projs.find(x=>x.id===pageArg);
   if (!p) return `<div class="empty-msg">Bu proje artık yok.</div>`;
   const T = TYPES[p.type], done = devDone(p), [st, cls] = projStatus(p);
   const left = p.kind==='is' ? p.deadline - S.day : 0;
-  let tapCls = 'tapper', tapTxt = '⌨️ KOD YAZ!';
-  if (done && p.bugs > 0.001){ tapCls = 'tapper bug'; tapTxt = '🐞 HATA AYIKLA!'; }
-  else if (done){ tapCls = 'tapper idle'; tapTxt = '✔️ Hata kalmadı'; }
+  let tapCls = 'btn blue', tapTxt = '⌨️ KOD YAZ!';
+  if (done && p.bugs > 0.001){ tapCls = 'btn orange'; tapTxt = '🐞 HATA AYIKLA!'; }
+  else if (done){ tapCls = 'btn gray'; tapTxt = '✔️ Hata kalmadı'; }
   return `<div class="cards" style="grid-template-columns:1.2fr 1fr">
     <div class="card">
       <div class="row"><div class="big">${T.ikon}</div><div class="grow"><b style="font-size:15px">${esc(p.name)}</b>
         <div class="sub">${p.kind==='is'?'👔 Müşteri işi':'🛠️ Kendi ürünün'} · ${T.ad} · ${SIZES[p.size].ad} · ${FOCUS[p.focus].ad}</div></div><span class="pill ${cls}">${st}</span></div>
       ${p.kind==='is'?`<div class="sub" style="margin-top:6px">💰 Ödeme: <b>${tl(p.pay)}</b> · Min. kalite: ${p.minQ||'yok'} · ${left>=0?`⏰ Kalan: <b>${left} gün</b>`:`<b class="red">⚠️ ${-left} gün gecikti!</b>`}</div>`:''}
-      <div class="lbl"><span>💻 Kod</span><span>${Math.floor(p.kod)}/${p.kodReq}</span></div><div class="bar"><i style="width:${p.kod/p.kodReq*100}%;background:#60a5fa"></i></div>
-      <div class="lbl"><span>🎨 Tasarım</span><span>${Math.floor(p.tas)}/${p.tasReq}</span></div><div class="bar"><i style="width:${p.tas/p.tasReq*100}%;background:#f472b6"></i></div>
+      <div class="lbl"><span>💻 Kod</span><span>${Math.floor(p.kod)}/${p.kodReq}</span></div><div class="bar"><i style="width:${p.kod/p.kodReq*100}%;background-color:var(--t5)"></i></div>
+      <div class="lbl"><span>🖼️ Arayüz (UI)</span><span>${Math.floor(p.tas)}/${p.tasReq}</span></div><div class="bar"><i style="width:${p.tas/p.tasReq*100}%;background-color:var(--o6)"></i></div>
       <div class="lbl"><span>🐞 Hatalar</span><b class="${p.bugs>0.001?'red':'green'}">${Math.ceil(p.bugs)}</b></div>
       <div class="lbl"><span>💎 Tahmini kalite</span>${qBadge(calcQuality(p))}</div>
+      ${p.spr?`<div class="spsum">${SPRINTS.map((s,k)=>{ const pl = p.spr.plans[k], L = pl && sprPerson(pl.lead);
+        return `<span class="${k<p.spr.rev?'done':pl?'cur':''}">${k<p.spr.rev?'✔':s.ikon} S${k+1}${pl?` · ${L?esc(L.ad.split(' ')[0]):'?'}`:''}${k<p.spr.rev?` · ${sprWord(pl.s).slice(0,3)}`:''}</span>`; }).join('')}</div>`:''}
     </div>
     <div class="card" style="display:flex;flex-direction:column;gap:6px">
-      <button class="${tapCls}" data-id="${p.id}" style="min-height:70px;font-size:20px">${tapTxt}</button>
-      ${done?`<button class="btn green block" data-act="release" data-id="${p.id}">${p.kind==='is'?'📦 Müşteriye Teslim Et':'🚀 Ürünü Yayınla'}</button>
-        <p class="hint">💡 Yayınlamadan önce hataları düzeltirsen kalite artar!</p>`:`<p class="hint">Ekibin bu projede otomatik çalışıyor. Sen de dokunarak hızlandırabilirsin. ${S.projs.length>1?'Birden çok proje varsa ekip işini projeler arasında böler.':''}</p>`}
+      ${sprWait(p)?`<button class="btn lg glowb" data-act="sp-open" data-id="${p.id}" style="min-height:64px;font-size:17px">📋 Sprint ${p.spr.plans.length+1}'i Planla</button>`:
+      `<button class="tapper ${tapCls} lg" data-id="${p.id}" style="min-height:64px;font-size:19px">${tapTxt}</button>`}
+      ${done?`<button class="btn gold block lg" data-act="release" data-id="${p.id}">${p.kind==='is'?'📦 Müşteriye Teslim Et':'🚀 Ürünü Yayınla'}</button>
+        <p class="hint">💡 Yayınlamadan önce hataları düzeltirsen kalite artar!</p>`:`<p class="hint">Ekibin bu projede otomatik çalışıyor. Sen de dokunarak hızlandırabilirsin.${S.projs.length>1?' Birden çok proje varsa ekip işini projeler arasında böler.':''}</p>`}
       <button class="btn gray sm" data-act="cancel" data-id="${p.id}" style="margin-top:auto">🗑️ Projeyi iptal et</button>
     </div></div>`;
 }
-function desksHTML(){
-  let h = `<div class="desk"><span class="e">🧑‍💻</span><span class="n">Sen</span></div>`;
-  for (const e of S.emps) h += `<div class="desk"><span class="e">${e.emo}</span><span class="n">${esc(e.name.split(' ')[0])}</span></div>`;
-  const empty = cap() - S.emps.length, show = Math.min(empty, 12);
-  for (let i=0;i<show;i++) h += `<div class="desk empty"><span class="e">🪑</span><span class="n">Boş</span></div>`;
-  if (empty > show) h += `<div class="desk empty"><span class="e">➕</span><span class="n">${empty-show} boş</span></div>`;
-  return h;
-}
 function officeHTML(){
-  const O = OFFICES[S.office], n = OFFICES[S.office+1];
-  return `<div class="office l${S.office}"><div class="otitle">${O.ikon} ${O.ad}<span>${S.emps.length+1}/${O.kap+1} kişi · ${O.slot} proje slotu · kira ${tl(O.kira)}/ay</span></div>
-    <div class="desks ${S.projs.length?'busy':''}">${desksHTML()}</div></div>
-    ${n ? `<div class="card"><div class="row"><div class="big">${n.ikon}</div><div class="grow"><b>${n.ad}'e taşın</b>
-      <div class="sub">${n.kap} çalışan · ${n.slot} proje slotu (aynı anda ${n.slot} proje) · aylık kira ${tl(n.kira)}</div></div>
-      <button class="btn goldb" data-act="office-up" ${S.money<n.fiyat?'disabled':''}>${tl(n.fiyat)}</button></div></div>`
-    : '<div class="empty-msg">🌆 En büyük ofistesin. Gökdelen senin!</div>'}
-    <div class="cards">${OFFICES.map((o,i)=>`<div class="card" style="${i===S.office?'border-color:var(--gold)':''}"><b>${o.ikon} ${o.ad}</b><div class="sub">${o.kap} çalışan · ${o.slot} slot · ${o.fiyat?tl(o.fiyat):'Başlangıç'} ${i<S.office?'✅':i===S.office?'📍 Buradasın':''}</div></div>`).join('')}</div>`;
+  const O = OFFICES[S.office], i = S.office+1, n = OFFICES[i];
+  const open = n && (S.offered[i] || S.money >= n.esik);
+  let next;
+  if (!n) next = '<div class="empty-msg">🌆 En büyük ofistesin. Şehir senin!</div>';
+  else if (open) next = `<div class="card hl" style="margin-bottom:8px"><div class="row"><div class="big">${n.ikon}</div><div class="grow"><b>Taşın: ${n.ad}</b>
+      <div class="sub">${n.acik}</div><div class="sub">${n.kap} çalışan · ${n.slot} proje slotu · aylık kira ${tl(n.kira)}</div></div>
+      <button class="btn lg" data-act="office-up" ${S.money<n.fiyat?'disabled':''}>Taşın ${tl(n.fiyat)}</button></div></div>`;
+  else next = `<div class="card" style="margin-bottom:8px"><div class="row"><div class="big">🔒</div><div class="grow"><b>Sıradaki: ${n.ikon} ${n.ad}</b>
+      <div class="sub">Kasan <b>${tl(n.esik)}</b> olunca emlakçı arayıp bu yeri teklif edecek. (Şu an ${tl(S.money)})</div>
+      <div class="mini" style="height:8px;margin-top:6px"><i style="width:${Math.min(100,Math.max(0,S.money)/n.esik*100)}%;background:var(--o5)"></i></div></div></div></div>`;
+  return `<div class="card" style="margin-bottom:8px"><div class="row"><div class="big">${O.ikon}</div><div class="grow"><b style="font-size:15px">Şu an: ${O.ad}</b>
+      <div class="sub">${O.acik}</div><div class="sub">${S.emps.length+1}/${O.kap+1} kişi · ${O.slot} proje slotu · kira ${tl(O.kira)}/ay</div></div></div></div>
+    ${next}
+    <h2>Kariyer yolun</h2>
+    <div class="cards">${OFFICES.map((o,k)=>`<div class="card ${k===S.office?'hl':''}"><div class="row"><div class="big">${k<=S.office||S.offered[k]?o.ikon:'🔒'}</div><div class="grow"><b>${o.ad}</b><div class="sub">${o.kap} çalışan · ${o.slot} slot · ${o.fiyat?'teklif: kasa '+tl(o.esik):'Başlangıç'}</div></div>${k<S.office?'<span class="pill green">✓</span>':k===S.office?'<span class="pill gold">BURADASIN</span>':''}</div></div>`).join('')}</div>`;
 }
 function teamHTML(){
   const O = OFFICES[S.office], full = S.emps.length >= cap();
   const emps = S.emps.map(e => {
     const tc = trainCost(e);
-    return `<div class="card"><div class="row"><div class="big">${e.emo}</div><div class="grow">
-      <b>${esc(e.name)}</b><div class="sub">${ROLES[e.role].ad} · ${ROLES[e.role].acik} · ${tl(e.salary)}/ay</div>
-      <div class="sub">Yetenek ${e.skill}/10 <span class="skill"><i style="width:${e.skill*10}%"></i></span></div></div></div>
+    return `<div class="card ${e.task?'hl':''}"><div class="row"><div class="big av">${avatarSVG(e.id, e.role, e.emo)}</div><div class="grow">
+      <b>${esc(e.name)}</b> ${badges(e)}<div class="sub">${ROLES[e.role].ad} · ${tl(e.salary)}/ay · ${taskText(e)}</div>
+      <div class="sub">Genel yetenek ${e.skill}/10 · Moral ${moodFace(e.mood)} <span class="mood"><i style="width:${e.mood}%"></i></span></div></div></div>${skillRows(e)}
       <div class="row" style="margin-top:6px">
-        ${e.skill<10?`<button class="btn sm" data-act="train" data-id="${e.id}" ${S.money<tc?'disabled':''}>📚 Eğit (${tl(tc)})</button>`:'<span class="sub">⭐ Usta seviye</span>'}
+        <button class="btn sm" data-act="emp" data-id="${e.id}">⚙️ Görev ver</button>
+        ${e.skill<10?`<button class="btn sm teal" data-act="train" data-id="${e.id}" ${S.money<tc?'disabled':''}>📚 Eğit (${tl(tc)})</button>`:'<span class="pill gold">⭐ USTA</span>'}
         <div class="grow"></div><button class="btn sm gray" data-act="fire" data-id="${e.id}">İşten çıkar</button></div></div>`;
   }).join('');
   const cands = S.cands.map(c => {
     const hc = round10(c.salary*0.5);
-    return `<div class="card"><div class="row"><div class="big">${c.emo}</div><div class="grow">
+    return `<div class="card"><div class="row"><div class="big av">${avatarSVG(c.id, c.role, c.emo)}</div><div class="grow">
       <b>${esc(c.name)}</b><div class="sub">${ROLES[c.role].ad} · ${tl(c.salary)}/ay</div>
-      <div class="sub">Yetenek ${c.skill}/10 <span class="skill"><i style="width:${c.skill*10}%"></i></span></div></div>
-      <div style="text-align:right"><button class="btn sm green" data-act="hire" data-id="${c.id}" ${full||S.money<hc?'disabled':''}>İşe Al</button><div class="sub">${tl(hc)}</div></div></div></div>`;
+      <div class="sub">Genel yetenek ${c.skill}/10</div></div>
+      <div style="text-align:right"><button class="btn sm" data-act="hire" data-id="${c.id}" ${full||S.money<hc?'disabled':''}>İşe Al</button><div class="sub">${tl(hc)}</div></div></div>${skillRows(c)}</div>`;
   }).join('');
   return `<div class="grid4" style="margin-bottom:8px">
       <div class="kv"><b>${S.emps.length}/${O.kap}</b><span>Çalışan (${O.ad})</span></div>
       <div class="kv"><b>${founderSkill()}/10</b><span>Senin yeteneğin</span></div>
-      <div class="kv"><b class="orange">${tl(S.emps.reduce((a,e)=>a+e.salary,0))}</b><span>Aylık maaşlar</span></div>
-      <div class="kv"><b>${S.boost>0?'🍕 +%20':'Normal'}</b><span>Ekip motivasyonu</span></div>
+      <div class="kv"><b class="orange">${tl(salaries())}</b><span>Aylık maaşlar</span></div>
+      <div class="kv" data-act="team"><b>${S.emps.length?`${moodFace(teamMood())} %${teamMood()}`:'—'}${S.boost>0?' · ⚡+%20':''}</b><span>Ekip morali · 🎉 aktivite</span></div>
     </div>
+    ${mgrCardHTML()}
     <h2>Çalışanların</h2>
-    ${emps?`<div class="cards">${emps}</div>`:'<p class="sub" style="margin-bottom:8px">Henüz çalışanın yok. Aşağıdan birini işe al!</p>'}
+    ${emps?`<div class="cards">${emps}</div>`:'<p class="sub" style="margin-bottom:8px">Henüz çalışanın yok. Aşağıdan birini işe al, ofiste masasına oturduğunu göreceksin!</p>'}
     <h2>İş başvuruları</h2>
-    <p class="sub" style="margin-bottom:6px">👨‍💻 Programcı kod yazar · 🎨 Tasarımcı tasarım yapar · 🕵️ Testçi hata düzeltir. İşe alırken yarım maaş peşin ödenir.${full?' <span class="red">Ofis dolu! Ofisim\'den büyük ofise taşın.</span>':''}</p>
+    <p class="sub" style="margin-bottom:6px">👨‍💻 Programcı kod yazar · 🎨 UI Tasarımcı arayüz yapar · 🕵️ Testçi hata düzeltir. İşe alırken yarım maaş peşin ödenir.${full?' <span class="red">Ofis dolu! Ofisim\'den büyük ofise taşın.</span>':''}</p>
     ${cands?`<div class="cards">${cands}</div>`:'<div class="empty-msg">Başvuru kalmadı.</div>'}
     <button class="btn gray" data-act="refresh-cands" ${S.money<500?'disabled':''}>📢 Yeni iş ilanı ver (₺500)</button>`;
 }
 function productsHTML(){
   const act = S.prods.filter(p=>p.active), old = S.prods.filter(p=>!p.active);
-  if (!S.prods.length) return `<div class="empty-msg">📦 Henüz yayınlanmış ürünün yok.<br>Ana ekrandan "Yeni Ürün"e dokun ve ilk ürününü geliştir!</div>`;
+  if (!S.prods.length) return `<div class="empty-msg">📦 Henüz yayınlanmış ürünün yok.<br>"Yeni Proje" → "Kendi Ürünün" ile ilk ürününü geliştir!</div>`;
   const cards = act.map(p => {
     const T = TYPES[p.type];
     const status = p.viral>0 ? '🔥 Viral!' : p.age<=8 ? '📈 Yükselişte' : p.age<=8+p.life*0.4 ? '🏔️ Zirvede' : '📉 Düşüşte';
-    const rev = p.users*T.arpu*(S.upg.bulut?1.25:1)*S.ownership/100;
+    const rev = p.users*T.arpu*revMult();
     const ac = adCost(p), uc = updCost(p);
     return `<div class="card"><div class="row"><div class="big">${T.ikon}</div><div class="grow">
-      <b>${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">${T.ad} · ${status} · ${p.age}. gün · toplam ${tl(p.earned)}</div></div></div>
+      <b>${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">${p.topic?TOPICS[p.topic].ikon+' '+TOPICS[p.topic].ad+' · ':''}${T.ad} · ${status} · ${p.age}. gün · toplam ${tl(p.earned)}</div></div></div>
       <div class="grid2" style="margin-top:6px"><div class="kv"><b>${fmt(p.users)}</b><span>Kullanıcı</span></div><div class="kv"><b class="green">${tl(rev)}</b><span>Günlük gelir</span></div></div>
       <div class="row" style="margin-top:6px;flex-wrap:wrap">
-        ${p.ad?'<span class="sub">📣 Reklam aktif</span>':`<button class="btn sm orange" data-act="ad" data-id="${p.id}" ${S.money<ac?'disabled':''}>📣 Reklam (${tl(ac)})</button>`}
-        ${p.upd<3?`<button class="btn sm" data-act="update" data-id="${p.id}" ${S.money<uc?'disabled':''}>🔧 Güncelle (${tl(uc)})</button>`:'<span class="sub">🔧 Güncellemeler bitti</span>'}
+        ${p.ad?'<span class="pill orange">📣 REKLAM AKTİF</span>':`<button class="btn sm orange" data-act="ad" data-id="${p.id}" ${S.money<ac?'disabled':''}>📣 Reklam (${tl(ac)})</button>`}
+        ${p.upd<3?`<button class="btn sm blue" data-act="update" data-id="${p.id}" ${S.money<uc?'disabled':''}>🔧 Güncelle (${tl(uc)})</button>`:'<span class="sub">🔧 Güncellemeler bitti</span>'}
       </div></div>`;
   }).join('');
   return `<div class="grid4" style="margin-bottom:8px">
       <div class="kv"><b>${act.length}</b><span>Yayındaki ürün</span></div>
       <div class="kv"><b>${fmt(act.reduce((a,p)=>a+p.users,0))}</b><span>Toplam kullanıcı</span></div>
-      <div class="kv"><b class="green">${tl(act.reduce((a,p)=>a+p.users*TYPES[p.type].arpu*(S.upg.bulut?1.25:1)*S.ownership/100,0))}</b><span>Günlük ürün geliri</span></div>
+      <div class="kv"><b class="green">${tl(prodIncome())}</b><span>Günlük ürün geliri</span></div>
       <div class="kv"><b>%${S.ownership}</b><span>Şirketteki payın</span></div>
     </div>
     ${act.length?`<div class="cards">${cards}</div>`:'<div class="empty-msg">Yayında ürünün kalmadı. Yeni bir ürün geliştirme zamanı!</div>'}
     ${old.length?`<h2>Kapanan ürünler (${old.length})</h2><div class="cards">${old.slice(0,30).map(p=>`<div class="card"><b>${TYPES[p.type].ikon} ${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">Toplam kazanç: ${tl(p.earned)}</div></div>`).join('')}</div>`:''}`;
 }
 function bankHTML(){
-  const lim = loanLimit(), rate = loanRate();
+  const B = BANKS.find(x=>x.id===bankForm.bank) || BANKS[0];
+  const lim = bankLimit(B), rate = bankRate(B), taken = bankLoan(B.id), locked = S.score < B.minScore;
   const amount = Math.round(lim*bankForm.pct/1000)*1000;
   const total = Math.round(amount*(1+rate*bankForm.term/12));
   const inst = Math.ceil(total/bankForm.term);
+  const bankName = l => l.rescue ? 'Acil kurtarma kredisi' : (BANKS.find(b=>b.id===bankOf(l))||BANKS[0]).ad;
   const loans = S.loans.map(l => {
-    const c = Math.round(l.remaining*0.95);
-    return `<div class="card"><div class="row"><div class="big">💳</div><div class="grow"><b>${tl(l.amount)} kredi</b>
-      <div class="sub">Kalan borç ${tl(l.remaining)} · ${tl(l.inst)}/ay · ${l.months} ay kaldı</div></div>
-      <button class="btn sm green" data-act="payoff" data-id="${l.id}" ${S.money<c?'disabled':''}>Erken kapat ${tl(c)}</button></div></div>`;
+    const c = Math.round(l.remaining*0.95), one = Math.min(l.inst, l.remaining), paid = 1 - l.remaining/Math.max(1, l.inst*(l.months + (l.paidN||0)));
+    return `<div class="pxcard">
+      <div class="pxtop"><div class="grow"><b class="npt">${tl(l.amount)} kredi</b><div class="pxmeta">${bankName(l)} · ${l.months} taksit kaldı</div></div>
+        <div class="pxpay"><span>Kalan borç</span><b style="color:#b4232c">${tl(l.remaining)}</b></div></div>
+      <div class="bar" style="margin:2px 0 10px"><i style="width:${clamp(paid*100,0,100)}%;background-color:var(--t5)"></i></div>
+      <dl class="npdl"><div><dt>Aylık taksit</dt><dd>${tl(l.inst)}</dd></div><div><dt>Erken kapatma (%5 indirim)</dt><dd>${tl(c)}</dd></div></dl>
+      <div class="grid2" style="gap:8px"><button class="pxghost" data-act="pay-inst" data-id="${l.id}" ${S.money<one?'disabled':''}>Bir taksiti öde · ${tl(one)}</button>
+        <button class="npgo" data-act="payoff" data-id="${l.id}" ${S.money<c?'disabled':''}>Tamamını kapat</button></div>
+    </div>`;
   }).join('');
-  return `<div class="cards" style="grid-template-columns:1fr 1.4fr">
-    <div class="card"><div class="sub">KREDİ PUANI</div><div style="font-size:30px;font-weight:900" class="${S.score>=700?'green':S.score>=550?'gold':'red'}">${S.score}</div>
-      <div class="bar" style="margin:4px 0"><i style="width:${(S.score-300)/6}%;background:linear-gradient(90deg,#f87171,#facc15,#34d399)"></i></div>
-      <div class="sub">${scoreWord(S.score)} · Faiz: yıllık %${Math.round(rate*100)}</div>
-      <p class="hint">Taksitleri zamanında ödersen puanın yükselir: daha yüksek limit, daha düşük faiz. Ay sonunda kasan eksiye düşerse puanın düşer!</p></div>
-    <div class="card"><b>🏦 Kod Bank'tan kredi çek</b><div class="sub">Kredi limitin: <b class="gold">${tl(lim)}</b></div>
-      <div class="sub" style="margin-top:6px">Tutar</div><div class="chips">${[0.25,0.5,1].map(v=>`<button class="chip ${bankForm.pct===v?'on':''}" data-act="bank-pct" data-v="${v}">${tl(Math.round(lim*v/1000)*1000)}</button>`).join('')}</div>
-      <div class="sub">Vade</div><div class="chips">${[6,12,24].map(v=>`<button class="chip ${bankForm.term===v?'on':''}" data-act="bank-term" data-v="${v}">${v} ay</button>`).join('')}</div>
-      <div class="grid2"><div class="kv"><b>${tl(inst)}</b><span>Aylık taksit</span></div><div class="kv"><b>${tl(total)}</b><span>Toplam geri ödeme</span></div></div>
-      <button class="btn goldb block" data-act="loan" ${S.loans.length>=3?'disabled':''}>💰 ${tl(amount)} Kredi Çek</button></div>
+  const bankCards = BANKS.map(b => { const has = bankLoan(b.id), lk = S.score < b.minScore;
+    return `<button class="bkcard ${b.id===B.id?'on':''}" data-act="bank-pick" data-v="${b.id}" style="--bk:${b.renk}">
+      <div class="bktop"><b>${b.ad}</b>${has ? '<span class="pill red">Kredin var</span>' : lk ? `<span class="pill gold">${b.minScore}+ puan</span>` : '<span class="pill green">Uygun</span>'}</div>
+      <div class="pxmeta">${b.acik}</div>
+      <dl class="npdl"><div><dt>Yıllık faiz</dt><dd>%${Math.round(bankRate(b)*100)}</dd></div><div><dt>Limit</dt><dd>${tl(bankLimit(b))}</dd></div><div><dt>Vade</dt><dd>${b.terms[0]}–${b.terms[b.terms.length-1]} ay</dd></div></dl>
+    </button>`; }).join('');
+  return `<div class="pxprod" style="grid-template-columns:1fr 1.6fr">
+    <div class="pxpanel"><div class="npey">KREDİ PUANI</div><div style="font-size:32px;font-weight:900;margin-top:4px" class="${S.score>=700?'green':S.score>=550?'gold':'red'}">${S.score}<span class="pxmeta" style="font-size:13px"> / 1000</span></div>
+      <div class="bar" style="margin:6px 0"><i style="width:${(S.score-300)/7}%;background-color:var(--t5)"></i></div>
+      <dl class="npdl"><div><dt>Durum</dt><dd>${scoreWord(S.score)}</dd></div><div><dt>Aktif kredi</dt><dd>${S.loans.length} / ${BANKS.length}</dd></div></dl>
+      <p class="pxnote">Her bankadan aynı anda yalnızca bir kredi çekebilirsin; yenisi için o bankadaki krediyi kapatmalısın. Taksitleri zamanında ya da erken ödersen puanın yükselir, faizler düşer.</p></div>
+    <div class="pxpanel"><div class="npey">${B.ad.toLocaleUpperCase('tr-TR')} · YENİ KREDİ</div>
+      ${taken ? `<div class="pxwarn" style="margin:8px 0">Bu bankada ödenmemiş bir kredin var (kalan ${tl(taken.remaining)}). Yeni kredi için önce onu kapat ya da başka bir banka seç.</div>`
+        : locked ? `<div class="pxwarn" style="margin:8px 0">${B.ad} en az ${B.minScore} kredi puanı istiyor. Senin puanın ${S.score}.</div>` : ''}
+      <div class="pxlbl">Tutar</div><div class="chips">${[0.25,0.5,1].map(v=>`<button class="chip ${bankForm.pct===v?'on':''}" data-act="bank-pct" data-v="${v}">${tl(Math.round(lim*v/1000)*1000)}</button>`).join('')}</div>
+      <div class="pxlbl">Vade</div><div class="chips">${B.terms.map(v=>`<button class="chip ${bankForm.term===v?'on':''}" data-act="bank-term" data-v="${v}">${v} ay</button>`).join('')}</div>
+      <dl class="npdl" style="margin-top:8px"><div><dt>Yıllık faiz</dt><dd>%${Math.round(rate*100)}</dd></div><div><dt>Aylık taksit</dt><dd>${tl(inst)}</dd></div><div><dt>Toplam geri ödeme</dt><dd>${tl(total)}</dd></div></dl>
+      <button class="npgo" data-act="loan" ${taken||locked?'disabled':''}>${tl(amount)} kredi çek ${NP_ICON.ok}</button></div>
     </div>
-    <h2>Aktif kredilerin (${S.loans.length}/3)</h2>
-    ${loans?`<div class="cards">${loans}</div>`:'<div class="empty-msg">Aktif kredin yok.</div>'}`;
-}
-function techHTML(){
-  return `<p class="sub" style="margin-bottom:8px">Yeni teknolojiler daha büyük projeler, daha çok kullanıcı ve daha kârlı müşteri işleri demek.</p><div class="cards">` +
-    Object.entries(TYPES).map(([k,t]) => {
-      if (S.tech[k]) return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow"><b>${t.ad}</b><div class="sub">✅ Açık · ${fmt(t.users)} kullanıcı potansiyeli</div></div></div></div>`;
+    <div class="pxhead" style="margin-top:14px"><div><div class="npey">BANKALAR</div><div class="pxsub">Bir bankaya dokunarak seç. Faizler kredi puanına göre değişir.</div></div></div>
+    <div class="bkgrid">${bankCards}</div>
+    <div class="pxhead" style="margin-top:14px"><div><div class="npey">AKTİF KREDİLERİN</div><div class="pxsub">Paran varsa taksitleri erken ödeyebilir ya da krediyi tamamen kapatabilirsin.</div></div><div class="pxstat"><span>Kredi</span><b>${S.loans.length}</b></div></div>
+    ${loans?`<div class="pxgrid">${loans}</div>`:'<div class="pxpanel pxsub">Aktif kredin yok.</div>'}`;
+}function techHTML(){
+  const techs = Object.entries(TYPES).map(([k,t]) => {
+      if (S.tech[k]) return `<div class="card hl"><div class="row"><div class="big">${t.ikon}</div><div class="grow"><b>${t.ad}</b><div class="sub">${fmt(t.users)} kullanıcı potansiyeli</div></div><span class="pill green">AÇIK</span></div></div>`;
       const ok = S.rep >= t.rep;
       return `<div class="card"><div class="row"><div class="big">${t.ikon}</div><div class="grow"><b>${t.ad}</b>
         <div class="sub">${fmt(t.users)} kullanıcı potansiyeli · Gerekli: ${t.rep} ⭐ ${ok?'✅':'❌'}</div></div>
-        <button class="btn sm goldb" data-act="tech" data-v="${k}" ${(!ok||S.money<t.fiyat)?'disabled':''}>${tl(t.fiyat)}</button></div></div>`;
-    }).join('') + '</div>';
+        <button class="btn sm gold" data-act="tech" data-v="${k}" ${(!ok||S.money<t.fiyat)?'disabled':''}>${tl(t.fiyat)}</button></div></div>`;
+    }).join('');
+  const inv = INNOV.map(i => {
+    const st = S.innov[i.id] || {pts:0}, done = hasInv(i.id), locked = i.req && !S.tech[i.req];
+    const who = S.emps.filter(e=>e.task&&e.task.type==='arge'&&e.task.innov===i.id);
+    return `<div class="card ${done?'hl':''}"><div class="row"><div class="big">${locked?'🔒':i.ikon}</div><div class="grow"><b>${i.ad}</b> ${done?'<span class="pill green">GELİŞTİRİLDİ</span>':''}
+      <div class="sub">${i.acik}${locked?` · önce ${TYPES[i.req].ad} teknolojisi gerekli`:''}</div>
+      ${done?'':`<div class="mini" style="height:8px;margin-top:5px"><i style="width:${st.pts/i.puan*100}%;background:var(--t5)"></i></div>
+      <div class="sub">${Math.floor(st.pts)}/${i.puan} Ar-Ge puanı · ${who.length?'🔬 '+who.map(e=>esc(e.name.split(' ')[0])).join(', '):'Kimse çalışmıyor'}</div>${locked?'':`<button class="btn sm teal" style="margin-top:5px" data-act="rp-spend" data-v="${i.id}" ${(S.rp||0)>=1?'':'disabled'}>🔬 ${Math.min(Math.floor(S.rp||0), Math.ceil(i.puan-st.pts))} Ar-Ge puanı yatır</button>`}`}</div></div></div>`;
+  }).join('');
+  return `<h2>Ürün teknolojileri</h2><p class="sub" style="margin-bottom:8px">Yeni teknolojiler daha büyük projeler, daha çok kullanıcı ve daha kârlı müşteri işleri demek.</p><div class="cards">${techs}</div>
+    <h2>🔬 Ar-Ge yenilikleri</h2><p class="sub" style="margin-bottom:8px">İki yol var: ekibin çalıştıkça <b>Ar-Ge puanı</b> biriktirir (şu an <b>${Math.floor(S.rp||0)}</b> puanın var), bunu bir yeniliğe yatırabilirsin. Ya da bir çalışana dokunup <b>Ar-Ge'ye ata</b>, o yenilik üzerinde çalışsın.</p><div class="cards">${inv}</div>`;
 }
 function upgHTML(){
-  return `<div class="cards">` + UPGRADES.map(u => {
+  return eqHTML() + `<h2>Şirket geliştirmeleri</h2><div class="cards">` + UPGRADES.map(u => {
     const l = S.upg[u.id]||0, max = l>=u.max, f = u.fiyat(l);
-    return `<div class="card"><div class="row"><div class="big">${u.ikon}</div><div class="grow"><b>${u.ad}</b>${u.max>1?` <span class="sub">Sv. ${l}/${u.max}</span>`:''}
+    return `<div class="card ${max?'hl':''}"><div class="row"><div class="big">${u.ikon}</div><div class="grow"><b>${u.ad}</b>${u.max>1?` <span class="sub">Sv. ${l}/${u.max}</span>`:''}
       <div class="sub">${u.acik}</div></div>
       ${max?'<span class="pill green">ALINDI</span>':`<button class="btn sm" data-act="upg" data-v="${u.id}" ${S.money<f?'disabled':''}>${tl(f)}</button>`}</div></div>`;
   }).join('') + '</div>';
 }
+function invHTML(){
+  const tabs = [['isletme','🏪 İşletmeler'],['borsa','📈 Borsa'],['arac','🚗 Araçlar']].map(([k,n])=>`<button class="chip ${invTab===k?'on':''}" data-act="inv-tab" data-v="${k}">${n}</button>`).join('');
+  return `<div class="chips" style="margin:0 0 8px">${tabs}</div>` + (invTab==='borsa' ? stocksHTML() : invTab==='arac' ? carsHTML() : bizHTML());
+}
 function bizHTML(){
   const mulChips = [1,10,'max'].map(v=>`<button class="chip ${bizMul===v?'on':''}" data-act="biz-mul" data-v="${v}">${v==='max'?'MAX':'x'+v}</button>`).join('');
-  const total = BIZ.reduce((a,b)=>a+bizIncome(b,S.biz[b.id]||0),0);
   const cards = BIZ.map(b => {
     const l = S.biz[b.id]||0, ok = S.rep >= b.rep;
     let btn;
     if (!ok) btn = `<button class="btn sm" disabled>🔒 ${b.rep} ⭐</button>`;
-    else if (l===0) btn = `<button class="btn sm goldb" data-act="biz" data-v="${b.id}" ${S.money<b.fiyat?'disabled':''}>Satın al ${tl(b.fiyat)}</button>`;
+    else if (l===0) btn = `<button class="btn sm gold" data-act="biz" data-v="${b.id}" ${S.money<b.fiyat?'disabled':''}>Satın al ${tl(b.fiyat)}</button>`;
     else if (l>=BIZ_MAX) btn = '<span class="pill green">MAKS</span>';
-    else { const {n,cost} = bizBulk(b,l,bizMul); btn = `<button class="btn sm green" data-act="biz" data-v="${b.id}" ${(n<=0||S.money<cost)?'disabled':''}>+${Math.max(n,1)} Sv. ${tl(n>0?cost:bizCost(b,l))}</button>`; }
+    else { const {n,cost} = bizBulk(b,l,bizMul); btn = `<button class="btn sm" data-act="biz" data-v="${b.id}" ${(n<=0||S.money<cost)?'disabled':''}>+${Math.max(n,1)} Sv. ${tl(n>0?cost:bizCost(b,l))}</button>`; }
     const next = [10,25,50,100].find(x=>x>l);
-    return `<div class="card"><div class="row"><div class="big">${b.ikon}</div><div class="grow"><b>${b.ad}</b> ${l?`<span class="pill gold">Sv. ${l}</span>`:''}
+    return `<div class="card ${l?'hl':''}"><div class="row"><div class="big">${b.ikon}</div><div class="grow"><b>${b.ad}</b> ${l?`<span class="pill gold">Sv. ${l}</span>`:''}
       <div class="sub">${b.acik}</div>
       <div class="sub">${l?`Günlük gelir: <b class="green">${tl(bizIncome(b,l))}</b>`:`Açılınca günlük ~${tl(b.gelir)}`}${b.mevsim&&l?` (mevsim x${seasonMult()})`:''}${next&&l?` · Sv.${next}'da gelir x2!`:''}</div></div></div>
       <div class="row" style="margin-top:6px;justify-content:flex-end">${btn}</div></div>`;
   }).join('');
-  return `<div class="row" style="margin-bottom:6px"><div class="grow"><p class="sub">Yan işler kur, şirketin büyüsün! Yatırımların her gün <b class="green">${tl(total)}</b> kazandırıyor. Sen yokken de çalışırlar.</p></div><div class="chips" style="margin:0">${mulChips}</div></div>
+  return `<div class="row" style="margin-bottom:6px"><div class="grow"><p class="sub">Yan işler kur, şirketin büyüsün! Yatırımların her gün <b class="green">${tl(bizTotal())}</b> kazandırıyor. Sen yokken de çalışırlar.</p></div><div class="chips" style="margin:0">${mulChips}</div></div>
     <div class="cards">${cards}</div>`;
 }
 function rankHTML(){
@@ -1151,10 +1650,30 @@ function rankHTML(){
   return `<p class="sub" style="margin-bottom:8px">Türkiye'nin en değerli yazılım şirketleri. Şirket değerin; kasan, gelirlerin, yatırımların, ofisin ve itibarınla hesaplanır. Zirveye çık!</p>` +
     list.map((x,i)=>`<div class="rank ${x.me?'me':''}"><div class="no">${medal(i)}</div><div class="grow"><b>${esc(x.n)}</b>${x.me?' <span class="pill gold">SEN</span>':''}</div><b class="${x.me?'gold':''}">${tl(x.v)}</b></div>`).join('');
 }
+function financeHTML(){
+  const g = GOALS[S.goal];
+  return `<div class="cards">
+    <div class="card hl"><div class="row"><div class="big">💻</div><div class="grow"><b style="font-size:16px">${esc(S.name)}</b><div class="sub">${title()} · ⭐ ${S.rep} itibar · Şirkette payın %${S.ownership}</div></div></div>
+      <div class="grid2" style="margin-top:8px"><div class="kv"><b class="green">${tlFull(S.money)}</b><span>Kasa</span></div><div class="kv"><b class="gold">${tl(valuation())}</b><span>Şirket değeri (${myRank()}. sıra)</span></div></div></div>
+    ${sharesHTML()}
+    <div class="card"><b>📈 Günlük gelir</b>
+      <div class="lbl"><span>📦 Ürünler</span><b class="green">+${tl(prodIncome())}</b></div>
+      <div class="lbl"><span>💼 Yatırımlar</span><b class="green">+${tl(bizTotal())}</b></div>
+      <div class="lbl"><span>Toplam (aylık ~)</span><b class="green">+${tl((prodIncome()+bizTotal())*30)}</b></div></div>
+    <div class="card"><b>📉 Aylık gider</b>
+      <div class="lbl"><span>👥 Maaşlar</span><b class="red">-${tl(salaries())}</b></div>
+      <div class="lbl"><span>🏢 Kira</span><b class="red">-${tl(OFFICES[S.office].kira)}</b></div>
+      <div class="lbl"><span>🏦 Kredi taksitleri</span><b class="red">-${tl(installments())}</b></div>
+      <div class="lbl"><span>Kalan borç</span><b class="red">${tl(debt())}</b></div></div>
+    <div class="card"><b>🎯 Sıradaki hedef</b><p class="sub" style="margin-top:4px">${g?`${g.t} · Ödül <b class="green">${tl(g.r)}</b>`:'Tüm hedefler tamam! 🏆'}</p>
+      <p class="sub">Kredi puanı: <b>${S.score}</b> (${scoreWord(S.score)})</p></div>
+  </div>`;
+}
 function settingsHTML(){
   return `<div class="cards">
-    <div class="card"><div class="row"><div class="grow"><b>🔊 Ses efektleri</b><div class="sub">Dokunma, para ve başarı sesleri</div></div><button class="toggle ${S.sound?'on':''}" data-act="sound"></button></div></div>
-    <div class="card"><b>💾 Kayıt</b><div class="sub">Oyun her 5 saniyede otomatik kaydedilir, ayrıca dakikada bir yedek alınır. Sen yokken ürünlerin ve yatırımların para kazanmaya devam eder (en fazla 4 saat).</div></div>
+    <div class="card"><div class="row"><div class="big">📘</div><div class="grow"><b>Oyun rehberi</b><div class="sub">Ekranı adım adım gezdirip oyunun nasıl oynandığını anlatır.</div></div><button class="btn sm" data-act="tut-start">Rehberi aç</button></div></div>
+    <div class="card"><div class="row"><div class="big">🔊</div><div class="grow"><b>Ses efektleri</b><div class="sub">Dokunma, para ve başarı sesleri</div></div><button class="toggle ${S.sound?'on':''}" data-act="sound"></button></div></div>
+    <div class="card"><div class="row"><div class="big">💾</div><div class="grow"><b>Kayıt</b><div class="sub">Oyun her 5 saniyede otomatik kaydedilir, dakikada bir yedek alınır. Sen yokken ürünlerin ve yatırımların para kazanmaya devam eder (en fazla 4 saat).</div></div></div></div>
   </div>
   <h2>İstatistikler</h2>
   <div class="grid4" style="margin-bottom:8px">
@@ -1171,24 +1690,94 @@ function toast(html){
   const t = document.createElement('div'); t.className='toast'; t.innerHTML = html;
   const box = $('toasts'); box.appendChild(t);
   while (box.children.length > 2) box.firstChild.remove();
-  setTimeout(()=>t.remove(), 2900);
+  setTimeout(()=>t.remove(), 4700);
 }
 function floatText(txt, x, y, cls){
   const f = document.createElement('div'); f.className = 'float '+(cls||''); f.textContent = txt;
   f.style.left = x+'px'; f.style.top = y+'px';
   document.body.appendChild(f); setTimeout(()=>f.remove(), 950);
 }
+function floatPill(kind, txt, x, y){
+  const f = document.createElement('div'); f.className = 'float';
+  if (kind==='ok') f.textContent = txt;
+  else f.innerHTML = `<span class="fp fp-${kind}">${svgI(GL[kind](PTG[kind]))}${txt}</span>`;
+  f.style.left = x+'px'; f.style.top = y+'px';
+  document.body.appendChild(f); setTimeout(()=>f.remove(), 950);
+}
 function floatMoney(v){
   if (document.hidden || page) return;
   const r = $('hMoney').getBoundingClientRect();
-  floatText('+'+tl(v), r.left + r.width/2, r.bottom + 4);
+  floatText('+'+tl(v), r.left + r.width/2, r.bottom + 8, 'money');
 }
-function showModal(html){ const m = $('modal'); m.innerHTML = `<div class="mbox">${html}</div>`; m.classList.remove('hidden'); paused = true; }
+// Yeni Proje seçimi: sade, kurumsal kartlar (gerçek rakamlarla)
+const NP_ICON = {
+  is: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/><path d="M11 12.5v1.5h2v-1.5"/></svg>',
+  urun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8.5 4.5L12 12 3.5 7.5z"/><path d="M3.5 12L12 16.5 20.5 12"/><path d="M3.5 16.5L12 21l8.5-4.5"/></svg>',
+  ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+};
+const LOCK_SVG = '<svg class="ilock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const DICE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="9" cy="9" r="1.1" fill="currentColor"/><circle cx="15" cy="15" r="1.1" fill="currentColor"/><circle cx="15" cy="9" r="1.1" fill="currentColor"/><circle cx="9" cy="15" r="1.1" fill="currentColor"/></svg>';
+const noEmo = s => String(s).replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}️‍]/gu, '').replace(/\s+/g, ' ').trim();
+const TYPE_SVG = {
+  web: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 8.5h18"/><circle cx="6" cy="6.3" r=".5" fill="currentColor"/><circle cx="8" cy="6.3" r=".5" fill="currentColor"/><path d="M7 13h6M7 16h10"/></svg>',
+  mobil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>',
+  oyun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a4.5 4.5 0 0 1 4.3 5.8l-1 3.3a2.4 2.4 0 0 1-4 1L14.6 16H9.4l-1.7 2.1a2.4 2.4 0 0 1-4-1l-1-3.3A4.5 4.5 0 0 1 7 8z"/><path d="M7.5 11v3M6 12.5h3"/><circle cx="15.5" cy="11.5" r=".6" fill="currentColor"/><circle cx="17" cy="13.5" r=".6" fill="currentColor"/></svg>',
+  ai: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9.5 9.5h5v5h-5z"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>',
+};
+function newProjHTML(){
+  const pays = S.offers.map(o => o.pay), days = S.offers.map(o => o.days);
+  const kz = fmt(Math.min(...pays)) === fmt(Math.max(...pays)) ? tl(Math.min(...pays)) : `${tl(Math.min(...pays))} – ${fmt(Math.max(...pays))}`;
+  const d0 = Math.min(...days), d1 = Math.max(...days);
+  const sure = pays.length ? (d0 === d1 ? `${d0} gün` : `${d0}–${d1} gün`) : '—';
+  const types = Object.keys(TYPES).filter(t => S.tech[t]);
+  const minB = Math.min(...types.map(t => prodBudget(t, 'kucuk')));
+  const canProd = S.money >= minB;
+  const risk = n => `<span class="nprisk">${[1,2,3].map(i => `<i class="${i<=n?'on':''}"></i>`).join('')}</span>`;
+  return `<div class="nphead"><div><div class="npey">YENİ PROJE</div><h3>Bir sonraki işin ne olsun?</h3></div><button class="npx" data-act="close" aria-label="Kapat">✕</button></div>
+  <div class="npgrid">
+    <button class="npcard" data-act="page" data-v="isler">
+      <div class="nptop"><div class="npic">${NP_ICON.is}</div><span class="nptag">${S.offers.length} açık teklif</span></div>
+      <b class="npt">Müşteri İşi</b>
+      <p class="npd">Bir şirketin siparişini hazırla, teslim et, ödemeyi al.</p>
+      <dl class="npdl">
+        <div><dt>Kazanç</dt><dd>${pays.length ? kz : '—'}</dd></div>
+        <div><dt>Süre</dt><dd>${sure}</dd></div>
+        <div><dt>Risk</dt><dd>${risk(1)} Düşük</dd></div>
+      </dl>
+      <span class="npgo">Teklifleri incele ${NP_ICON.ok}</span>
+    </button>
+    <button class="npcard alt" data-act="page" data-v="yeni">
+      <div class="nptop"><div class="npic">${NP_ICON.urun}</div><span class="nptag ${canProd?'':'warn'}">${canProd ? 'Yüksek getiri' : 'Bütçe yetersiz'}</span></div>
+      <b class="npt">Kendi Ürünün</b>
+      <p class="npd">Kendi uygulamanı geliştir, yayınla, her gün gelir kazan.</p>
+      <dl class="npdl">
+        <div><dt>Bütçe</dt><dd>${tl(minB)}'den başlar</dd></div>
+        <div><dt>Gelir</dt><dd>Yayından sonra her gün</dd></div>
+        <div><dt>Risk</dt><dd>${risk(3)} Yüksek</dd></div>
+      </dl>
+      <span class="npgo">Ürün tasarla ${NP_ICON.ok}</span>
+    </button>
+  </div>`;
+}
+function showModal(icon, html, cls){
+  const m = $('modal');
+  m.innerHTML = `<div class="mwrap ${cls||''}">${icon ? `<div class="evc">${icon}</div>` : ''}<div class="mbox">${html}</div></div>`;
+  m.classList.remove('hidden'); paused = true; snd('pop');
+  artIcons(m);
+}
 function closeModal(){ const m = $('modal'); m.classList.add('hidden'); m.innerHTML=''; paused = false; }
-function showWelcome(){
-  showModal(`<div class="ev">💻</div><h3>Kod Patronu</h3>
-    <p style="text-align:center">Garajında tek bir bilgisayarla başlıyorsun. Müşteri işleri al, kendi ürünlerini çıkar, ekip kur, yatırım yap ve şirketini bir <b>teknoloji devine</b> dönüştür!</p>
-    <div class="row" style="margin-top:8px"><input type="text" id="cname" maxlength="24" placeholder="Şirketinin adı: Garaj Yazılım"><button class="btn goldb" data-act="begin" style="white-space:nowrap">🚀 Başla</button></div>`);
+// ilk açılış: kısa bir hikâye, sonra Şirketini Kur ekranı
+const INTRO = [
+  ['💻', 'Kod Patronu\'na Hoş Geldin!', `Elinde tek bir eski bilgisayar, kafanda yüzlerce fikir var. Annenlerin evinin garajını ofise çevirdin ve kararını verdin: <b>kendi yazılım şirketini kuracaksın!</b>`],
+  ['🚀', 'Hedefin Büyük', `Müşterilere web siteleri ve uygulamalar yap, kendi ürünlerini çıkar, ekibini büyüt. Garajdan stüdyo daireye, oradan gökdelen katına uzanan yolda şehrin <b>en değerli teknoloji şirketi</b> olmaya çalış.`],
+  ['🏢', 'Önce Şirketini Kur', `Maceraya başlamadan önce şirketine bir isim vermeli ve kendini tanıtmalısın. Patron sensin!`],
+];
+function showWelcome(i=0){
+  $('app').classList.add('nogame'); $('scene').innerHTML = ''; closePage();
+  const [ic, t, x] = INTRO[i];
+  showModal(ic, `<h3>${t}</h3><p style="text-align:center;margin:6px 0 10px">${x}</p>
+    <div class="introdots">${INTRO.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')}</div>
+    <button class="btn gold block lg" data-act="intro" data-v="${i+1}">${i < INTRO.length-1 ? 'Devam ▶' : 'Tamam, kuralım!'}</button>`);
 }
 
 /* ================= KAYIT ================= */
@@ -1206,14 +1795,20 @@ function migrate(d){
   const s = Object.assign(newState(d.name), d);
   s.stats = Object.assign(newState('').stats, d.stats||{});
   if (s.v === 1){ s.projs = d.proj ? [d.proj] : []; delete s.proj; s.v = 2; }
+  if (s.v === 2){ s.office = ({0:(s.emps.length?1:0),1:2,2:3,3:3,4:4})[s.office] ?? 0; s.v = 3; }
+  if (!d.holders && (s.ownership ?? 100) < 100) s.holders = [{id:999999, ad:'Erken Yatırımcılar', renk:'#64748b', pct:100 - s.ownership, paid:0, day:1}];
+  if (!d.eq){ const u = d.upg||{}; s.eq = {pc: u.ekran ? 2 : 0, klavye: Math.min(4, Math.ceil((u.klavye||0)/2.5)), koltuk: u.sandalye ? 2 : 0}; s.eqStd = Math.min(4, Math.floor(((s.day||1)-1)/300)); }
+  if (!s.offered) s.offered = {};
   if (!Array.isArray(s.projs)) s.projs = [];
+  for (const e of s.emps) if (e.mood === undefined) e.mood = 70;
+  if (!s.innov) s.innov = {};
   return s;
 }
 function load(){
   for (const key of [SAVE_KEY, BACKUP_KEY]){
     try {
       const d = JSON.parse(localStorage.getItem(key));
-      if (d && (d.v===1 || d.v===2) && d.name){ S = migrate(d); return true; }
+      if (d && (d.v>=1 && d.v<=3) && d.name){ S = migrate(d); return true; }
     } catch(e){}
   }
   return false;
@@ -1221,19 +1816,62 @@ function load(){
 function awayGain(sec){
   const s = Math.min(sec, 4*3600);
   const gain = Math.round((S.lastDayInc||0) * (s/DAY_SEC) * 0.3);
-  if (gain > 0 && sec > 20){
+  if (gain > 0 && sec >= 60){
     S.money += gain; S.stats.earned += gain;
     const mins = Math.round(s/60);
-    showModal(`<div class="ev">🌙</div><h3>Tekrar hoş geldin!</h3>
+    showModal('🌙', `<h3>Tekrar hoş geldin!</h3>
       <p style="text-align:center">Sen yokken (${mins>=60?Math.floor(mins/60)+' saat ':''}${mins%60} dk) ürünlerin ve yatırımların çalışmaya devam etti.</p>
-      <p style="text-align:center;font-size:24px;font-weight:900;margin:8px 0" class="green">+${tlFull(gain)}</p>
-      <button class="btn goldb block" data-act="close">Harika!</button>`);
+      <p style="text-align:center;font-size:26px;font-weight:900;margin:8px 0" class="green">+${tlFull(gain)}</p>
+      <button class="btn gold block lg" data-act="close">Harika!</button>`);
     snd('cash');
   }
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 window.addEventListener('pagehide', save);
 
+/* ================= ÖLÇEKLEME: her telefonda aynı oranlar ================= */
+function fit(){
+  const app = $('app'), probe = $('probe');
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const portrait = vh > vw;
+  const W = portrait ? vh : vw, H = portrait ? vw : vh;
+  const z = clamp(Math.min(H/390, W/800), 0.72, 2.2);
+  const cs = getComputedStyle(probe);
+  const it = parseFloat(cs.paddingTop)||0, ir = parseFloat(cs.paddingRight)||0, ib = parseFloat(cs.paddingBottom)||0, il = parseFloat(cs.paddingLeft)||0;
+  // dik tutulduğunda oyun 90° döndürülür; çentik payları da yer değiştirir
+  const [sl, sr, st, sb] = portrait ? [it, ib, ir, il] : [il, ir, it, ib];
+  app.style.zoom = z;
+  app.style.width = (W/z)+'px';
+  app.style.height = (H/z)+'px';
+  app.style.left = portrait ? (vw/z)+'px' : '0px';
+  app.style.transform = portrait ? 'rotate(90deg)' : '';
+  app.style.setProperty('--sl', (sl/z)+'px'); app.style.setProperty('--sr', (sr/z)+'px');
+  app.style.setProperty('--st', (st/z)+'px'); app.style.setProperty('--sb', (sb/z)+'px');
+  app.style.setProperty('--ah', (H/z)+'px');
+}
+window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', () => setTimeout(fit, 250));
+fit();
+fillIcons();
+
+/* ================= EMOJİ TEMİZLEYİCİ =================
+   Ekrana gelen tüm yazılardan emojiler silinir. Kendi çizdiğimiz simgeler (SVG) etkilenmez.
+   (Kartlardaki simgeler önce artIcons ile çizime çevrilir, temizleyici ondan sonra çalışır.) */
+const EMO_RE = /(?:[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}][\uFE0F\u200D\u20E3\u{1F3FB}-\u{1F3FF}]*)+[\uFE0F\u200D]*\s?/gu;
+function stripEmoji(node){
+  if (!node) return;
+  if (node.nodeType === 3){
+    const p = node.parentNode; if (!p || p.closest && p.closest('svg,script,style,textarea')) return;
+    const v = node.nodeValue; if (!v || !EMO_RE.test(v)) return; EMO_RE.lastIndex = 0;
+    const nv = v.replace(EMO_RE, ''); if (nv === v) return; if (!nv.trim()) node.remove(); else node.nodeValue = nv; return;
+  }
+  if (node.nodeType !== 1 || /^(SVG|SCRIPT|STYLE|TEXTAREA|CANVAS)$/i.test(node.nodeName)) return;
+  const w = document.createTreeWalker(node, NodeFilter.SHOW_TEXT); const list = []; let n; while ((n = w.nextNode())) list.push(n);
+  for (const x of list) stripEmoji(x);
+}
+new MutationObserver(ms => { for (const m of ms){ if (m.type === 'characterData') stripEmoji(m.target); else for (const a of m.addedNodes) stripEmoji(a); } })
+  .observe(document.body, {subtree:true, childList:true, characterData:true});
+stripEmoji(document.body);
 /* ================= DÖNGÜ ================= */
 let last = performance.now(), acc = 0;
 function loop(){
@@ -1242,9 +1880,11 @@ function loop(){
   if (!S || paused) return;
   if (dt > 5){ awayGain(dt); updateAll(true); return; }
   workTick(dt);
+  sprintCheck();
   S.dayFrac += dt/DAY_SEC;
   while (S && S.dayFrac >= 1){ S.dayFrac -= 1; newDay(); if (paused) break; }
   if (!S) return;
+  if (!page) idleChatter(dt);
   acc += dt;
   if (acc >= 0.25){ acc = 0; updateAll(false); }
 }
