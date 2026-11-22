@@ -1,6 +1,6 @@
 'use strict';
 /* =====================================================================
-   Kod Patronu – iş brifi, müşteri değerlendirmesi, borsa ve araçlar
+   Bytetown – iş brifi, müşteri değerlendirmesi, borsa ve araçlar
    Müşteri işi alınırken oyuncu stil/özellik/öncelik seçer. Teslimde
    müşteri bu seçimlere ve kaliteye göre 10 üzerinden puan verip mesaj yazar.
    ===================================================================== */
@@ -245,6 +245,29 @@ const TOPICS = {
   haber:    {ad:'Haber & Gündem',   ikon:'📰', aud:'yasli', fit:{web:1.3, mobil:1.0, oyun:0.5, ai:1.1}, w:['Gündem','Manşet','Haber','Bülten','Ajans']},
   is:       {ad:'İş & Verimlilik',  ikon:'📊', aud:'pro',   fit:{web:1.2, mobil:1.1, oyun:0.5, ai:1.3}, w:['Görev','Plan','Ofis','Takvim','Proje']},
 };
+// yeni konular
+Object.assign(TOPICS, {
+  moda:     {ad:'Moda & Güzellik',   ikon:'', aud:'genc',  fit:{web:1.2, mobil:1.3, oyun:0.6, ai:1.0}, w:['Stil','Moda','Trend','Gardırop','Işıltı']},
+  evcil:    {ad:'Evcil Hayvanlar',   ikon:'', aud:'aile',  fit:{web:1.0, mobil:1.2, oyun:1.1, ai:0.9}, w:['Pati','Mama','Tüylü','Kedi','Köpek']},
+  ev:       {ad:'Ev & Dekorasyon',   ikon:'', aud:'aile',  fit:{web:1.2, mobil:1.1, oyun:0.9, ai:1.0}, w:['Yuva','Dekor','Salon','Tasarım','Ev']},
+  ulasim:   {ad:'Ulaşım & Harita',   ikon:'', aud:'pro',   fit:{web:1.0, mobil:1.3, oyun:0.6, ai:1.2}, w:['Rota','Durak','Yol','Harita','Navi']},
+  film:     {ad:'Film & Dizi',       ikon:'', aud:'genc',  fit:{web:1.2, mobil:1.1, oyun:0.8, ai:1.1}, w:['Sinema','Dizi','Sahne','Perde','Fragman']},
+  sanat:    {ad:'Sanat & Çizim',     ikon:'', aud:'genc',  fit:{web:1.0, mobil:1.1, oyun:1.0, ai:1.3}, w:['Fırça','Tuval','Renk','Eskiz','Palet']},
+  foto:     {ad:'Fotoğraf & Video',  ikon:'', aud:'genc',  fit:{web:1.0, mobil:1.3, oyun:0.6, ai:1.2}, w:['Kare','Lens','Filtre','Çekim','Klip']},
+  emlak:    {ad:'Emlak',             ikon:'', aud:'pro',   fit:{web:1.3, mobil:1.1, oyun:0.6, ai:1.0}, w:['Konut','Daire','Tapu','Kira','Arsa']},
+  kariyer:  {ad:'Kariyer & İş İlanı',ikon:'', aud:'pro',   fit:{web:1.3, mobil:1.0, oyun:0.5, ai:1.2}, w:['Kariyer','İlan','Özgeçmiş','Mülakat','Terfi']},
+  dil:      {ad:'Dil Öğrenme',       ikon:'', aud:'genc',  fit:{web:1.0, mobil:1.3, oyun:1.0, ai:1.2}, w:['Kelime','Dil','Lingo','Sözlük','Aksan']},
+  tarih:    {ad:'Tarih & Kültür',    ikon:'', aud:'yasli', fit:{web:1.2, mobil:1.0, oyun:1.2, ai:0.9}, w:['Tarih','Asır','Müze','Antik','Miras']},
+  bilim:    {ad:'Bilim & Doğa',      ikon:'', aud:'genc',  fit:{web:1.1, mobil:1.0, oyun:1.0, ai:1.2}, w:['Atom','Deney','Doğa','Keşif','Laboratuvar']},
+  cocuk:    {ad:'Çocuklar İçin',     ikon:'', aud:'aile',  fit:{web:0.9, mobil:1.2, oyun:1.3, ai:0.8}, w:['Minik','Neşeli','Oyuncak','Masal','Bıcırık']},
+  korku:    {ad:'Korku & Gizem',     ikon:'', aud:'genc',  fit:{web:0.6, mobil:0.9, oyun:1.3, ai:0.7}, w:['Gölge','Lanet','Sis','Gece','Sırlar']},
+  strateji: {ad:'Strateji & Savaş',  ikon:'', aud:'pro',   fit:{web:0.7, mobil:1.0, oyun:1.3, ai:0.9}, w:['İmparatorluk','Ordu','Fetih','Kale','Hükümdar']},
+  sehir:    {ad:'Şehir Kurma',       ikon:'', aud:'pro',   fit:{web:0.7, mobil:1.1, oyun:1.3, ai:1.0}, w:['Kent','Metropol','Belde','Kule','Mahalle']},
+});
+// konular gruplara ayrılır (ürün sayfasında sekmeler)
+const TOPIC_GROUPS = [['yasam','Yaşam'], ['eglence','Eğlence & Sosyal'], ['para','İş & Para'], ['bilgi','Bilgi & Eğitim'], ['oyun','Oyun Dünyaları']];
+{ const G = {yasam:['fitness','yemek','saglik','seyahat','moda','evcil','ev','ulasim'], eglence:['sosyal','muzik','futbol','film','sanat','foto'], para:['finans','alisveris','is','emlak','kariyer'], bilgi:['egitim','haber','dil','tarih','bilim','cocuk'], oyun:['uzay','macera','yaris','bulmaca','korku','strateji','sehir']};
+  for (const [g, ks] of Object.entries(G)) for (const k of ks) if (TOPICS[k]) TOPICS[k].g = g; }
 const AUDS = {
   herkes:{ad:'Herkes',         ikon:'🌍'},
   genc:  {ad:'Gençler',        ikon:'🧑‍🎤'},
@@ -322,6 +345,7 @@ function founderMenu(){
   showModal(avatarSVG(0, 'me', ''), `<h3>${S.boss ? esc(S.boss)+' (Kurucu)' : 'Sen (Kurucu)'}</h3>
     <p class="sub" style="text-align:center">Yetenek ${founderSkill()}/10 · Dokunuş başı +${r1(tapPower())} iş</p>
     <p style="text-align:center;margin:4px 0">${badgesOf(S.fknow, 22) || '<span class="sub">Henüz özel bir dil ya da beceri öğrenmedin.</span>'}</p>
+    ${cyBossLine()}
     <div class="lbl"><span>Durum</span><b>${it ? `📖 ${it.ad} öğreniyorsun (${Math.max(0,t.until-S.day)} gün)` : '💻 Kod yazıyorsun'}</b></div>
     <div class="grid4" style="margin-top:6px">
       <button class="act" data-act="look"><span>👤</span>Görünüş<small>Saç, kıyafet…</small></button>
@@ -329,8 +353,153 @@ function founderMenu(){
       <button class="act" data-act="fkurs" data-v="kurs" ${(kl>=kurs.max||S.money<kc)?'disabled':''}><span>📚</span>Kendini geliştir<small>${kl>=kurs.max?'En üst seviye':`${tl(kc)} · +1 yetenek`}</small></button>
       <button class="act" data-act="page" data-v="gelis"><span>⌨️</span>Ekipmanlar<small>Klavye, monitör…</small></button>
     </div>
+    <button class="btn block pcbtn" data-act="pc-open"><b>Bilgisayarım</b><small>İşBağ, internet, portfolyo ve e-posta</small></button>
+    ${meetBtnHTML()}
+    ${tatilBtnHTML()}
+    ${exHackHTML()}
     <button class="btn teal block" data-act="close">Kapat</button>`);
 }
+/* ---- TOPLU TATİL: iş yokken bütün ekip tatile gider, dinlenip döner ---- */
+const TATIL = [
+  {id:'kisa', ad:'Hafta sonu kaçamağı', gun:3,  grp:25,  k:0.08, acik:'Tatil 3 gün sürer · dönünce moral +25'},
+  {id:'uzun', ad:'Uzun tatil',          gun:10, grp:100, k:0.25, acik:'Tatil 10 gün sürer · herkes %100 moralle döner'},
+];
+const tatilBusy = () => S.projs.some(p => needsWork(p));
+function tatilBtnHTML(){
+  const n = S.emps.filter(e => !isAway(e)).length, busy = tatilBusy(), m = Math.round(teamMood());
+  const away = S.grpBack && S.grpBack > S.day && S.emps.some(e => e.task && e.task.grp);
+  if (away) return `<button class="btn block tatilbtn" disabled><b>Ekip tatilde</b><small>${S.grpBack - S.day} gün sonra (${S.grpBack}. gün) dönecekler</small></button>`;
+  const why = !n ? 'Tatile gidecek çalışan yok' : busy ? 'Önce süren projeler bitsin' : `Ekip morali %${m}${m < 50 ? ' · ekip çok yorgun' : m < 70 ? ' · ekip biraz yorgun' : ''}`;
+  return `<button class="btn block tatilbtn" data-act="tatil-all" ${!n || busy ? 'disabled' : ''}><b>Herkesi tatile gönder</b><small>${why}</small></button>`;
+}
+function tatilMenu(){
+  const n = S.emps.filter(e => !isAway(e)).length;
+  if (!n || tatilBusy()){ toast(tatilBusy() ? 'Projeler sürerken ekibi tatile gönderemezsin.' : 'Tatile gidecek çalışan yok.'); snd('bad'); return; }
+  curChoices = [];
+  showModal('', `<h3>Ekip tatili</h3>
+    <p class="sub" style="text-align:center">${n} çalışan birlikte tatile çıkar. Tatildeyken kimse çalışmaz, dönünce herkes dinlenmiş ve hızlı olur.</p>
+    <div class="lbl"><span>Ekip morali</span><b>%${Math.round(teamMood())}</b></div>
+    <div class="tatgrid">${TATIL.map(t => { const c = teamCost(t.k);
+      return `<button class="act" data-act="tatil-go" data-v="${t.id}" ${S.money < c ? 'disabled' : ''}><b>${t.ad}</b><small>${t.acik}</small><small class="tcost">${tl(c)}</small></button>`; }).join('')}</div>
+    <button class="btn teal block" data-act="close">Vazgeç</button>`);
+}
+function tatilGo(id){
+  const t = TATIL.find(x => x.id===id), c = t && teamCost(t.k);
+  if (!t || S.money < c || tatilBusy()) return;
+  S.money -= c; let k = 0;
+  for (const e of S.emps) if (!isAway(e)){ e.task = {type:'izin', until:S.day + t.gun, grp:t.grp}; k++; }
+  sceneKey = ''; closeModal(); snd('ok');
+  S.grpBack = S.day + t.gun; exS().tatil = true;
+  toast(`${k} çalışan ${t.gun} günlük tatile çıktı (−${tl(c)}). ${S.day + t.gun}. günde, yani ${t.gun} gün sonra dönecekler.`);
+  updateHome();
+}
+/* =====================================================================
+   TOPLANTI – yalnızca kurucu yapar. Herkes büyük masada toplanır,
+   kurucu şirketin geleceği için 3 konuda karar verir.
+   ===================================================================== */
+const MEET_CD = 15;      // iki toplantı arası en az gün
+const meetCount = () => S.emps.filter(e => !isAway(e)).length;
+function meetBtnHTML(){
+  const n = meetCount(), wait = Math.max(0, (S.nextMeet||0) - S.day);
+  const why = !n ? 'Toplantı için en az bir çalışan gerekli' : wait ? `Yeni toplantı için ${wait} gün bekle` : `${n} çalışan büyük masada toplanır, sen kararları verirsin`;
+  return `<button class="btn block meetbtn" data-act="meet" ${!n || wait ? 'disabled' : ''}><b>Toplantı yap</b><small>${why}</small></button>`;
+}
+const MEET_TOPICS = [
+  {id:'oncelik', q:'Önümüzdeki dönemin önceliği ne olsun?', opts:[
+    {ad:'Hız', acik:'10 gün ekip %20 daha hızlı', fx:() => { S.boost = Math.max(S.boost||0, 10); return 'Ekip 10 gün daha hızlı çalışacak'; }},
+    {ad:'Kalite', acik:'30 gün boyunca biten işler +4 kalite', fx:() => { S.meetQ = S.day + 30; return '30 gün boyunca işler daha kaliteli'; }},
+    {ad:'Ekip sağlığı', acik:'Herkesin morali +8', fx:() => { moodAll(8); return 'Ekibin morali yükseldi'; }}]},
+  {id:'butce', q:'Bu ay ek bütçe nereye gitsin?', cost:() => teamCost(0.15), opts:[
+    {ad:'Ar-Ge', acik:m => `${tl(m.cost.butce)} · +${10 + meetCount()*2} Ar-Ge puanı`, money:m => m.cost.butce, fx:m => { S.money -= m.cost.butce; S.rp = (S.rp||0) + 10 + meetCount()*2; return 'Ar-Ge bütçesi arttı'; }},
+    {ad:'Pazarlama', acik:m => `${tl(m.cost.butce)} · +5 itibar`, money:m => m.cost.butce, fx:m => { S.money -= m.cost.butce; S.rep += 5; return 'Pazarlama itibarı artırdı'; }},
+    {ad:'Kasada kalsın', acik:'Para harcanmaz', fx:() => 'Bütçe kasada kaldı'}]},
+  {id:'mesai', q:'Çalışma düzeni nasıl olsun?', opts:[
+    {ad:'Esnek saatler', acik:'Herkesin morali +6', fx:() => { moodAll(6); return 'Esnek saatler ekibi sevindirdi'; }},
+    {ad:'Fazla mesai', acik:'7 gün %20 hızlı · moral −8', fx:() => { S.boost = Math.max(S.boost||0, 7); moodAll(-8); return 'Fazla mesai başladı, ekip biraz gergin'; }},
+    {ad:'Aynen devam', acik:'Değişiklik yok', fx:() => 'Çalışma düzeni aynı kaldı'}]},
+  {id:'ortam', q:'Ofis ortamı için ne yapalım?', cost:() => teamCost(0.1), opts:[
+    {ad:'Ofis partisi', acik:m => `${tl(m.cost.ortam)} · moral +10`, money:m => m.cost.ortam, fx:m => { S.money -= m.cost.ortam; moodAll(10); return 'Ofis partisi çok eğlenceli geçti'; }},
+    {ad:'Kahve köşesi', acik:m => `${tl(round10(m.cost.ortam*0.4))} · moral +5`, money:m => round10(m.cost.ortam*0.4), fx:m => { S.money -= round10(m.cost.ortam*0.4); moodAll(5); return 'Yeni kahve köşesi açıldı'; }},
+    {ad:'Gerek yok', acik:'Moral −2', fx:() => { moodAll(-2); return 'Ofiste bir değişiklik yapılmadı'; }}]},
+  {id:'egitim', q:'Ekibin gelişimi için ne yapalım?', cost:() => teamCost(0.3), opts:[
+    {ad:'Herkese eğitim', acik:m => `${tl(m.cost.egitim)} · her çalışana +1 yetenek şansı`, money:m => m.cost.egitim, fx:m => { S.money -= m.cost.egitim; let k = 0; for (const e of S.emps) if (e.skill < 10 && Math.random() < 0.5){ e.skill++; k++; } return `Eğitim bitti: ${k} çalışanın yeteneği arttı`; }},
+    {ad:'Birbirimizden öğrenelim', acik:'+5 Ar-Ge · moral +2', fx:() => { S.rp = (S.rp||0) + 5; moodAll(2); return 'Ekip bilgi paylaştı'; }},
+    {ad:'Şimdi değil', acik:'Değişiklik yok', fx:() => 'Eğitim ertelendi'}]},
+  {id:'vizyon', q:'Şirketin vizyonu ne olsun?', opts:[
+    {ad:'Dünyaya açılalım', acik:'+4 itibar · moral +3', fx:() => { S.rep += 4; moodAll(3); return 'Büyük hedefler ekibi heyecanlandırdı'; }},
+    {ad:'Küçük ve güçlü', acik:'Moral +6', fx:() => { moodAll(6); return 'Ekip samimi bir şirkette olmaktan mutlu'; }},
+    {ad:'Önce kâr', acik:'5 gün %20 hızlı · moral −3', fx:() => { S.boost = Math.max(S.boost||0, 5); moodAll(-3); return 'Ekip kâr için hızlandı'; }}]},
+];
+// çalışanların toplantıda açabileceği konular (koşula göre)
+const MEET_VOICES = [
+  {id:'pc', ok:() => eqTier('pc') < 3, q:'Patron, bilgisayarlarımız işleri çok yavaşlatıyor. Derleme beklerken kahve soğuyor. Daha güçlü makinelere ihtiyacımız var.', opts:[
+    {ad:'Söz, yenileyeceğiz', acik:'Moral +6 · bilgisayarları Geliştir sayfasından yükselt', fx:(m,e) => { moodAll(6); S.promise = S.day; return 'Ekip yeni bilgisayar sözüne sevindi'; }},
+    {ad:'Bütçe yok', acik:'Moral −3', fx:() => { moodAll(-3); return 'Bilgisayar isteği şimdilik ertelendi'; }},
+    {ad:'Önce sonuç görelim', acik:'Moral −6', fx:(m,e) => { moodAll(-4); if (e) moodOne(e, -4); return 'Ekip bilgisayar konusunda hayal kırıklığına uğradı'; }}]},
+  {id:'maas', ok:() => S.emps.length >= 2, q:'Arkadaşlar adına söylüyorum: piyasaya baktığımızda maaşlarımız geride kaldı. Bunu konuşabilir miyiz?', opts:[
+    {ad:'Herkese %5 zam', acik:m => 'Aylık maaşlar +' + tl(round10(salaries()*0.05)) + ' · moral +10', fx:() => { for (const x of S.emps) x.salary = round10(x.salary*1.05); moodAll(10); return 'Herkese %5 zam yapıldı'; }},
+    {ad:'Tek seferlik prim', acik:m => tl(teamCost(0.2)) + ' · moral +6', money:m => teamCost(0.2), fx:() => { S.money -= teamCost(0.2); moodAll(6); return 'Ekibe prim dağıtıldı'; }},
+    {ad:'Şimdilik olmaz', acik:'Moral −8', fx:() => { moodAll(-8); return 'Zam talebi reddedildi'; }}]},
+  {id:'yorgun', ok:() => teamMood() < 65, q:'Son haftalar çok yoğun geçti, ekip gerçekten yoruldu. Biraz nefes almamız lazım.', opts:[
+    {ad:'Herkese 2 gün izin', acik:'Ekip 2 gün yok · moral +15', fx:() => { let k = 0; for (const x of S.emps) if (!isAway(x)){ x.task = {type:'izin', until:S.day + 2, grp:15}; k++; } sceneKey = ''; return k + ' çalışan 2 günlük izne çıktı'; }},
+    {ad:'Proje bitince tatil', acik:'Moral +4 · söz verirsin', fx:() => { moodAll(4); S.promise = S.day; return 'Proje sonrası tatil sözü verildi'; }},
+    {ad:'Devam etmeliyiz', acik:'Moral −6', fx:() => { moodAll(-6); return 'Ekip yorgun ama devam ediyor'; }}]},
+  {id:'fikir', ok:() => true, q:(m,e) => { if (!m.idea) m.idea = {tp:pick(Object.keys(TOPICS)), ty:pick(Object.keys(TYPES).filter(k => S.tech[k]))}; return `Benim bir ürün fikrim var: <b>${TOPICS[m.idea.tp].ad}</b> temalı bir <b>${TYPES[m.idea.ty].ad.toLowerCase()}</b>. Bence çok ilgi görür!`; }, opts:[
+    {ad:'Sıradaki ürün bu', acik:'Moral +6 · Yeni Ürün sayfası bu fikirle açılır', fx:(m,e) => { if (e) moodOne(e, 10); moodAll(2); S.ideaNext = Object.assign({eid:e && e.id}, m.idea); return 'Sıradaki ürün fikri belirlendi'; }},
+    {ad:'Not aldım', acik:'Moral +2', fx:(m,e) => { if (e) moodOne(e, 3); return 'Ürün fikri not edildi'; }},
+    {ad:'Odaklanalım', acik:'Moral −3', fx:(m,e) => { if (e) moodOne(e, -5); return 'Ürün fikri reddedildi'; }}]},
+  {id:'egitim', ok:() => S.emps.some(x => x.skill < 6), q:'Bazı arkadaşlar yeni teknolojileri öğrenmek istiyor. Eğitime bütçe ayırabilir miyiz?', opts:[
+    {ad:'Eğitim bütçesi', acik:m => tl(teamCost(0.15)) + ' · 2 kişi +1 yetenek', money:m => teamCost(0.15), fx:() => { S.money -= teamCost(0.15); const w = S.emps.filter(x => x.skill < 10).sort((a,b) => a.skill - b.skill).slice(0, 2); for (const x of w){ x.skill++; moodOne(x, 6); } return w.length + ' çalışanın yeteneği arttı'; }},
+    {ad:'Mentorluk yapın', acik:'+5 Ar-Ge · moral +2', fx:() => { S.rp = (S.rp||0) + 5; moodAll(2); return 'Ekip birbirine mentorluk yapacak'; }},
+    {ad:'Şimdi değil', acik:'Moral −3', fx:() => { moodAll(-3); return 'Eğitim isteği ertelendi'; }}]},
+  {id:'ofis', ok:() => S.emps.length >= Math.max(2, OFFICES[S.office].kap - 1), q:'Ofis çok kalabalıklaştı, odaklanmak zorlaşıyor. Biraz daha yer lazım.', opts:[
+    {ad:'Dinlenme köşesi', acik:m => tl(round10(teamCost(0.1))) + ' · moral +6', money:m => round10(teamCost(0.1)), fx:() => { S.money -= round10(teamCost(0.1)); moodAll(6); return 'Ofise dinlenme köşesi eklendi'; }},
+    {ad:'Taşınmayı düşünelim', acik:'Moral +3', fx:() => { moodAll(3); return 'Yeni ofis için söz verildi'; }},
+    {ad:'İdare edin', acik:'Moral −5', fx:() => { moodAll(-5); return 'Ofis kalabalığı devam ediyor'; }}]},
+];
+function meetT(m, id){
+  if (id.indexOf('v:') !== 0) return MEET_TOPICS.find(x => x.id===id);
+  const V = MEET_VOICES.find(x => x.id===id.slice(2)), e = S.emps.find(x => x.id===m.vo[id]);
+  return V && Object.assign({}, V, {e});
+}
+function startMeeting(){
+  if (!meetCount()){ toast('Toplantı için en az bir çalışan gerekli.'); snd('bad'); return; }
+  if (S.day < (S.nextMeet||0)){ toast(`Yeni toplantı için ${S.nextMeet - S.day} gün beklemelisin.`); snd('bad'); return; }
+  closeModal(); if (page) closePage();
+  // ekipten 1-2 kişi söz ister, şirket gündeminden 2 konu
+  const live = S.emps.filter(e => !isAway(e)).sort(() => Math.random() - 0.5);
+  const vs = MEET_VOICES.filter(v => v.ok()).sort(() => Math.random() - 0.5).slice(0, Math.min(2, live.length));
+  const vo = {}; vs.forEach((v, k) => { vo['v:' + v.id] = live[k].id; });
+  const topics = MEET_TOPICS.slice().sort(() => Math.random() - 0.5).slice(0, vs.length ? 2 : 3).map(x => x.id).concat(Object.keys(vo)), cost = {};
+  for (const id of topics){ const T = MEET_TOPICS.find(x => x.id===id); if (T && T.cost) cost[id] = T.cost(); }
+  S.meeting = {topics, ch:{}, cost, vo, t:Date.now()}; S.nextMeet = S.day + MEET_CD;
+  if (window.S3D && S3D.meeting) S3D.meeting(true);
+  snd('event'); updateHome();
+  setTimeout(() => { if (S && S.meeting) showMeeting(); }, 1300);
+}
+function showMeeting(){ curChoices = []; showModal('', meetingHTML(), 'meetm'); }
+function meetingHTML(){
+  const m = S.meeting; if (!m) return '';
+  const rows = m.topics.map(id => { const T = meetT(m, id); if (!T) return '';
+    const head = T.e ? `<div class="mtv"><span class="mav">${avatarSVG(T.e.id, T.e.role, T.e.emo)}</span><div><b>${esc(firstName(T.e))} söz istedi</b><small>${ROLES[T.e.role].ad}</small></div></div><p class="mtsay">"${typeof T.q==='function' ? T.q(m, T.e) : T.q}"</p>` : `<b>${T.q}</b>`;
+    return `<div class="mtq ${T.e ? 'voice' : ''}">${head}<div class="mtopts">${T.opts.map((o, i) => { const c = o.money ? o.money(m) : 0;
+      return `<button class="mtopt ${m.ch[id]===i?'on':''}" data-act="meet-ch" data-id="${id}" data-v="${i}" ${c > S.money ? 'disabled' : ''}><b>${o.ad}</b><small>${typeof o.acik==='function' ? o.acik(m) : o.acik}</small></button>`; }).join('')}</div></div>`; }).join('');
+  const done = m.topics.every(id => m.ch[id] != null);
+  return `<button class="mthide" data-act="meet-hide">Masayı göster</button><div class="npey">TOPLANTI · ${meetCount() + 1} KİŞİ</div><h3 style="margin:2px 0 4px">Şirketin geleceği</h3>
+    <p class="sub" style="margin:0 0 4px">Bütün ekip masada seni dinliyor. Söz alanları dinle ve her konu için kararını ver.</p>${rows}
+    <button class="btn block" data-act="meet-end" ${done ? '' : 'disabled'}>Kararları açıkla</button><button class="mtback" data-act="meet-hide">Kararlara dön</button>`;
+}
+function meetChoose(id, v){ const m = S.meeting; if (!m) return; m.ch[id] = v; snd('click'); const b = $('modal').querySelector('.mbox'); if (b){ const st = b.scrollTop; b.innerHTML = meetingHTML(); b.scrollTop = st; } }
+function endMeeting(){
+  const m = S.meeting; if (!m || !m.topics.every(id => m.ch[id] != null)) return;
+  const out = [];
+  for (const id of m.topics){ const T = meetT(m, id); if (!T) continue; const o = T.opts[m.ch[id]], c = o.money ? o.money(m) : 0; if (c > S.money) continue; out.push(o.fx(m, T.e)); }
+  moodAll(2);              // fikirlerinin dinlenmesi herkese iyi gelir
+  S.meeting = null; closeModal(); exS().meetN = (exS().meetN||0) + 1;
+  if (window.S3D && S3D.meeting) S3D.meeting(false);
+  snd('ok'); toast('Toplantı bitti: ' + out.join(' · ')); updateHome();
+}
+
 
 /* =====================================================================
    SAYFALAR
@@ -403,7 +572,7 @@ function inboxHTML(){
 }
 // ---- ekipten sıradan e-postalar: öneri, izin, zam, teşekkür, yorgunluk, eğitim, ekipman ----
 const STAFF_NOTES = {
-  oneri: {ok:e => true, subject:'Bir ürün fikrim var', lines:e => { const tp = TOPICS[pick(Object.keys(TOPICS))], ty = TYPES[pick(Object.keys(TYPES).filter(t => S.tech[t]))];
+  oneri: {ok:e => true, subject:'Bir ürün fikrim var', lines:(e,m) => { m.tp = pick(Object.keys(TOPICS)); m.ty = pick(Object.keys(TYPES).filter(t => S.tech[t])); m.aud = pick(Object.keys(AUDS)); const tp = TOPICS[m.tp], ty = TYPES[m.ty];
       return ['Patron,', `Dün akşam aklıma bir şey geldi: <b>${tp.ad}</b> temalı bir <b>${ty.ad.toLowerCase()}</b> yapsak bence çok ilgi görür.`, 'Bu alanda bizim gibi küçük ve hızlı bir ekibin fark yaratabileceğini düşünüyorum. Ne dersiniz?']; },
     replies:[{ikon:'💡', ad:'Harika fikir', txt:n=>`${n}, çok iyi düşünmüşsün! Bir sonraki ürün planlamasında mutlaka konuşalım.`, fx:e => moodOne(e, 8)},
              {ikon:'📝', ad:'Not aldım', txt:n=>`Teşekkürler ${n}, not aldım. Uygun zamanda değerlendireceğim.`, fx:e => moodOne(e, 3)},
@@ -489,6 +658,141 @@ Object.assign(STAFF_NOTES, {
              {ikon:'🗣️', ad:'Kendiniz çözün', txt:n=>`${n}, önce kendi aranızda konuşmayı deneyin. Olmazsa ben devreye girerim.`, fx:e => moodOne(e, -1)},
              {ikon:'🧊', ad:'Çocuk gibisiniz', txt:n=>`${n}, ikiniz de yetişkinsiniz. Bu tür şeylerle beni uğraştırmayın.`, fx:(e,m) => { moodOne(e, -7); const o = S.emps.find(x => x.id===m.oid); if (o) moodOne(o, -7); }}]},
 });
+/* ---- ANİ İZİN: bazı çalışanlar bir anda mesaj atıp hemen çıkmak ister.
+   İzin verirsen birkaç gün yoktur ama morali yükselir; vermezsen morali sert düşer. ---- */
+const ACIL_REASONS = [
+  ['Annem hastaneye kaldırıldı', 'Annem fenalaşmış, hastaneye kaldırmışlar. Hemen yanına gitmem gerekiyor.', 2],
+  ['Babam rahatsızlandı', 'Babam evde düşmüş, yanında kimse yok. Ona bakmaya gitmem lazım.', 2],
+  ['Çocuğum okulda ateşlendi', 'Okuldan aradılar, çocuğum ateşlenmiş. Gidip almam lazım.', 1],
+  ['Eşimin doğumu başladı', 'Eşimin doğumu başladı, hastaneye yetişmem lazım. Bebeğimiz geliyor!', 3],
+  ['Eşim rahatsızlandı', 'Eşim birden rahatsızlandı, doktora götürmem gerekiyor.', 1],
+  ['Arkadaşım kaza geçirdi', 'Yakın bir arkadaşım trafik kazası geçirmiş, hastanedeymiş. Ailesi şehir dışında, yanında kimse yok.', 1],
+  ['Kardeşim yolda kaldı', 'Kardeşimin arabası otoyolda bozulmuş, yolda kalmış. Almaya gitmem gerekiyor.', 1],
+  ['Tapu randevumu unutmuşum', 'Bugün tapu randevum varmış, tamamen unutmuşum! Kaçırırsam aylarca beklemem gerekecek.', 1],
+  ['Pasaport randevum vardı', 'Pasaport randevum bugünmüş, aklımdan çıkmış. Bir daha randevu bulmak çok zor.', 1],
+  ['Evde su borusu patladı', 'Komşum aradı, evde boru patlamış, alt kata su akıyormuş. Hemen gitmem lazım.', 1],
+  ['Veli toplantısını unuttum', 'Çocuğumun okulunda veli toplantısı varmış, öğretmeni aradı. Unutmuşum!', 1],
+  ['Kedim çok hasta', 'Kedim sabahtan beri hiçbir şey yemiyor, durumu kötü. Veterinere götürmem lazım.', 1],
+];
+function goLeave(e, d){ e.task = {type:'izin', until:S.day + d}; sceneKey = ''; toast(`${esc(firstName(e))} ${d} gün izinli, işlerine ${d} gün sonra dönecek.`); }
+STAFF_NOTES.acil = {ok:e => false, subject:'ACİL: hemen çıkmam lazım',
+  lines:(e,m) => { const r = acilReason(e, m); m.days = r[2] + (e.liar && Math.random() < 0.5 ? 1 : 0); m.subject = 'ACİL: ' + r[0];
+    return ['Patron, kusura bakma, çok ani oldu.', r[1], m.days > 1 ? `${m.days} gün izin alabilir miyim? Döner dönmez işlerimi toparlarım.` : 'Bugün çıkmam gerekiyor, izin verir misin? Yarın işimin başında olurum.']; },
+  replies:[{ad:'Hemen git', txt:n=>`${n}, hiç düşünme, hemen git. Bir şeye ihtiyacın olursa beni ara.`, fx:(e,m) => { moodOne(e, 12); goLeave(e, m.days||1); }},
+           {ad:'İşini toparla, çık', txt:n=>`${n}, elindeki işi ekibe devret, öğleden sonra çıkabilirsin.`, fx:(e,m) => { moodOne(e, -2); goLeave(e, Math.max(1, (m.days||1)-1)); }},
+           {ad:'Olmaz', txt:n=>`${n}, şu an çok yoğunuz, gidemezsin. İşinin başına dön.`, fx:e => {
+              moodOne(e, -20); moodAll(-3);
+              if ((e.mood??70) < 25 && Math.random() < 0.25) setTimeout(() => { if (!S || !S.emps.includes(e)) return; S.emps = S.emps.filter(x => x!==e); sceneKey = ''; toast(`${esc(e.name)} izin vermediğin için istifa etti!`); snd('bad'); }, 2500);
+              else toast(`${esc(firstName(e))} çok kırıldı, morali dibe vurdu.`); }}]};
+/* ---- YALAN İZİN: bir çalışan kaytarmak için yalan söyler. İpuçları mesajda görünür ---- */
+const LIE_HINTS = ['Mesajı gönderdikten hemen sonra sosyal medyada çevrimiçi göründü.', 'Dün öğle arasında arkadaşlarına hafta sonu planından bahsediyordu.', 'Geçen izinden bronzlaşmış dönmüştü.', 'Mesaj tam da yoğun bir teslim gününden önce geldi.', 'Telefonda konuşurken arkadan müzik ve kahkaha sesleri geliyordu.', 'Ekip arkadaşı, onun bugün maça gideceğini duyduğunu söyledi.'];
+function acilReason(e, m){
+  const log = e.acilLog || (e.acilLog = []);
+  let i = Math.floor(Math.random()*ACIL_REASONS.length);
+  if (e.liar && log.length && Math.random() < 0.55) i = log[log.length-1].r;                       // yalancı aynı bahaneyi tekrarlar
+  else if (!e.liar) for (let k = 0; k < 6 && log.some(x => x.r === i); k++) i = Math.floor(Math.random()*ACIL_REASONS.length);
+  const clues = [], recent = log.filter(x => S.day - x.d <= 45).length, same = log.filter(x => x.r === i).pop();
+  if (recent >= 1) clues.push(`Son 45 günde ${recent + 1}. acil izin isteği.`);
+  if (same) clues.push(`Aynı bahaneyi ${same.d}. günde de söylemişti.`);
+  if (e.liar && Math.random() < 0.65) clues.push(pick(LIE_HINTS));
+  if ((e.lieCaught||0) > 0) clues.push(`Daha önce ${e.lieCaught} kez yalan söylerken yakalandı.`);
+  log.push({d:S.day, r:i}); if (log.length > 12) log.shift();
+  m.lie = !!e.liar; m.clues = clues;
+  return ACIL_REASONS[i];
+}
+function acilLie(id){
+  const m = (S.inbox||[]).find(x => x.id===id), e = m && S.emps.find(x => x.id===m.eid);
+  if (!m || m.answered != null || !e) return;
+  const n = e.name.split(' ')[0];
+  m.answered = 3; m.reply = `${n}, bu hikâyeye inanmıyorum. Bana doğruyu söyle.`; m.read = true; snd('click');
+  closeModal();
+  if (m.lie){
+    e.lieCaught = (e.lieCaught||0) + 1; m.caught = true; exS().liarCaught = true;
+    curChoices = [
+      () => { S.emps = S.emps.filter(x => x!==e); sceneKey = ''; moodAll(2); toast(`${esc(e.name)} yalan söylediği için kovuldu. Ekip adil davrandığını düşünüyor.`); snd('bad'); },
+      () => { e.ceza = {until:S.day + 5}; e.liar = Math.random() < 0.35; moodOne(e, -14); toast(`${esc(n)} 5 gün boyunca herkes eve gidince ofiste kalıp ek mesai yapacak.`); snd('ok'); },
+      () => { const c = round10(e.salary*0.25); S.money += c; e.liar = Math.random() < 0.5; moodOne(e, -12); toast(`${esc(n)} maaşından ${tl(c)} kesildi.`); snd('ok'); },
+      () => { e.liar = Math.random() < 0.8; moodOne(e, -4); toast(`${esc(n)} son kez uyarıldı.`); },
+    ];
+    showModal('', `<div class="acilhd" style="background:#c2410c">YAKALANDI</div><h3 style="margin:4px 0">${esc(e.name)} itiraf etti</h3>
+      <p class="sub" style="text-align:center;margin:0 0 10px">"Patron... haklısın. Aslında gitmem gereken bir yer yoktu, biraz kaytarmak istedim. Çok özür dilerim."</p>
+      <div class="pxlbl">Ne yapacaksın?</div>
+      <div class="cezagrid">
+        <button class="act" data-act="choice" data-i="0"><b>İşten kov</b><small>Hemen ayrılır · ekip adil bulur</small></button>
+        <button class="act" data-act="choice" data-i="1"><b>Ek mesai cezası</b><small>5 gün herkes eve gidince ofiste kalır, daha çok çalışır · moral −14</small></button>
+        <button class="act" data-act="choice" data-i="2"><b>Maaşından kes</b><small>Maaşının dörtte biri kesilir (${tl(round10(e.salary*0.25))}) · moral −12</small></button>
+        <button class="act" data-act="choice" data-i="3"><b>Son kez uyar</b><small>Ceza yok · tekrar yapabilir</small></button>
+      </div>`, 'pro');
+  } else {
+    moodOne(e, -25); moodAll(-4); goLeave(e, m.days||1);
+    if (Math.random() < 0.25) setTimeout(() => { if (!S || !S.emps.includes(e)) return; S.emps = S.emps.filter(x => x!==e); sceneKey = ''; toast(`${esc(e.name)} haksız yere suçlandığı için istifa etti!`); snd('bad'); }, 2500);
+    else toast(`${esc(n)} gerçekten zor durumdaydı. Haksız yere suçlanınca çok kırıldı, ekip de bozuldu.`);
+    snd('bad');
+  }
+  if (page === 'mesaj') renderPage(true);
+}
+/* ---- orta/büyük işten sonra: "bu bilgisayarlarla çok yavaşız" ---- */
+STAFF_NOTES.pcyavas = {ok:e => false, subject:'Bu bilgisayarlarla çok yavaşız',
+  lines:(e,m) => ['Patron,', `<b>${esc(m.pname||'Son proje')}</b> bitti ama açıkçası bilgisayarlarımız bizi çok yavaşlattı. Derleme yaparken ekran donuyor, tasarım dosyaları dakikalarca açılmıyor.`, 'Bu büyüklükte işleri daha hızlı yapabilmemiz için daha güçlü bilgisayarlara ihtiyacımız var. Geliştir sayfasından yenileyebilir miyiz?'],
+  replies:[{ad:'Hemen yenileyelim', txt:n => `Haklısın ${n}. En kısa sürede bilgisayarları yenileyeceğim.`, fx:e => { moodOne(e, 6); moodAll(2); S.promise = S.day; toast('Bilgisayarları Geliştir sayfasından yükseltebilirsin.'); }},
+           {ad:'Bütçeye bakarım', txt:n => `${n}, bütçeye bakıp sana döneceğim.`, fx:e => moodOne(e, 1)},
+           {ad:'İdare edin', txt:n => `${n}, şimdilik bunlarla idare etmemiz lazım.`, fx:e => { moodOne(e, -6); moodAll(-2); }}]};
+function pcComplain(p){
+  if (!p || SIZES[p.size].i < 1 || eqTier('pc') >= 2 || !S.emps.length || S.day < (S.nextPcAsk||0)) return;
+  const pool = S.emps.filter(e => !isAway(e)); if (!pool.length) return;
+  const e = pool.find(x => x.role==='prog') || pool[0], N = STAFF_NOTES.pcyavas;
+  S.nextPcAsk = S.day + 40;
+  const m = {id:S.idSeq++, kind:'not', tpl:'pcyavas', day:S.day, eid:e.id, from:e.name, role:e.role, emo:e.emo, subject:N.subject, pname:p.name, lines:[], answered:null, read:false}; m.lines = N.lines(e, m);
+  S.inbox = [m].concat(S.inbox||[]).slice(0, 40);
+  toast(`${esc(firstName(e))} sana bir e-posta gönderdi: “${N.subject}”`); snd('event');
+}
+/* ---- fikir e-postasında devam yazışması ---- */
+const IDEA_FU = [
+  {ad:'Ayrıntıları gönder', txt:n => `${n}, fikrini tekrar düşündüm, gerçekten iyi. İşle ilgili düşündüklerini bana gönder, başlayalım.`},
+  {ad:'Başka fikrin var mı?', txt:n => `${n}, bu fikir pek içime sinmedi ama düşünmen çok güzel. Başka bir fikrin olursa yine yaz.`},
+  {ad:'Vazgeçtim', txt:n => `${n}, tekrar düşündüm ve bu fikri beğenmedim. Şimdilik mevcut işlere odaklanalım.`},
+];
+function ideaFollow(id, i){
+  const m = (S.inbox||[]).find(x => x.id===id), e = m && S.emps.find(x => x.id===m.eid);
+  if (!m || m.fu != null || !e) return;
+  const n = e.name.split(' ')[0]; m.fu = i; m.fuReply = IDEA_FU[i].txt(n); snd('click');
+  if (i === 0){ moodOne(e, 8);
+    m.fuLines = ['Patron, çok sevindim! Kafamdakileri toparladım:', `<b>Ürün:</b> ${TOPICS[m.tp].ad} temalı bir ${TYPES[m.ty].ad.toLowerCase()}`, `<b>Hedef kitle:</b> ${AUDS[m.aud] ? AUDS[m.aud].ad : 'Herkes'}`, 'İlk sürümü küçük tutup kullanıcıların tepkisine göre büyütmeyi öneriyorum. Hazır olduğunda hemen başlayabiliriz!']; }
+  else if (i === 1){ moodOne(e, 1); S.nextNote = Math.min(S.nextNote || 1e9, S.day + 3); m.fuLines = ['Anladım patron, sorun değil. Kafamda birkaç fikir daha var, toparlayınca yine yazarım.']; }
+  else { moodOne(e, -6); m.fuLines = ['Peki patron... Anlıyorum.']; }
+  if (page === 'mesaj') renderPage(true);
+}
+function ideaStart(id){
+  const m = (S.inbox||[]).find(x => x.id===id); if (!m || !m.tp) return;
+  if (!S.tech[m.ty]){ toast(`${TYPES[m.ty].ad} henüz açık değil.`); snd('bad'); return; }
+  form.type = m.ty; form.topic = m.tp; form.aud = AUDS[m.aud] ? m.aud : form.aud; form.name = ''; m.started = true;
+  const e = S.emps.find(x => x.id===m.eid); if (e) moodOne(e, 6);
+  closeModal(); openPage('yeni');
+}
+function openNoteModal(m){
+  m.read = true;
+  showModal('', `<div class="acilhd">ACİL MESAJ</div>` + noteMailHTML(m));
+  const w = $('modal').querySelector('.mwrap'); if (w) w.classList.add('wide');
+}
+function acilDay(){
+  const live = S.emps.filter(e => !isAway(e) && !e.task && !(e.ceza && S.day < e.ceza.until));
+  if (!S.liarPicked && S.emps.length >= 3){ pick(S.emps).liar = true; S.liarPicked = true; }   // ekipte bir kaytarıcı olur
+  if (S.nextAcil == null) S.nextAcil = S.day + 8 + Math.floor(Math.random()*10);
+  if (S.day < S.nextAcil || !live.length) return;
+  if ((S.inbox||[]).some(m => m.tpl==='acil' && mailNeedsReply(m))) return;
+  S.nextAcil = S.day + Math.max(7, 24 - live.length*2) + Math.floor(Math.random()*10);
+  // bazı çalışanlar buna çok daha yatkın
+  for (const x of live) if (x.acilP == null) x.acilP = Math.random() < 0.35 ? 4 : 1;
+  const wt = x => x.liar ? 7 : x.acilP;
+  let r = Math.random() * live.reduce((a,x) => a + wt(x), 0), e = live[0];
+  for (const x of live){ r -= wt(x); if (r <= 0){ e = x; break; } }
+  const N = STAFF_NOTES.acil;
+  const m = {id:S.idSeq++, kind:'not', tpl:'acil', urgent:true, day:S.day, eid:e.id, from:e.name, role:e.role, emo:e.emo, subject:N.subject, lines:[], answered:null, read:false}; m.lines = N.lines(e, m);
+  S.inbox = [m].concat(S.inbox||[]).slice(0, 40);
+  snd('event');
+  if (!page && $('modal').classList.contains('hidden')) openNoteModal(m);
+  else toast(`${esc(firstName(e))} acil bir mesaj attı: “${m.subject.replace('ACİL: ','')}”`);
+}
 const eduCost = e => round10(Math.max(5000, e.salary*0.6));
 function staffNoteDay(){
   const live = S.emps.filter(e => !isAway(e));
@@ -515,8 +819,17 @@ function noteMailHTML(m){
   else if (m.ignored) foot = `<p class="sub" style="text-align:center">Bu e-postaya zamanında cevap vermedin.</p>`;
   else if (!e) foot = `<p class="sub" style="text-align:center">${esc(m.from)} artık şirkette çalışmıyor.</p>`;
   else { const n = esc(e.name.split(' ')[0]);
-    foot = replyBtns(N.replies, 'note-rep', m.id, n); }
-  return head + body + foot;
+    foot = replyBtns(N.replies, 'note-rep', m.id, n);
+    if (m.tpl==='acil') foot += `<button class="rep liebtn" data-act="acil-lie" data-id="${m.id}"><span class="rtone">Şüpheli</span><b>Yalan söylüyorsun</b><small>“${n}, bu hikâyeye inanmıyorum. Doğruyu söyle.” · haklıysan ceza verirsin, haksızsan çok kırılır</small></button>`; }
+  const clue = m.tpl==='acil' && m.clues && m.clues.length ? `<div class="lieclue"><b>Dikkatini çekenler</b><ul>${m.clues.map(c => `<li>${c}</li>`).join('')}</ul></div>` : '';
+  let fu = '';
+  if (m.tpl==='oneri' && e && (m.answered===0 || m.answered===1)){
+    const n = esc(e.name.split(' ')[0]);
+    if (m.fu == null) fu = `<div class="rh" style="margin-top:10px">Yazışmaya devam et</div><div class="replies r3">${IDEA_FU.map((r,i) => `<button class="rep t${i}" data-act="idea-fu" data-id="${m.id}" data-v="${i}"><b>${r.ad}</b><small>“${r.txt(n)}”</small></button>`).join('')}</div>`;
+    else fu = `<div class="myreply"><div class="rh">Senin cevabın</div><p>${esc(m.fuReply)}</p></div><div class="letter mail">${(m.fuLines||[]).map(l => `<p>${l}</p>`).join('')}<p class="sig">— ${esc(m.from)}</p></div>`
+      + (m.fu === 0 && m.tp ? `<button class="btn block" data-act="idea-start" data-id="${m.id}">${m.started ? 'Bu fikirle yeni ürün sayfasını tekrar aç' : 'Bu fikirle ürün geliştirmeye başla'}</button>` : '');
+  }
+  return head + body + clue + foot + fu;
 }
 function noteReply(id, i){
   const m = (S.inbox||[]).find(x => x.id===id), e = m && S.emps.find(x => x.id===m.eid);
@@ -524,6 +837,7 @@ function noteReply(id, i){
   const r = STAFF_NOTES[m.tpl].replies[i], n = e.name.split(' ')[0];
   m.answered = i; m.reply = r.txt(n); m.read = true;
   r.fx(e, m); snd('click');
+  const md = $('modal'); if (!md.classList.contains('hidden') && md.querySelector('[data-act="note-rep"]')) closeModal();
   if (page === 'mesaj') renderPage(true);
 }
 function stocksHTML(){
@@ -573,11 +887,6 @@ const SPRINTS = [
     {ad:'Test & hata avı',    ikon:'🐞', acik:'Hatalar yayından önce yakalansın', know:['qa']}],
    ex:[{id:'anim', ad:'Akıcı animasyonlar', ikon:'💫', q:3, w:0.07}, {id:'beta', ad:'Beta test grubu', ikon:'🧪', q:2, w:0.04, bug:0.6}]},
 ];
-// türe özel görev adları
-const SPR_NAMES = {
-  oyun:{'0,0':['Oyun motoru','🎮','Fizik, çizim ve ses altyapısı'], '1,0':['Oynanış','🕹️','Oyunu eğlenceli yapan mekanikler'], '1,1':['Çok oyunculu','👥','Arkadaşlarla birlikte oynama'], '2,0':['Grafik & efekt','🌈','Göz alıcı sahneler ve efektler']},
-  ai:  {'0,0':['Veri seti','📚','Modelin öğreneceği veriler'], '0,1':['Model eğitimi','🧠','Yapay zekânın beyni eğitilir'], '1,0':['Akıllı özellikler','🤖','Tahmin, öneri ve sohbet yetenekleri']},
-};
 // her türün ideal zaman dağılımı (gizli; retrospektifte öğrenilir)
 const SPR_IDEAL = {
   web:  [[.35,.42,.23],[.45,.30,.25],[.40,.35,.25]],
@@ -591,7 +900,50 @@ const SPR_BUDGET = 8, SPR_MAX = 6;
 const RICON = {prog:'💻', tas:'🎨', test:'🐞'};
 let spForm = null;
 
-function sprTask(type, i, j){ const t = SPRINTS[i].tasks[j], o = (SPR_NAMES[type]||{})[i+','+j]; return o ? Object.assign({}, t, {ad:o[0], ikon:o[1], acik:o[2]}) : t; }
+/* ---- TÜRE ÖZEL GELİŞTİRME: her ürün türünün kendi aşamaları, görevleri ve ekstraları var.
+   görev: [ad, açıklama, bilinen beceri/dil, karşıladığı ihtiyaçlar] ---- */
+const SPR_TYPES = {
+  mobil:{
+    st:[{ad:'Uygulama temeli', acik:'Veri, hız ve gizlilik', role:'prog'}, {ad:'Özellikler', acik:'Uygulamanın asıl işi', role:'prog'}, {ad:'Arayüz & Cihaz testi', acik:'Görünüş ve farklı telefonlarda deneme', role:'tas'}],
+    tk:[[['Veri & eşitleme','Bilgiler tüm cihazlarda aynı kalsın',['sql'],{kar:2, oze:1}], ['Hız & pil','Hızlı açılsın, pili bitirmesin','dil',{hiz:3}], ['Gizlilik & izinler','Konum, kamera, rehber izinleri güvende',['guv'],{guv:3}]],
+        [['Ana ekranlar','Kullanıcının asıl ihtiyacı','dil',{oze:3}], ['Bildirimler','Kullanıcıyı geri getiren hatırlatmalar',['devops'],{oze:1, kol:2}], ['İnternetsiz mod','Bağlantı yokken de çalışsın',['sql'],{kar:2, hiz:1}]],
+        [['Dokunmatik tasarım','Renkler, ikonlar, ilk izlenim',['uiux'],{gor:3}], ['Tek elle kullanım','Herkes kolayca kullanabilsin',['uiux'],{kol:3}], ['Cihaz testleri','Farklı telefonlarda çökmesin',['qa'],{kar:3}]]],
+    ex:[[{id:'mbulut', ad:'Bulut yedekleme', q:2, w:0.05}, {id:'mbiyo', ad:'Parmak izi ile giriş', q:3, w:0.07}],
+        [{id:'mwidget', ad:'Ana ekran widget', q:2, w:0.05}, {id:'karanlik', ad:'Karanlık mod', q:2, w:0.05}],
+        [{id:'anim', ad:'Akıcı animasyonlar', q:3, w:0.07}, {id:'beta', ad:'Beta test grubu', q:2, w:0.04, bug:0.6}]]},
+  oyun:{
+    st:[{ad:'Oyun motoru', acik:'Fizik, kontroller ve oyun dünyası', role:'prog'}, {ad:'Oynanış', acik:'Oyunu eğlenceli yapan her şey', role:'prog'}, {ad:'Grafik & Oyun testi', acik:'Görsellik, öğretici ve son kontroller', role:'tas'}],
+    tk:[[['Motor & fizik','Çarpışma, yerçekimi ve hareket',['cpp','csharp'],{kar:2, hiz:1}], ['Oyun dünyası','Haritalar, seviyeler, bölümler','dil',{oze:2, gor:1}], ['Kontroller','Tuşlar ve dokunuşlar anında tepki versin',['csharp'],{kol:2, hiz:1}]],
+        [['Oyun mekanikleri','Oyunu eğlenceli yapan kurallar','dil',{oze:3}], ['Çok oyunculu','Arkadaşlarla birlikte, hilesiz oyun',['devops'],{oze:1, guv:2}], ['Optimizasyon','Kare hızı düşmesin, takılmasın',['cpp','rust'],{hiz:3}]],
+        [['Grafik & efektler','Göz alıcı sahneler ve ışıklar',['uiux'],{gor:3}], ['Öğretici bölüm','Yeni oyuncu hemen öğrensin',['uiux'],{kol:3}], ['Oyun testi','Takılma, hata ve zorluk dengesi',['qa'],{kar:3}]]],
+    ex:[[{id:'gedit', ad:'Seviye editörü', q:2, w:0.05}, {id:'gsave', ad:'Bulut kayıt', q:2, w:0.04}],
+        [{id:'gach', ad:'Başarımlar', q:2, w:0.05}, {id:'glead', ad:'Liderlik tablosu', q:2, w:0.05}],
+        [{id:'gmuz', ad:'Orijinal müzikler', q:3, w:0.07}, {id:'beta', ad:'Beta test grubu', q:2, w:0.04, bug:0.6}]]},
+  ai:{
+    st:[{ad:'Veri hazırlığı', acik:'Modelin öğreneceği veriler', role:'prog'}, {ad:'Model', acik:'Yapay zekânın beyni', role:'prog'}, {ad:'Arayüz & Doğrulama', acik:'Kullanım ve doğruluk testleri', role:'tas'}],
+    tk:[[['Veri toplama','Modelin öğreneceği örnekler',['python'],{oze:2, kar:1}], ['Veri temizliği','Hatalı, kirli veriler ayıklansın',['sql'],{kar:3}], ['Veri gizliliği','Kişisel bilgiler anonim kalsın',['guv'],{guv:3}]],
+        [['Model eğitimi','Yapay zekânın beyni eğitilir',['ml'],{oze:3}], ['Hızlı yanıt','Cevaplar beklemeden gelsin',['cpp','rust'],{hiz:3}], ['Bulut & API','Başka uygulamalar da bağlansın',['devops'],{oze:1, kol:2}]],
+        [['Sohbet arayüzü','Sade, anlaşılır ekranlar',['uiux'],{gor:2, kol:1}], ['Kolay kullanım','Teknik bilgisi olmayan da kullansın',['uiux'],{kol:3}], ['Doğruluk testleri','Yanlış cevaplar yakalansın',['qa'],{kar:3}]]],
+    ex:[[{id:'aetiket', ad:'Veri etiketleme ekibi', q:3, w:0.07}, {id:'yedek', ad:'Otomatik yedekleme', q:2, w:0.05}],
+        [{id:'agpu', ad:'Ek GPU kiralama', q:3, w:0.06}, {id:'adil', ad:'Çok dilli destek', q:2, w:0.05}],
+        [{id:'anim', ad:'Akıcı animasyonlar', q:3, w:0.07}, {id:'beta', ad:'Beta test grubu', q:2, w:0.04, bug:0.6}]]},
+};
+// türe göre ihtiyaç adları (oyun için "Güvenlik" yerine "Hile koruması" gibi)
+const NEED_NAMES = {
+  mobil:{hiz:'Hız & pil', guv:'Gizlilik'},
+  oyun: {hiz:'Akıcılık', guv:'Hile koruması', gor:'Grafik', kol:'Kolay öğrenilir', oze:'Eğlence', kar:'Kararlılık'},
+  ai:   {hiz:'Yanıt hızı', guv:'Veri gizliliği', gor:'Arayüz', oze:'Zekâ & doğruluk'},
+};
+const needAd = (type, k) => ((NEED_NAMES[type]||{})[k]) || NEEDS[k].ad;
+function sprStage(type, i){ const d = SPR_TYPES[type], b = SPRINTS[i]; return d ? Object.assign({}, b, d.st[i], {ikon:'', ex:d.ex[i]}) : b; }
+function sprTask(type, i, j){
+  const d = SPR_TYPES[type];
+  if (!d) return Object.assign({needs:TASK_NEEDS[i][j]}, SPRINTS[i].tasks[j]);
+  const t = d.tk[i][j]; return {ad:t[0], acik:t[1], know:t[2], needs:t[3], ikon:''};
+}
+const taskNeeds = (type, i, j) => sprTask(type, i, j).needs;
+// tür daha önce yayınlandıysa/teslim edildiyse ihtiyaçların önemi bilinir
+const needKnown = type => !!(S && S.needLearn && S.needLearn[type]);
 function sprIdeal(p, i){
   const w = SPR_IDEAL[p.type][i].slice();
   for (const a of [p.brief && SPR_PRIO[p.brief.f], p.aud && SPR_AUD[p.aud]]) if (a && a[0]===i) w[a[1]] += a[2];
@@ -617,7 +969,7 @@ const TASK_NEEDS = [
 const NEED_BASE = {
   web:  {hiz:2, guv:1, gor:2, kol:2, oze:2, kar:1},
   mobil:{hiz:2, guv:1, gor:2, kol:3, oze:1, kar:2},
-  oyun: {hiz:3, guv:0, gor:3, kol:1, oze:2, kar:2},
+  oyun: {hiz:3, guv:1, gor:3, kol:1, oze:2, kar:2},
   ai:   {hiz:1, guv:2, gor:1, kol:1, oze:3, kar:2},
 };
 const PRIO_NEED = {hiz:'hiz', guvenlik:'guv', gorsel:'gor', kolay:'kol'};
@@ -635,19 +987,19 @@ function needProfile(p){
 // önceki aşamalarda karşılanan ihtiyaçlar
 function needCovered(p, upto){
   const c = {}; for (const k in NEEDS) c[k] = 0;
-  for (const pl of (p.spr ? p.spr.plans : [])) if (pl.i < upto && pl.focus != null) for (const [k,v] of Object.entries(TASK_NEEDS[pl.i][pl.focus])) c[k] += v;
+  for (const pl of (p.spr ? p.spr.plans : [])) if (pl.i < upto && pl.focus != null) for (const [k,v] of Object.entries(taskNeeds(p.type, pl.i, pl.focus))) c[k] += v;
   return c;
 }
 // odağın değeri: önemli ve henüz karşılanmamış ihtiyaçlara katkı
 function focusValue(p, i, j){
   const {n} = needProfile(p), c = needCovered(p, i);
-  let v = 0; for (const [k,a] of Object.entries(TASK_NEEDS[i][j])) v += n[k] * a / (1 + c[k]*0.5);
+  let v = 0; for (const [k,a] of Object.entries(taskNeeds(p.type, i, j))) v += n[k] * a / (1 + c[k]*0.5);
   return v;
 }
 function sprBest(p, i){ const v = [0,1,2].map(j => focusValue(p, i, j)); return v.indexOf(Math.max(...v)); }
 function sprScore(p, i, focus){ const v = [0,1,2].map(j => focusValue(p, i, j)), mx = Math.max(...v); return mx > 0 ? clamp(v[focus]/mx, 0, 1) : 1; }
 const needDots = v => `<span class="ndots">${[1,2,3,4].map(k => `<i class="${k<=v?'on':''}"></i>`).join('')}</span>`;
-const needTags = t => Object.entries(t).map(([k,a]) => `<span class="ntag2">${NEEDS[k].ad} ${'+'.repeat(a)}</span>`).join('');
+const needTags = (t, type) => Object.entries(t).map(([k,a]) => `<span class="ntag2">${needAd(type, k)} ${'+'.repeat(a)}</span>`).join('');
 function sprSlide(){}   // eski kaydırma çubukları kaldırıldı
 const PACE = {
   hizli:  {ad:'Hızlı',   ikon:'🐇', acik:'Süre −%25 · kalite −4', hiz:1.25, q:-4},
@@ -668,13 +1020,13 @@ function sprKnows(know, t, type){
 function sprLeadBonus(p, i, lead, focus){
   const L = sprPerson(lead); if (!L) return {q:0, why:[]};
   const why = []; let q = 0;
-  if (L.role===SPRINTS[i].role || L.role==='me' || (i===2 && L.role==='test')){ q += 1.5; why.push('işine uygun'); }
+  if (L.role===sprStage(p.type, i).role || L.role==='me' || (i===2 && L.role==='test')){ q += 1.5; why.push('işine uygun'); }
   if (focus !== null && focus !== undefined && sprKnows(L.know, sprTask(p.type, i, focus), p.type)){ q += 2; why.push(`${sprTask(p.type, i, focus).ad} konusunu biliyor`); }
   if (L.know.includes('scrum')){ q += 1; why.push('Scrum biliyor'); }
   return {q, why};
 }
 const sprExCost = (p, x) => Math.max(5000, Math.round((p.kodReq+p.tasReq)*x.w*900/500)*500);
-function sprPlanQ(p, pl){ return (pl.s - 0.6)*14 + pl.lq + ((PACE[pl.pace]||PACE.dengeli).q) + pl.ex.reduce((a,id)=>a + ((SPRINTS[pl.i].ex.find(x=>x.id===id)||{}).q||0), 0); }
+function sprPlanQ(p, pl){ return (pl.s - 0.6)*14 + pl.lq + ((PACE[pl.pace]||PACE.dengeli).q) + pl.ex.reduce((a,id)=>a + ((sprStage(p.type, pl.i).ex.concat(SPRINTS[pl.i].ex).find(x=>x.id===id)||{}).q||0), 0); }
 // yalnızca biten aşamalar kaliteyi etkiler
 function sprintQ(p){ if (!p.spr) return 0; let q = 0; for (const pl of p.spr.plans) if (pl.i < p.spr.rev) q += sprPlanQ(p, pl); return q; }
 const sprProg = p => (p.kod+p.tas)/(p.kodReq+p.tasReq);
@@ -693,8 +1045,8 @@ function sprintCheck(){
     while (p.spr.rev < done){
       const pl = p.spr.plans[p.spr.rev]; p.spr.rev++;
       const sq = Math.round(sprPlanQ(p, pl));
-      toast(`${SPRINTS[pl.i].ikon} ${esc(p.name)} · ${SPRINTS[pl.i].ad} aşaması bitti (${sq>=0?'+':''}${sq} kalite)`);
-      snd(sq >= 0 ? 'ok' : 'bad');
+      toast(`${esc(p.name)} · ${sprStage(p.type, pl.i).ad} aşaması bitti`);
+      snd('ok');
     }
     if (sprWait(p) && mgrOn('sprint') && !(page==='sprint' && pageArg===p.id)){ mgrPlan(p); continue; }
     if (sprWait(p) && !p.spr.asked){
@@ -708,7 +1060,7 @@ function sprintCheck(){
 }
 function openSprint(pid){
   const p = S.projs.find(x=>x.id===pid); if (!p || !p.spr || p.spr.plans.length >= 3) return;
-  const i = p.spr.plans.length, sp = SPRINTS[i];
+  const i = p.spr.plans.length, sp = sprStage(p.type, i);
   const best = S.emps.filter(e => !isAway(e) && e.role===sp.role).sort((a,b)=>b.skill-a.skill)[0];
   spForm = {pid, i, focus:null, pace:'dengeli', lead: best ? best.id : 'me', ex:[]};
   openPage('sprint', pid);
@@ -717,7 +1069,7 @@ function startSprint(auto){
   const f = spForm, p = f && S.projs.find(x=>x.id===f.pid);
   if (!p || p.spr.plans.length !== f.i) return;
   if (f.focus === null){ toast('🎯 Önce bu aşamada neye odaklanılacağını seç.'); snd('bad'); return; }
-  const sp = SPRINTS[f.i], exs = sp.ex.filter(x=>f.ex.includes(x.id));
+  const sp = sprStage(p.type, f.i), exs = sp.ex.filter(x=>f.ex.includes(x.id));
   const cost = exs.reduce((a,x)=>a+sprExCost(p,x), 0);
   if (S.money < cost){ toast('💸 Ekstra işler için paran yetmiyor.'); snd('bad'); return; }
   S.money -= cost;
@@ -726,36 +1078,30 @@ function startSprint(auto){
   p.spr.plans.push({i:f.i, focus:f.focus, pace:f.pace, lead:f.lead, ex:f.ex.slice(), s:sprScore(p, f.i, f.focus), lq:lb.q});
   p.spr.asked = false;
   const L = sprPerson(f.lead), t = sprTask(p.type, f.i, f.focus);
-  toast(`${sp.ikon} ${sp.ad} aşaması başladı: odak ${t.ikon} ${t.ad}, tempo ${PACE[f.pace].ikon} ${PACE[f.pace].ad}`); snd('click');
+  toast(`${sp.ad} aşaması başladı: odak ${t.ad}, tempo ${PACE[f.pace].ad}`); snd('click');
   if (!auto) closePage(); speak(f.lead, '📋'); updateHome();
 }
 function sprintHTML(){
   const p = S.projs.find(x=>x.id===pageArg);
   if (!p || !spForm || spForm.pid !== p.id || p.spr.plans.length !== spForm.i) return `<div class="empty-msg">Bu aşama zaten planlandı.</div>`;
-  const f = spForm, i = f.i, sp = SPRINTS[i], T = TYPES[p.type];
+  const f = spForm, i = f.i, sp = sprStage(p.type, i), T = TYPES[p.type];
   const {n, why} = needProfile(p), cov = needCovered(p, i);
   const L0 = sprPerson(f.lead);
-  // 1) kullanıcılar neyi önemsiyor
-  const needRows = Object.entries(NEEDS).sort((a,b) => n[b[0]] - n[a[0]]).map(([k, N]) => {
-    const left = n[k] / (1 + cov[k]*0.5), done = cov[k] > 0;
-    return `<div class="nrow ${n[k]>=3?'hot':''}"><span class="nnm"><b>${N.ad}</b>${why[k] ? `<i class="nwhy">${why[k]}</i>` : ''}</span>${needDots(n[k])}
-      <span class="ncov">${done ? `<i class="ok">karşılandı ${'+'.repeat(Math.min(3,cov[k]))}</i>` : n[k] >= 2 ? '<i class="todo">eksik</i>' : ''}</span></div>`;
+  // 1) kullanıcılar neyi önemsiyor: önem ancak o türde ürün bitirince öğrenilir
+  const known = needKnown(p.type);
+  const needRows = Object.entries(NEEDS).sort((a,b) => known ? n[b[0]] - n[a[0]] : 0).map(([k, N]) => {
+    const done = cov[k] > 0, cw = why[k] && (known || why[k] === 'Müşteri istedi') ? why[k] : '';
+    return `<div class="nrow ${known && n[k]>=3?'hot':''}"><span class="nnm"><b>${needAd(p.type, k)}</b>${cw ? `<i class="nwhy">${cw}</i>` : ''}</span>${known ? needDots(n[k]) : '<span class="ndots unk">?</span>'}
+      <span class="ncov">${done ? `<i class="ok">karşılandı ${'+'.repeat(Math.min(3,cov[k]))}</i>` : known && n[k] >= 2 ? '<i class="todo">eksik</i>' : ''}</span></div>`;
   }).join('');
-  // 2) odak kartları: hangi ihtiyacı karşılar
-  const vals = [0,1,2].map(j => focusValue(p, i, j)), mx = Math.max(...vals);
+  // 2) odak kartları: hangi ihtiyacı karşılar (doğru mu yanlış mı söylenmez)
   const focusCards = [0,1,2].map(j => {
     const t = sprTask(p.type, i, j), knows = L0 && sprKnows(L0.know, t, p.type);
     return `<button class="fcard2 ${f.focus===j?'on':''}" data-act="sp-focus" data-v="${j}">
-      <b>${t.ad}</b><small>${t.acik}</small><div class="ntags">${needTags(TASK_NEEDS[i][j])}</div>
+      <b>${t.ad}</b><small>${t.acik}</small><div class="ntags">${needTags(t.needs, p.type)}</div>
       ${knows ? '<span class="ftag2">Lider bu konuyu biliyor · +2 kalite</span>' : ''}</button>`;
   }).join('');
-  let fb = '<div class="spfb">Kullanıcıların önemsediği ve henüz karşılanmamış ihtiyaçları hedefleyen odağı seç.</div>';
-  if (f.focus !== null){
-    const s = mx > 0 ? vals[f.focus]/mx : 1, hit = Object.keys(TASK_NEEDS[i][f.focus]).map(k => NEEDS[k].ad).join(' ve ');
-    fb = s >= 0.95 ? `<div class="spfb good"><b>Çok iyi seçim.</b> ${hit} şu an kullanıcılar için en önemli eksik ihtiyaç.</div>`
-       : s >= 0.7 ? `<div class="spfb mid"><b>Fena değil.</b> ${hit} önemli ama daha çok önemsenen ya da hâlâ eksik bir ihtiyaç var.</div>`
-       : `<div class="spfb bad"><b>Zayıf seçim.</b> ${hit} bu kullanıcılar için pek önemli değil ya da zaten karşılandı.</div>`;
-  }
+  const fb = `<div class="spfb">${known ? 'Önceki ürünlerinden öğrendiklerine göre seç.' : 'Bu türde henüz ürün bitirmedin; kullanıcıların neyi önemsediğini bilmiyorsun.'} Seçiminin doğru olup olmadığını ürün bitince göreceksin.</div>`;
   // 3) tempo, lider, ekstralar
   const paceChips = Object.entries(PACE).map(([k, P]) => `<button class="pchip2 ${f.pace===k?'on':''}" data-act="sp-pace" data-v="${k}"><b>${P.ad}</b><small>${P.acik}</small></button>`).join('');
   const people = [['me','me']].concat(S.emps.filter(e=>!isAway(e)).map(e=>[e.id, e.role]));
@@ -765,17 +1111,17 @@ function sprintHTML(){
   const exChips = sp.ex.map(x => `<button class="chip ${f.ex.includes(x.id)?'on':''}" data-act="sp-ex" data-v="${x.id}">${x.ad} <small>+${x.q} kalite · ${tl(sprExCost(p,x))}</small></button>`).join('');
   const exTotal = sp.ex.filter(x=>f.ex.includes(x.id)).reduce((a,x)=>a+sprExCost(p,x), 0), exQ = sp.ex.filter(x=>f.ex.includes(x.id)).reduce((a,x)=>a+x.q, 0);
   // 4) bu kararların etkisi
-  const fq = f.focus !== null ? Math.round(((mx > 0 ? vals[f.focus]/mx : 1) - 0.6)*14) : null, pq = PACE[f.pace].q;
-  const totalQ = (fq ?? 0) + Math.round(lb.q) + pq + exQ;
+  const pq = PACE[f.pace].q;
+  const totalQ = Math.round(lb.q) + pq + exQ;
   const sgn = v => (v > 0 ? '+' : '') + v;
-  return `<div class="sphead2">${SPRINTS.map((s,k)=>`<span class="${k<i?'done':k===i?'cur':''}">${k<i?'✓ ':''}${k+1}. ${s.ad}</span>`).join('<i>›</i>')}<i>›</i><span>Teslim</span></div>
+  return `<div class="sphead2">${[0,1,2].map(k=>sprStage(p.type,k)).map((s,k)=>`<span class="${k<i?'done':k===i?'cur':''}">${k<i?'✓ ':''}${k+1}. ${s.ad}</span>`).join('<i>›</i>')}<i>›</i><span>Teslim</span></div>
     <div class="spgrid">
       <div class="pxpanel">
         <div class="npey">${i+1}. AŞAMA · ${sp.ad.toLocaleUpperCase('tr-TR')}</div>
         <div class="pxsub" style="margin:2px 0 10px">${esc(p.name)} · ${T.ad}${p.kind==='is' ? ' · müşteri işi' : ' · kendi ürünün'}</div>
         <div class="sptitle">Kullanıcılar neyi önemsiyor?</div>
         <div class="nlist">${needRows}</div>
-        <p class="pxnote">Önem ürün türüne, ${p.kind==='is' ? 'müşterinin isteğine' : 'hedef kitleye'} göre belirlenir. Bir ihtiyaç karşılandıkça sonraki aşamalarda daha az önemli olur, yani her aşamada eksik kalanı hedeflemek akıllıcadır.</p>
+        <p class="pxnote">${known ? 'Önem ürün türüne, ' + (p.kind==='is' ? 'müşterinin isteğine' : 'hedef kitleye') + ' göre değişir. Karşılanan ihtiyaç sonraki aşamalarda daha az önemlidir.' : 'Bu türde ilk ürününü bitirince kullanıcıların neyi ne kadar önemsediğini öğreneceksin.'}</p>
       </div>
       <div class="pxpanel">
         <div class="sptitle">1 · Bu aşamada neye odaklanalım?</div>
@@ -790,11 +1136,11 @@ function sprintHTML(){
         <div class="chips">${exChips}</div>
         <div class="speff">
           <div class="npey">BU KARARLARIN ETKİSİ</div>
-          <dl class="npdl"><div><dt>Odak uyumu</dt><dd>${fq === null ? 'odak seçilmedi' : sgn(fq) + ' kalite'}</dd></div>
+          <dl class="npdl"><div><dt>Odak</dt><dd>${f.focus === null ? 'odak seçilmedi' : 'ürün bitince belli olacak'}</dd></div>
             <div><dt>Lider</dt><dd>${sgn(Math.round(lb.q))} kalite</dd></div>
             <div><dt>Tempo</dt><dd>${sgn(pq)} kalite · süre ${PACE[f.pace].hiz > 1 ? '−%25' : PACE[f.pace].hiz < 1 ? '+%25' : 'normal'}</dd></div>
             ${exQ ? `<div><dt>Ekstralar</dt><dd>+${exQ} kalite · ${tl(exTotal)}</dd></div>` : ''}
-            <div class="tot"><dt>Toplam</dt><dd>${sgn(totalQ)} kalite</dd></div></dl>
+            <div class="tot"><dt>Bilinen</dt><dd>${sgn(totalQ)} kalite + odak</dd></div></dl>
         </div>
         <div class="grid2" style="gap:8px;margin-top:10px"><button class="pxghost" data-act="sp-quick">Benim yerime seç</button>
           <button class="npgo" data-act="sp-go" ${f.focus===null?'disabled':''}>Aşamayı başlat${exTotal?' · '+tl(exTotal):''} ${typeof NP_ICON!=='undefined' ? NP_ICON.ok : ''}</button></div>
@@ -810,11 +1156,12 @@ function retroHTML(p){
     const before = p.spr.plans.filter(x => x.i < pl.i);
     const bestJ = (() => { const save = p.spr.plans; p.spr.plans = before; const b = sprBest(p, pl.i); p.spr.plans = save; return b; })();
     const best = sprTask(p.type, pl.i, bestJ);
-    return `<div class="lbl"><span>${SPRINTS[pl.i].ad}${chose ? ` · seçtiğin: ${chose.ad}` : ''}</span><b class="${pl.s>=0.95?'green':pl.s<0.45?'red':''}">${sprWord(pl.s)}</b></div>
-      ${pl.s < 0.95 ? `<div class="sub rtip">En iyisi: ${best.ad} (${Object.keys(TASK_NEEDS[pl.i][bestJ]).map(k=>NEEDS[k].ad).join(', ')})</div>` : ''}`;
+    return `<div class="lbl"><span>${sprStage(p.type, pl.i).ad}${chose ? ` · seçtiğin: ${chose.ad}` : ''}</span><b class="${pl.s>=0.95?'green':pl.s<0.45?'red':''}">${sprWord(pl.s)}</b></div>
+      ${pl.s < 0.95 ? `<div class="sub rtip">En iyisi: ${best.ad} (${Object.keys(best.needs).map(k=>needAd(p.type, k)).join(', ')})</div>` : ''}`;
   }).join('');
-  const table = Object.entries(NEEDS).filter(([k]) => n[k] >= 2).map(([k,N]) => `<span class="rneed ${cov[k]>0?'ok':'miss'}">${cov[k]>0?'✓':'✗'} ${N.ad}</span>`).join('');
-  return `<div class="retro"><b>Geliştirme değerlendirmesi</b>${rows}<div class="sub" style="margin-top:6px">Kullanıcıların önemli ihtiyaçları:</div><div class="rneeds">${table}</div></div>`;
+  const table = Object.entries(NEEDS).filter(([k]) => n[k] >= 2).map(([k]) => `<span class="rneed ${cov[k]>0?'ok':'miss'}">${cov[k]>0?'✓':'✗'} ${needAd(p.type, k)}</span>`).join('');
+  const first = !needKnown(p.type); S.needLearn = S.needLearn || {}; S.needLearn[p.type] = true;
+  return `<div class="retro"><b>Geliştirme değerlendirmesi</b>${first ? `<div class="sub">Artık ${TYPES[p.type].ad} kullanıcılarının neyi önemsediğini biliyorsun; sonraki projelerde ihtiyaçların önemi görünecek.</div>` : ''}${rows}<div class="sub" style="margin-top:6px">Kullanıcıların önemli ihtiyaçları:</div><div class="rneeds">${table}</div></div>`;
 }
 /* =====================================================================
    EKİP MORALİ – iş yeri olayları ve ekip aktiviteleri
@@ -877,7 +1224,7 @@ const OFFICE_EVENTS = [
                {label:'Dürüstçe konuş', cls:'blue', fn:()=>{ if (Math.random() < 0.6) moodAll(3, 'Açık konuşman güven verdi'); else moodAll(-4, 'Konuşma pek ikna etmedi'); }}]}; },
 ];
 
-// ---- ekip aktiviteleri (ofiste boş bir yere dokununca açılır) ----
+// ---- ekip aktiviteleri (Personel sayfasındaki Aktivite düzenle düğmesi) ----
 const TEAM_ACTS = [
   {id:'pizza',   ikon:'🍕', ad:'Pizza günü',          acik:'Öğle arası herkese pizza',          m:8,  cd:10, cost:n=>120*n},
   {id:'sunum',   ikon:'🎤', ad:'Bilgi paylaşım günü', acik:'Herkes öğrendiğini anlatır · Ar-Ge puanı', m:4, cd:7, cost:()=>0, fn:n=>{ const r = 6*n; S.rp = (S.rp||0) + r; return `+${r} Ar-Ge puanı`; }},
@@ -930,59 +1277,55 @@ const BOSS_K = ['Ayşe','Zeynep','Elif','Defne','Ece','Selin','Merve','Ceren','N
 const BOSS_E = ['Mehmet','Emre','Can','Burak','Kerem','Mert','Arda','Kaan','Efe','Onur'];
 let setup = null;
 const rnd = n => Math.floor(Math.random()*n);
-function setupRandomLook(g){
-  g = g || pick(['k','e']);
-  return {g, hair:rnd(3), out:rnd(OUTFIT_OPTS.length), ac:pick([0,0,1,2]), sk:rnd(SKINS.length)};
+// hazır karakterler: oyuncu yüz tasarlamaz, ofisteki gibi arkası dönük oturan 4 karakterden birini seçer
+const CHAR_PRESETS = [
+  {ad:'Ceren', g:'k', hair:0, out:1, ac:0, sk:0},
+  {ad:'Defne', g:'k', hair:2, out:3, ac:1, sk:2},
+  {ad:'Kerem', g:'e', hair:0, out:0, ac:2, sk:1},
+  {ad:'Arda',  g:'e', hair:1, out:2, ac:0, sk:3},
+];
+const presetLook = i => { const c = CHAR_PRESETS[i] || CHAR_PRESETS[0]; return {g:c.g, hair:c.hair, out:c.out, ac:c.ac, sk:c.sk}; };
+function setupRandomLook(){ return {preset: Math.floor(Math.random()*CHAR_PRESETS.length)}; }
+function presetOf(me){
+  if (!me) return 0;
+  const k = CHAR_PRESETS.findIndex(c => c.g===me.g && c.hair===me.hair && c.out===me.out && c.ac===me.ac);
+  return k >= 0 ? k : CHAR_PRESETS.findIndex(c => c.g===(me.g||'e'));
 }
 function showSetup(edit){
-  let me = edit && S && S.me ? Object.assign({}, S.me) : setupRandomLook();
-  if (me.hair === undefined) me = Object.assign(setupRandomLook(me.g), {sk:me.sk||0});   // eski kayıt biçimi
-  setup = Object.assign(me, {edit:!!edit, co: edit && S ? S.name : '', boss: edit && S ? (S.boss||'') : ''});
-  showModal('🏢', '');
-  $('modal').querySelector('.mwrap').classList.add('wide');
+  const pr = edit && S && S.me ? presetOf(S.me) : Math.floor(Math.random()*CHAR_PRESETS.length);
+  setup = {preset: Math.max(0, pr), edit:!!edit, co: edit && S ? S.name : '', boss: edit && S ? (S.boss||'') : ''};
+  showModal('', '');
+  $('modal').querySelector('.mwrap').classList.add('wide', 'pro');
   setupRender();
+}
+function charThumb(i){
+  const L = lookFrom(presetLook(i));
+  if (window.S3D && S3D.ok && S3D.thumb){ try { return `<img src="${S3D.thumb(L, 'preset'+i)}" alt="">`; } catch(e){} }
+  return portraitSVG(L);
 }
 function setupRender(){
   const box = $('modal').querySelector('.mbox'); if (!box || !setup) return;
-  const s = setup, L = lookFrom(s);
-  const chips = (k, list) => `<div class="chips suchips">${list.map((ad, i) => `<button class="chip ${s[k]===i?'on':''}" data-act="su-pick" data-k="${k}" data-v="${i}">${ad}</button>`).join('')}</div>`;
-  box.innerHTML = `<h3 style="margin-bottom:4px">${s.edit?'Görünüşünü Değiştir':'Şirketini Kur'}</h3>
-    <div class="setup">
-      <div class="supv">
-        <div class="supic">${portraitSVG(L)}</div>
-        <div class="suname"><b>${esc(s.boss || 'Patron')}</b><small>${esc(s.co || 'Şirketin')} · Kurucu</small></div>
-        <div class="chips" style="margin:2px 0 0;justify-content:center">
-          <button class="chip ${s.g==='k'?'on':''}" data-act="su-g" data-v="k">👩 Kadın</button>
-          <button class="chip ${s.g==='e'?'on':''}" data-act="su-g" data-v="e">👨 Erkek</button>
-          <button class="chip" data-act="su-rand">🎲</button>
-        </div>
-      </div>
-      <div class="suform">
-        <div class="sugrid2">
-          <div><div class="sub">Şirket adı</div><div class="row"><input type="text" id="cname" maxlength="24" placeholder="Örn. Mavi Yazılım" value="${esc(s.co)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="co">🎲</button></div></div>
-          <div><div class="sub">Senin adın</div><div class="row"><input type="text" id="bname" maxlength="16" placeholder="Patronun adı" value="${esc(s.boss)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="boss">🎲</button></div></div>
-        </div>
-        <div class="sub" style="margin-top:6px">Saç</div>${chips('hair', HAIR_OPTS[s.g].map(x=>x.ad))}
-        <div class="sub">Kıyafet</div>${chips('out', OUTFIT_OPTS.map(x=>x.ad))}
-        <div class="sub">Aksesuar</div>${chips('ac', ACCS)}
-      </div>
+  const s = setup, P = CHAR_PRESETS[s.preset] || CHAR_PRESETS[0];
+  const cards = CHAR_PRESETS.map((c, i) => `<button class="chcard ${s.preset===i?'on':''}" data-act="su-pick" data-k="preset" data-v="${i}">
+      <div class="chimg">${charThumb(i)}</div><b>${c.g==='k' ? 'Kadın' : 'Erkek'}</b><small>${OUTFIT_OPTS[c.out].ad}${c.ac ? ' · ' + ACCS[c.ac] : ''}</small></button>`).join('');
+  box.innerHTML = `<div class="nphead"><div><div class="npey">${s.edit ? 'GÖRÜNÜŞÜNÜ DEĞİŞTİR' : 'YENİ ŞİRKET'}</div><h3>${s.edit ? 'Karakterini seç' : 'Şirketini kur'}</h3></div>${s.edit ? '<button class="npx" data-act="close" aria-label="Kapat">✕</button>' : ''}</div>
+    <div class="pxlbl">Karakterini seç</div>
+    <div class="chgrid">${cards}</div>
+    <div class="sugrid2" style="margin-top:12px">
+      <div><div class="pxlbl">Şirket adı</div><div class="row"><input type="text" id="cname" maxlength="24" placeholder="Örn. Mavi Yazılım" value="${esc(s.co)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="co" aria-label="Rastgele şirket adı">${DICE_SVG}</button></div></div>
+      <div><div class="pxlbl">Senin adın</div><div class="row"><input type="text" id="bname" maxlength="16" placeholder="Patronun adı" value="${esc(s.boss)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="boss" aria-label="Rastgele isim">${DICE_SVG}</button></div></div>
     </div>
-    ${s.edit ? `<div class="grid2"><button class="btn gray block" data-act="close">Vazgeç</button><button class="btn gold block lg" data-act="su-save">💾 Kaydet</button></div>`
-             : `<button class="btn gold block lg" data-act="begin">🚀 Şirketi Kur</button>`}`;
+    ${s.edit ? `<div class="grid2" style="gap:10px;margin-top:12px"><button class="pxghost" data-act="close">Vazgeç</button><button class="npgo" data-act="su-save">Kaydet</button></div>`
+             : `<button class="npgo" style="margin-top:12px" data-act="begin">Şirketi kur ${typeof NP_ICON!=='undefined' ? NP_ICON.ok : ''}</button>`}`;
 }
-function setupPick(k, i){ if (!setup) return; setup[k] = i; setupRender(); }
-function setupGender(g){
-  const s = setup; if (!s || s.g===g) return;
-  s.g = g;
-  if (!s.boss || BOSS_K.concat(BOSS_E).includes(s.boss)) s.boss = pick(g==='k' ? BOSS_K : BOSS_E);
-  setupRender();
-}
+function setupPick(k, i){ if (!setup) return; setup[k] = i; if (k==='preset' && (!setup.boss || BOSS_K.concat(BOSS_E, CHAR_PRESETS.map(c=>c.ad)).includes(setup.boss))) setup.boss = ''; setupRender(); }
+function setupGender(){}
 function setupDice(k){
   if (k==='co') setup.co = pick(CO_A) + ' ' + pick(CO_B);
-  else setup.boss = pick(setup.g==='k' ? BOSS_K : BOSS_E);
+  else setup.boss = pick((CHAR_PRESETS[setup.preset]||{}).g==='k' ? BOSS_K : BOSS_E);
   setupRender();
 }
-const setupLook = () => ({g:setup.g, hair:setup.hair, out:setup.out, ac:setup.ac, sk:setup.sk});function setupTyped(id, v){
+const setupLook = () => presetLook(setup ? setup.preset : 0);function setupTyped(id, v){
   if (!setup) return;
   setup[id==='cname' ? 'co' : 'boss'] = v;
   const n = document.querySelector('.suname');
@@ -1075,6 +1418,13 @@ function staffReply(id, i, silent){
 function staffMailDay(){
   for (const m of S.inbox||[]){
     if (!m.kind || m.answered!=null || m.ignored) continue;
+    // acil izne bir gün içinde cevap gelmezse çalışan kendisi çıkar gider
+    if (m.tpl==='acil' && S.day - m.day >= 1){
+      m.ignored = true;
+      const e = S.emps.find(x => x.id===m.eid);
+      if (e){ moodOne(e, -12); if (!isAway(e)) e.task = {type:'izin', until:S.day + (m.days||1)}; sceneKey = ''; toast(`${esc(firstName(e))} acil mesajına cevap alamadı, kırgın şekilde çıkıp gitti.`); }
+      continue;
+    }
     if (S.day - m.day >= 5){
       m.ignored = true;
       const e = S.emps.find(x => x.id===m.eid);
@@ -1091,27 +1441,27 @@ function staffMailDay(){
 const EQUIP = {
   pc: {ikon:'🖥️', ad:'Bilgisayar', acik:'Ekip hızı ve daha az hata. Büyük işler güçlü bilgisayar ister.', tiers:[
     {ad:'Tüplü Monitörlü Eski PC',      fiyat:0,      hiz:0,    bug:1},
-    {ad:'Düz Ekran PC',                 fiyat:30000,  hiz:0.06, bug:0.95},
-    {ad:'Çift Monitörlü İş İstasyonu',  fiyat:90000,  hiz:0.12, bug:0.9},
-    {ad:'Kavisli Ultra Geniş Ekran',    fiyat:250000, hiz:0.18, bug:0.85},
-    {ad:'Üç Monitörlü Canavar PC',      fiyat:600000, hiz:0.25, bug:0.8}]},
+    {ad:'Düz Ekran PC',                 fiyat:12000,  hiz:0.06, bug:0.95},
+    {ad:'Çift Monitörlü İş İstasyonu',  fiyat:35000,  hiz:0.12, bug:0.9},
+    {ad:'Kavisli Ultra Geniş Ekran',    fiyat:90000, hiz:0.18, bug:0.85},
+    {ad:'Üç Monitörlü Canavar PC',      fiyat:220000, hiz:0.25, bug:0.8}]},
   klavye: {ikon:'⌨️', ad:'Klavye', acik:'Daha hızlı yazma: dokunuşların ve ekibin hızı artar.', tiers:[
     {ad:'Eski Ofis Klavyesi',           fiyat:0,      hiz:0,    tap:0},
-    {ad:'İnce Sessiz Klavye',           fiyat:3000,   hiz:0.03, tap:1.5},
-    {ad:'Mekanik Klavye',               fiyat:12000,  hiz:0.06, tap:3},
-    {ad:'RGB Işıklı Mekanik Klavye',    fiyat:35000,  hiz:0.09, tap:5},
-    {ad:'Ergonomik Bölünmüş Klavye',    fiyat:90000,  hiz:0.12, tap:8}]},
+    {ad:'İnce Sessiz Klavye',           fiyat:1500,   hiz:0.03, tap:1.5},
+    {ad:'Mekanik Klavye',               fiyat:5000,  hiz:0.06, tap:3},
+    {ad:'RGB Işıklı Mekanik Klavye',    fiyat:14000,  hiz:0.09, tap:5},
+    {ad:'Ergonomik Bölünmüş Klavye',    fiyat:35000,  hiz:0.12, tap:8}]},
   koltuk: {ikon:'🪑', ad:'Koltuk', acik:'Rahat çalışan geç yorulur: ekip hızı ve moral.', tiers:[
     {ad:'Plastik Sandalye',             fiyat:0,      hiz:0,    moral:0},
-    {ad:'Basit Ofis Koltuğu',           fiyat:8000,   hiz:0.04, moral:0.2},
-    {ad:'Ergonomik File Koltuk',        fiyat:25000,  hiz:0.08, moral:0.35},
-    {ad:'Oyuncu Koltuğu',               fiyat:70000,  hiz:0.12, moral:0.5},
-    {ad:'Deri Yönetici Koltuğu',        fiyat:180000, hiz:0.16, moral:0.7}]},
+    {ad:'Basit Ofis Koltuğu',           fiyat:3000,   hiz:0.04, moral:0.2},
+    {ad:'Ergonomik File Koltuk',        fiyat:9000,  hiz:0.08, moral:0.35},
+    {ad:'Oyuncu Koltuğu',               fiyat:25000,  hiz:0.12, moral:0.5},
+    {ad:'Deri Yönetici Koltuğu',        fiyat:65000, hiz:0.16, moral:0.7}]},
 };
-const PC_REQ = {web:0, mobil:1, oyun:2, ai:3};
+const PC_REQ = {web:0, mobil:0, oyun:2, ai:3};
 const EQ_PER_STD = 300;                  // sektör standardı her 300 günde bir yükselir
 const eqTier = k => (S && S.eq && S.eq[k]) || 0;
-const eqPeople = () => S.emps.length + 1;
+const eqPeople = () => 1 + S.emps.length*0.5;   // toplu alımda indirim: kişi başı yarım fiyat
 const eqCost = (k, t) => round10(EQUIP[k].tiers[t].fiyat * eqPeople());
 const eqStandard = () => Math.min(4, Math.floor((S.day-1)/EQ_PER_STD));
 const eqBehind = k => Math.max(0, eqStandard() - eqTier(k));
@@ -1223,7 +1573,7 @@ const TUTOR = [
   {sel:'#hDay', up:'.pillw', t:'Zaman', d:'Günler kendiliğinden akar. Her 30 günde bir ay sonu gelir: ödemeler yapılır, yeni iş teklifleri ve iş adayları gelir.'},
   {sel:'#dock .newp', t:'Yeni Proje', d:'Her şey buradan başlar. Müşteri İşi güvenlidir: teslim edince ödemeni alırsın. Kendi Ürünün risklidir ama yayınlandıktan sonra her gün para kazandırır.'},
   {sel:'#side .panel', t:'Projeler', d:'Devam eden projelerin burada: hangi aşamada olduğu, kalitesi ve kalan süresi. Karar gerektiğinde "Karar ver", bitince "Teslim et" düğmesi çıkar.'},
-  {sel:'#scene', t:'Ofisin', d:'Sen ve çalışanların projelerde kendiliğinden çalışırsınız. Bir çalışana dokun: tatile yolla, eğit, zam yap. Boş bir yere dokunursan ekiple aktivite (pizza günü, oyun turnuvası…) düzenlersin. İş yokken çalışanlar kalkıp ofiste dolaşır.'},
+  {sel:'#scene', t:'Ofisin', d:'Sen ve çalışanların projelerde kendiliğinden çalışırsınız. Bir çalışana dokun: tatile yolla, eğit, zam yap. Ekiple aktiviteyi (pizza günü, oyun turnuvası…) Personel sayfasından düzenlersin. İş yokken çalışanlar kalkıp ofiste dolaşır.'},
   {sel:'#inboxBtn', t:'Gelen kutusu', d:'Müşteriler ve çalışanların sana e-posta atar: zam isteği, izin, yeni fikirler, şikâyetler… Her birine iyi, orta ya da sert bir cevap verirsin. Cevabın moralleri ve itibarını etkiler.'},
   {sel:'#dock [data-v="ekip"]', t:'Personel', d:'Buradan çalışan alırsın. Daha çok kişi daha hızlı iş demek. Ofisin alabileceği kişi sayısı sınırlıdır; büyüdükçe daha büyük ofise taşınırsın.'},
   {sel:'#dock [data-v="gelis"]', t:'Geliştir', d:'Bilgisayar, klavye ve koltukları yükselt. Sektör standardının gerisinde kalırsan ekip yavaşlar ve yetenekli adaylar şirkete gelmek istemez.'},
@@ -1231,7 +1581,7 @@ const TUTOR = [
   {sel:'#dock [data-v="ofis"]', t:'Ofisim', d:'Kasan büyüdükçe emlakçı arar: Stüdyo Daire, Ofis, Büyük Ofis ve en sonunda Gökdelen. Her yeni ofis daha çok çalışan ve proje slotu demek.'},
   {sel:'#goal', t:'Hedefler', d:'Sıradaki hedefin burada yazar. Tamamladıkça para ödülü kazanırsın. Ne yapacağını bilemediğinde buraya bak.'},
   {sel:null, t:'Moral önemli', d:'Çalışanlar uzun süre yoğun çalışınca yorulur. Morali düşük çalışan yavaşlar, çok düşerse istifa eder. Tatil, zam, ekip aktiviteleri ve iyi e-posta cevaplarıyla onları mutlu tut.'},
-  {sel:'#dock .newp', t:'Hadi başlayalım!', d:'İlk adım: Yeni Proje → Müşteri İşi al ve teslim et. Bu rehberi istediğin zaman Ayarlar\'dan tekrar açabilirsin. Bol şans, patron!'},
+  {sel:'#dock .newp', t:'Hadi başlayalım!', d:'İlk adım: Yeni Proje → Müşteri İşi al ve teslim et. Bol şans, patron!'},
 ];
 let tutI = -1;
 function tutorAsk(){
@@ -1263,8 +1613,9 @@ function tutorShow(){
       <h3>${st.t}</h3><p>${st.d}</p><div class="tdots">${dots}</div>
       <div class="tbtns">${tutI>0 ? '<button class="pxghost" data-act="tut-prev">Geri</button>' : '<span></span>'}<button class="npgo" data-act="tut-next">${last ? 'Oynamaya başla' : 'İleri'} ${typeof NP_ICON!=='undefined' ? NP_ICON.ok : '›'}</button></div></div>`;
   // kartı vurgunun yanına yerleştir
-  const card = o.querySelector('.tcard'), cw = Math.min(340, W-24), chh = card.offsetHeight || 200;
-  card.style.width = cw + 'px';
+  const card = o.querySelector('.tcard'), cw = Math.min(340, W-24);
+  card.style.width = cw + 'px'; const chh = card.offsetHeight || 200;
+  const sv = k => parseFloat(app.style.getPropertyValue(k)) || 0, sL = sv('--sl'), sR = sv('--sr'), sT = sv('--st'), sB = sv('--sb');   // çentik / durum çubuğu payları
   let cx, cy;
   if (!box){ cx = (W-cw)/2; cy = (H-chh)/2; }
   else {
@@ -1274,7 +1625,7 @@ function tutorShow(){
     else if (above > 8){ cy = above; cx = box.x + box.w/2 - cw/2; }
     else { cy = (H-chh)/2; cx = right + cw < W ? right : Math.max(12, left); }
   }
-  card.style.left = Math.max(12, Math.min(W - cw - 12, cx)) + 'px'; card.style.top = Math.max(12, Math.min(H - chh - 12, cy)) + 'px';
+  card.style.left = Math.max(12 + sL, Math.min(W - cw - 12 - sR, cx)) + 'px'; card.style.top = Math.max(12 + sT, Math.min(H - chh - 12 - sB, cy)) + 'px';
 }
 /* =====================================================================
    YÖNETİCİ – Gökdelen katında işe alınır. Verilen ayarlara göre maaşlar,
@@ -1286,6 +1637,7 @@ const MGR_SET = {
   moral: {ad:'Ekip morali', acik:'Moral düşünce kendiliğinden ekip aktivitesi düzenlesin mi?', opts:{kapali:'Kapalı', acik:'Düzenlesin'}},
   sprint:{ad:'Geliştirme kararları', acik:'Projelerin aşama kararlarını (odak, tempo, lider) o versin mi?', opts:{kapali:'Bana sor', acik:'Yönetici versin'}},
   is:    {ad:'Yeni müşteri işleri', acik:'Boş proje slotu olunca yeni iş bulsun mu?', opts:{kapali:'Kapalı', sor:'Bulsun, bana sorsun', oto:'Kendisi başlatsın'}},
+  egitim:{ad:'Çalışan eğitimi', acik:'Her hafta ekibe bakıp yetersiz bulduğu çalışanları eğitime göndersin mi? Eğitimdeki çalışan 4 gün projelerde çalışmaz; kasada en az 2 aylık maaş kalacak kadar harcar.', opts:{kapali:'Kapalı', zayif:'Zayıfları (yetenek 5 altı)', orta:'Ortanın altını (yetenek 7 altı)', herkes:'Herkesi geliştirsin'}},
 };
 const mgrOn = k => !!(S.mgr && S.mgr.set[k] && S.mgr.set[k] !== 'kapali');
 // yönetici tipleri: her adayın bir uzmanlığı var
@@ -1302,7 +1654,7 @@ const mgrAvatar = c => portraitSVG(empLook(c.seed || 777, 'prog', !!c.f));
 function genMgr(tip){
   const f = Math.random() < 0.5, sk = 5 + Math.floor(Math.random()*6), T = MGR_TYPES[tip];
   return {tip, f, name:pick(f ? MGR_F : MGR_M) + ' ' + pick(LAST_I) + '.', seed:1000 + Math.floor(Math.random()*9000), skill:sk,
-          salary:round10(salaryFor(9)*(1.2 + (sk-5)*0.12)*T.sal*(0.92 + Math.random()*0.16))};
+          salary:round10(salaryFor(10)*(2.4 + (sk-5)*0.3)*T.sal*(0.92 + Math.random()*0.16))};
 }
 function mgrCands(){
   if (!S.mgrCands || !S.mgrCands.length){ const tips = Object.keys(MGR_TYPES).sort(() => Math.random() - 0.5).slice(0, 3); S.mgrCands = tips.map(genMgr); }
@@ -1326,7 +1678,7 @@ function mgrCardHTML(){
 }function mgrMenu(){
   if (!S.mgr){ openPage('ekip'); return; }
   const rows = Object.entries(MGR_SET).map(([k, s]) => `<div class="mgrrow"><b>${s.ad}</b><div class="pxmeta">${s.acik}</div>
-    <div class="chips" style="margin-top:6px">${Object.entries(s.opts).map(([v, ad]) => `<button class="chip ${S.mgr.set[k]===v?'on':''}" data-act="mgr-set" data-k="${k}" data-v="${v}">${ad}</button>`).join('')}</div></div>`).join('');
+    <div class="chips" style="margin-top:6px">${Object.entries(s.opts).map(([v, ad]) => `<button class="chip ${(S.mgr.set[k]||'kapali')===v?'on':''}" data-act="mgr-set" data-k="${k}" data-v="${v}">${ad}</button>`).join('')}</div></div>`).join('');
   showModal('', `<div class="ehead"><div class="mav">${mgrAvatar(S.mgr)}</div><div class="grow"><h3>${esc(S.mgr.name)}</h3><div class="pxmeta">${(MGR_TYPES[S.mgr.tip]||MGR_TYPES.insan).ad} yönetici · deneyim ${S.mgr.skill}/10 · ${tl(S.mgr.salary)}/ay · ${S.day - S.mgr.since} gündür seninle</div></div>
       <button class="npx" data-act="close" aria-label="Kapat">✕</button></div>
     <div class="mgrlist">${rows}</div>
@@ -1349,7 +1701,7 @@ function mgrStartOffer(o){
 }
 function mgrBestOffer(){ return S.offers.filter(o => pcOk(o.type)).sort((a,b) => b.pay/(b.days||1) - a.pay/(a.days||1))[0]; }
 function mgrPlan(p){
-  const i = p.spr.plans.length, sp = SPRINTS[i];
+  const i = p.spr.plans.length, sp = sprStage(p.type, i);
   const best = S.emps.filter(e => !isAway(e) && e.role===sp.role).sort((a,b)=>b.skill-a.skill)[0];
   spForm = {pid:p.id, i, focus: Math.random() < mgrAcc() ? sprBest(p, i) : Math.floor(Math.random()*3), pace:'dengeli', lead: best ? best.id : 'me', ex:[]};
   startSprint(true);
@@ -1357,6 +1709,7 @@ function mgrPlan(p){
 function mgrDay(){
   if (!S.mgr) return;
   const M = S.mgr, first = M.name.split(' ')[0];
+  if (!M.salFix){ M.salFix = true; M.salary = Math.max(M.salary, round10(salaryFor(10)*(2.4 + ((M.skill||5)-5)*0.3)*((MGR_TYPES[M.tip]||{sal:1}).sal))); }
   // e-postalar ve zam istekleri
   let answered = 0;
   for (const m of [...(S.inbox||[])]){
@@ -1379,6 +1732,20 @@ function mgrDay(){
   if (mgrOn('moral') && S.emps.length && teamMood() < 55 && S.day >= (M.nextAct||0) && !page && $('modal').classList.contains('hidden')){
     const a = TEAM_ACTS.filter(x => actReady(x) && !(x.office && S.office < x.office) && S.money >= actCost(x)*3).sort((x,y) => y.m - x.m)[0];
     if (a){ M.nextAct = S.day + 12; doTeamAct(a.id); if (M.tip==='insan') moodAll(4); toast(`🎉 Yöneticin ${esc(first)} morali yükseltmek için "${a.ad}" düzenledi.`); }
+  }
+  // eğitim: yetersiz bulduğu çalışanları eğitime gönderir (ekibin en fazla %40'ı aynı anda görevde)
+  if (mgrOn('egitim') && S.emps.length && S.day >= (M.nextEdu||0)){
+    M.nextEdu = S.day + 7;
+    const mode = M.set.egitim, lim = {zayif:5, orta:7, herkes:10}[mode] || 5, max = mode==='herkes' ? 2 : 1;
+    const room = Math.max(1, Math.floor(S.emps.length*0.4)) - S.emps.filter(e => e.task).length;
+    const keep = salaries()*2, sent = [];
+    const pool = S.emps.filter(e => !e.task && (e.skill < lim || (mode==='herkes' && learnable(e.know, e.role).length))).sort((a,b) => a.skill - b.skill);
+    for (const e of pool){
+      if (sent.length >= Math.min(max, room)) break;
+      if (e.skill < lim){ const c = trainCost(e); if (S.money - c < keep) continue; S.money -= c; e.task = {type:'egitim', until:S.day + 4}; sent.push(`${firstName(e)} (yetenek eğitimi, ${tl(c)})`); }
+      else { const it = learnable(e.know, e.role).sort((a,b) => learnCost(a) - learnCost(b))[0]; if (!it) continue; const c = learnCost(it); if (S.money - c < keep) continue; S.money -= c; e.task = {type:'ogren', item:it.id, until:S.day + it.gun}; sent.push(`${firstName(e)} (${it.ad}, ${tl(c)})`); }
+    }
+    if (sent.length){ sceneKey = ''; toast(`Yöneticin ${esc(first)} eğitime gönderdi: ${sent.map(esc).join(', ')}`); }
   }
   // yeni işler
   if (mgrOn('is') && S.projs.length < slots() && S.day >= (M.nextJob||0)){

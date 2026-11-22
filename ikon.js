@@ -1,6 +1,6 @@
 'use strict';
 /* =====================================================================
-   Kod Patronu – sayfa illüstrasyonları ve çalışan avatarları
+   Bytetown – sayfa illüstrasyonları ve çalışan avatarları
    Kartlardaki emoji yerine elle çizilmiş renkli SVG'ler kullanılır.
    ===================================================================== */
 const A = (inner) => `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
@@ -189,14 +189,23 @@ function artIcons(root){
 }
 
 /* ---------- çalışan avatarı (önden, yüz portresi) ---------- */
+// isimden cinsiyet: kadın isimleri kadın görünür, erkek isimleri erkek
+const FEM_FIRST = new Set(['Ayşe','Fatma','Ece','Zeynep','Elif','Selin','Deniz','Merve','İrem','Buse','Derya','Gizem','Esra','Nazlı','Ceren','Damla','Melis','Sude','Zehra','Ebru','Pelin','Aslı','Gamze','Elif','Selin','Ayşe']);
+function nameFem(name){ return FEM_FIRST.has(String(name||'').split(' ')[0]); }
+function femOf(id, emo){
+  if (typeof S !== 'undefined' && S){
+    for (const L of [S.emps, S.cands, (S.os && S.os.net)]){ const p = (L||[]).find(x => x.id === id); if (p) return nameFem(p.name); }
+  }
+  return /👩|♀/.test(emo||'');
+}
 function avatarSVG(id, role, emo){
   if (role==='me' && typeof S!=='undefined' && S && S.me) return portraitSVG(lookFrom(S.me));
-  return portraitSVG(empLook(id, role, /👩|♀/.test(emo||'')));
+  return portraitSVG(empLook(id, role, femOf(id, emo)));
 }
 // önden yüz portresi (ofisteki karakterle aynı saç, kıyafet ve aksesuar)
 // saç L.hs: 0 kısa, 1 uzun, 2 at kuyruğu, 3 topuz, 4 kıvırcık, 5 kazıtılmış · kıyafet L.kind: tee, hoodie, shirt, sweater, blazer
 function portraitSVG(L){
-  const {skin, hair, shirt} = L, hs = L.hs||0, kind = L.kind||'tee';
+  const {skin, hair, shirt} = L, hs = L.hs||0, kind = L.kind||'tee', fem = !!L.f;
   const hairL = shade(hair, 1.6), hairD = shade(hair, .7), skinD = shade(skin, .86), skinDD = shade(skin, .72);
   const shirtD = shade(shirt, .78), shirtDD = shade(shirt, .6), shirtL = shade(shirt, 1.15);
   const curls = hs===4 ? [[12,12],[16,7.6],[22,5.6],[28,6],[33,8.6],[36.4,13.4],[37.4,19],[10.8,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.2" fill="${hair}" stroke="${hairD}" stroke-width=".5"/>`).join('') : '';
@@ -206,7 +215,7 @@ function portraitSVG(L){
     : hs===4 ? `<ellipse cx="24" cy="17.6" rx="14.6" ry="13.8" fill="${hair}"/>${curls}` : '';
   const capOp = hs===5 ? ' opacity=".42"' : '';
   // gövde ve yaka
-  const body = `<path d="M7.6 48c0-9.4 7.2-14.4 16.4-14.4S40.4 38.6 40.4 48z" fill="${shirt}" stroke="${shirtDD}" stroke-width=".7"/>
+  const body = `<path d="${fem ? 'M10 48c0-8.8 6.2-13.8 14-13.8S38 39.2 38 48z' : 'M6.6 48c0-9.8 7.6-14.8 17.4-14.8S41.4 38.2 41.4 48z'}" fill="${shirt}" stroke="${shirtDD}" stroke-width=".7"/>
     <path d="M31 35.6Q39.6 38.8 40.4 48H34q.6-7.6-3-12.4z" fill="${shirtD}" opacity=".5"/>`;
   const neck = kind==='hoodie'
     ? `<path d="M14.6 36.4q9.4 7 18.8 0" stroke="${shirtDD}" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M21.6 39.6v6.4M26.4 39.6v6.4" stroke="${WH}" stroke-width="1" stroke-linecap="round"/><circle cx="21.6" cy="46.2" r=".8" fill="${WH}"/><circle cx="26.4" cy="46.2" r=".8" fill="${WH}"/>`
@@ -224,7 +233,8 @@ function portraitSVG(L){
     <path d="M20.4 30.6q3.6 2 7.2 0" stroke="${skinDD}" stroke-width=".6" fill="none" opacity=".6"/>
     ${neck}
     <ellipse cx="13.7" cy="22.2" rx="2" ry="2.9" fill="${skin}" stroke="${skinDD}" stroke-width=".5"/><ellipse cx="34.3" cy="22.2" rx="2" ry="2.9" fill="${skin}" stroke="${skinDD}" stroke-width=".5"/>
-    <path d="M13.8 21.4c0-6.8 4.4-11.4 10.2-11.4s10.2 4.6 10.2 11.4c0 6.4-4.2 10.6-10.2 10.6S13.8 27.8 13.8 21.4z" fill="${skin}" stroke="${skinDD}" stroke-width=".6"/>
+    <path d="${fem ? 'M14.4 21.2c0-6.8 4.2-11.2 9.6-11.2s9.6 4.4 9.6 11.2c0 6.2-3.8 10.8-9.6 10.8S14.4 27.4 14.4 21.2z' : 'M13.4 21c0-6.8 4.6-11 10.6-11s10.6 4.2 10.6 11c0 5.6-2.4 9.6-6.4 10.8q-4.2 1.3-8.4 0c-4-1.2-6.4-5.2-6.4-10.8z'}" fill="${skin}" stroke="${skinDD}" stroke-width=".6"/>
+
     <path d="M30.6 13.6q3.8 4.4 3.4 9.8q-.6 5-4.4 7.8q2.6-4.2 2.2-9.6q-.2-4.4-1.2-8z" fill="${skinD}" opacity=".55"/>
     <g${capOp}><path d="M13.4 21C12.6 13.4 17 8.6 24 8.6S35.4 13.4 34.6 21q-1.2-4.8-4.8-6.4q-5.2 2.8-12.8 1.6Q14.4 17.6 13.4 21z" fill="${hair}" stroke="${hairD}" stroke-width=".6"/>
     <path d="M17 12.6q5.6-3.2 12.4-.6q-6-1.4-11 2.2z" fill="${hairL}" opacity=".55"/>
@@ -233,11 +243,11 @@ function portraitSVG(L){
     <circle cx="20.3" cy="22.8" r="1.25" fill="#3b2a1e"/><circle cx="28.3" cy="22.8" r="1.25" fill="#3b2a1e"/>
     <circle cx="20.7" cy="22.4" r=".45" fill="${WH}"/><circle cx="28.7" cy="22.4" r=".45" fill="${WH}"/>
     <path d="M17.9 21.4q2.1-1 4.2 0M25.9 21.4q2.1-1 4.2 0" stroke="${skinDD}" stroke-width=".5" fill="none" opacity=".6"/>
-    <path d="M17.6 19.7q2.4-1.3 4.6-.3M26 19.4q2.2-1 4.6.3" stroke="${shade(hair,.85)}" stroke-width="1.15" fill="none" stroke-linecap="round"/>
+    ${fem ? `<path d="M17.6 19.9q2.4-1.9 4.6-.4M25.8 19.5q2.2-1.5 4.6.4" stroke="${shade(hair,.85)}" stroke-width=".75" fill="none" stroke-linecap="round"/><path d="M18 22q2-1.2 4 0M26 22q2-1.2 4 0" stroke="#3b2a1e" stroke-width=".45" fill="none" stroke-linecap="round" opacity=".8"/>` : `<path d="M17.4 19.5h4.9M25.7 19.5h4.9" stroke="${shade(hair,.8)}" stroke-width="1.7" fill="none" stroke-linecap="round"/>`}
     <path d="M24.4 23.2q1 2.4-.2 3q-.7.3-1.4-.1" stroke="${skinDD}" stroke-width=".9" fill="none" stroke-linecap="round"/>
     <circle cx="17.4" cy="26" r="1.9" fill="rgba(255,110,110,.28)"/><circle cx="30.6" cy="26" r="1.9" fill="rgba(255,110,110,.28)"/>
     ${L.beard ? `<path d="M15.4 24.6q8.6 10 17.2 0q-.6 7.6-8.6 7.6t-8.6-7.6z" fill="${hair}" opacity=".88"/>` : ''}
-    <path d="M21.2 27.6q2.8 2.2 5.6 0" stroke="#9a3412" stroke-width="1.25" fill="none" stroke-linecap="round"/>
+    ${fem ? `<path d="M21.4 27.6q2.6 2 5.2 0" stroke="#b4536a" stroke-width="1.15" fill="none" stroke-linecap="round"/>` : `<path d="M21.2 27.6q2.8 2.2 5.6 0" stroke="#9a3412" stroke-width="1.25" fill="none" stroke-linecap="round"/>`}
     ${L.glasses ? `<g stroke="#334155" stroke-width="1.1" fill="rgba(255,255,255,.28)"><rect x="16.6" y="20.2" width="6.6" height="5" rx="2.2"/><rect x="24.8" y="20.2" width="6.6" height="5" rx="2.2"/><path d="M23.2 22.4h1.6M16.6 22l-2.4-.6M31.4 22l2.4-.6"/></g>` : ''}
     ${L.phones ? `<path d="M12.2 21a11.8 11.8 0 0 1 23.6 0" stroke="#1f2937" stroke-width="2.6" fill="none" stroke-linecap="round"/><rect x="9.4" y="18.2" width="5.2" height="9" rx="2.4" fill="#1f2937"/><rect x="33.4" y="18.2" width="5.2" height="9" rx="2.4" fill="#1f2937"/><rect x="10.4" y="19.6" width="1.6" height="6" rx=".8" fill="${shirt}" opacity=".8"/>` : ''}`);
 }

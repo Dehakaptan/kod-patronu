@@ -1,5 +1,5 @@
 /* =====================================================================
-   Kod Patronu – 3D ofis sahnesi (three.js)
+   Bytetown – 3D ofis sahnesi (three.js)
    Odalar, masalar, eşyalar ve masada çalışan karakterler gerçek 3D olarak
    çizilir. Oyun mantığı (S, seatLayout, looksOf…) diğer betiklerden gelir.
    3D açılamazsa eski SVG sahne çalışmaya devam eder.
@@ -444,6 +444,8 @@ function animPerson(P, t, dt){
     A.hand.rotation.set(0.15 * w + 0.6*(1-w), s*0.08 - (s>0 ? mouseW*0.3 : 0), 0);
   }
   if (P.mouse && P.mouseHome){ P.mouse.position.x = P.mouseHome.x + (P.arms[1].hand.position.x - 0.37)*mouseW*0.6; }
+  if (alarmG) panicPose(P, tt);
+  else if (launchG && launchG.userData.clap) clapPose(P, tt);
 }
 
 /* =====================================================================
@@ -451,6 +453,7 @@ function animPerson(P, t, dt){
    Oturan model masada kalır (gizlenir); yerine ayakta bir kopya yürür.
    ===================================================================== */
 const ROAM = {spots:[], lane:0};
+let thumbR = null; const thumbCache = new Map();
 let lastL = -1;
 let nameTags = [], nameLayer = null;
 function spotAdd(kind, x, z, rot, via, y=0){ ROAM.spots.push({kind, x, z, rot, via:via||[], y, who:null}); }
@@ -534,6 +537,7 @@ function roamStart(P, t, spot, breakT){
   P.W.root.visible = true; P.W.root.position.copy(home);
 }
 function roamTick(P, t, dt){
+  if (meetG || launchG) return;   // toplantıda ve lansmanda kimse kalkmaz
   const R = P.roam;
   if (!R){
     if (P.id==='me' || P.id==='mgr' || !ROAM.spots.length) return;
@@ -881,7 +885,7 @@ function floorTex(L, W, D){
     if (L===0) t = canvasTex(256, 256, (g,w,h) => { g.fillStyle = '#bdb8af'; g.fillRect(0,0,w,h); noise(g,w,h,3200,'255,255,255','70,64,58');
       for (let i=0;i<6;i++){ g.fillStyle = 'rgba(70,60,50,.06)'; g.beginPath(); g.ellipse(Math.random()*w, Math.random()*h, 20+Math.random()*40, 10+Math.random()*20, Math.random()*3, 0, 7); g.fill(); }
       g.fillStyle = 'rgba(60,55,50,.3)'; g.fillRect(0,0,w,2); g.fillRect(0,0,2,h); });
-    else if (L===1) t = plankTex('198,142,90', 32);
+    else if (L===1) t = plankTex('132,90,60', 28);
     else if (L===3) t = plankTex('222,190,148', 26);
     else if (L===2) t = canvasTex(256, 256, (g,w,h) => { for (let i=0;i<4;i++) for (let j=0;j<4;j++){ const v = (Math.random()*10-5)|0; g.fillStyle = `rgb(${132+v},${144+v},${166+v})`; g.fillRect(i*64, j*64, 64, 64);
         g.strokeStyle = 'rgba(255,255,255,.06)'; for (let k=4;k<64;k+=5){ g.beginPath(); if ((i+j)%2){ g.moveTo(i*64+k, j*64); g.lineTo(i*64+k, j*64+64); } else { g.moveTo(i*64, j*64+k); g.lineTo(i*64+64, j*64+k); } g.stroke(); } }
@@ -1212,6 +1216,8 @@ function deskStation(st, R, L, role, occ, exec, idx){
    ===================================================================== */
 function build(){
   if (!renderer) return;
+  const wasMeet = !!meetG;       // toplantı sürerken ofis yeniden kurulursa toplantı odası da yenilenir
+  if (meetG){ scene3.remove(meetG); disposeTree(meetG); meetG = null; meetSave = null; }
   if (roomG){ scene3.remove(roomG); disposeTree(roomG); }
   roomG = new THREE.Group(); scene3.add(roomG);
   roamReset(); ROAM.spots = []; ROAM.lane = 0; nameTags = [];
@@ -1258,27 +1264,37 @@ function build(){
     cat(roomG, 2.2, 5.6);
     coffeeAt = [1.5, 5.3];
   } else if (L===1){
-    // ---- STÜDYO DAİRE: krem duvar + beyaz lambri, parke, yatak, mutfak köşesi ----
-    wainscot(roomG, 'back', 0, W, '#fbf8f2'); wainscot(roomG, 'left', 0, D, '#fbf8f2');
-    winBack(roomG, 1.0, 2.9, {curtain:'#9fb7cf'}); winBack(roomG, 4.5, 6.4, {curtain:'#9fb7cf'});
-    doorLeft(roomG, 0.25, '#b07a45');
-    frameArt(roomG, 'left', 1.7, 1.0, 0.6, 1.65, ART_SETS[0], 11);
-    wallClock(roomG, 7.1);
-    kitchenLeft(roomG, 3.3, 1.7);
-    rug(roomG, 1.9, 3.6, 3.3, 2.15, '#cbb89a');
-    couch(roomG, 2.2, 3.7, 2.0, '#5f7896');
-    floorLamp(roomG, 1.75, 3.85);
-    coffeeTable(roomG, 3.4, 5.2);
-    armchair(roomG, 4.85, 5.15, '#c08457', -0.5);
-    nightstand(roomG, 5.45, 3.85);
-    bed(roomG, 5.85, 3.55);
-    tallPlant(roomG, 7.3, 0.15, 0.95);
-    plant(roomG, 0.25, 2.55, 1.0);
-    coffeeAt = [3.0, 0.15];
-    ROAM.lane = T(3.45);
-    spotAdd('drink', 0.95, T(3.75), Math.PI/2, [[0.95, T(3.45)]]); spotAdd('drink', 0.95, T(4.5), Math.PI/2, [[0.95, T(3.45)]]);
-    spotAdd('sit', T(4.85), T(5.15), Math.PI-0.5, [[T(4.85), T(3.45)]], 0.42);
-  } else if (L===2){
+    // ---- STÜDYO DAİRE (lüks loft): ceviz parke, büyük pencereler, TV duvarı, mutfak adası, okuma köşesi ----
+    const FR = '#2b303b';
+    texPanel(roomG, 'left', 0.15, 3.1, M('#2b3a5c'));                       // lacivert vurgu duvarı
+    texPanel(roomG, 'back', 7.3, W, M('#8a5a3c'));                          // yatak köşesinde ahşap duvar
+    winBack(roomG, 0.8, 3.6, {frame:FR, curtain:'#e9e2d6'}); winBack(roomG, 4.3, 7.0, {frame:FR, curtain:'#e9e2d6'});
+    doorLeft(roomG, 0.25, FR);
+    frameArt(roomG, 'left', 1.5, 1.2, 0.7, 1.65, ART_SETS[3], 9);
+    // oturma alanı: duvarda TV + konsol, TV'ye dönük kanepe, sehpa, halı
+    rug(roomG, 0.9, 3.7, 3.6, 2.9, '#cfc6b8');
+    roomG.add(boxP(0.42, 0.45, T(2.2), M('#2b2f38'), 0.24, 0.225, T(3.9)+T(2.2)/2, {outline:.012}));
+    tvLeft(roomG, 4.0, 2.0);
+    couch(roomG, 4.5, 3.9, 2.4, '#3d4b66', -Math.PI/2);
+    coffeeTable(roomG, 2.55, 5.1);
+    floorLamp(roomG, 4.1, 3.75);
+    tallPlant(roomG, 0.2, 6.3, 1.0);
+    // mutfak adası (bar tabureli)
+    kitchenIsland(roomG, 5.2, 4.0, 2.0);
+    // okuma köşesi (yatak yok): koltuk, sehpa, lamba, bitki
+    rug(roomG, 7.5, 3.9, 2.4, 2.6, '#d9cbb3');
+    armchair(roomG, 8.2, 5.2, '#c08457', Math.PI - 0.5); armchair(roomG, 9.4, 4.6, '#5f7896', Math.PI + 0.6);
+    sideTable(roomG, 8.9, 4.3, true);
+    tallPlant(roomG, 9.3, 6.2, 0.95);
+    // arka sağ: kitaplık ve bitki
+    bookshelfX(roomG, 8.0, 0.12, 1.5);
+    tallPlant(roomG, 9.4, 2.4, 0.95);
+    plant(roomG, 0.25, 3.3, 0.9);
+    coffeeAt = [7.25, 0.15];
+    ROAM.lane = T(3.4);
+    { const l = T(2.0), cx = T(5.2)+l/2, cz = T(4.0)+0.35, n = Math.max(2, Math.floor(l/0.62));
+      for (let i=0;i<n;i++){ const sx = cx - l/2 + l*(i+0.5)/n; spotAdd('drinksit', sx, cz+0.66, 0, [[T(5.0), ROAM.lane], [T(5.0), cz+1.11], [sx, cz+1.11]], 0.7); } }
+    { const z0 = T(3.9), w = T(2.4); for (let i=0;i<3;i++){ const sz = z0 + w*(i+0.5)/3; spotAdd('sit', T(4.5)-0.45, sz, Math.PI/2, [[T(4.5)-0.45, ROAM.lane]], 0.42); } }  } else if (L===2){
     // ---- OFİS: açık gri duvar, lacivert vurgu duvarı, halı karo, toplantı masası ----
     texPanel(roomG, 'back', 8.0, W, M('#2b3a5c'));
     winBack(roomG, 1.3, 3.6, {blinds:true}); winBack(roomG, 4.6, 6.9, {blinds:true});
@@ -1421,6 +1437,7 @@ function build(){
     spotAdd('chat', 10.3, 5.8, -Math.PI/2, [[10.3, ROAM.lane]]); spotAdd('chat', 11.1, 5.8, Math.PI/2, [[11.1, ROAM.lane]]);
     vacuum(roomG, 1.3, 11.5, 4.05);
   }  if (S.upg.kahve && coffeeAt) coffeeMachine(roomG, coffeeAt[0], coffeeAt[1]);
+  rackPos = serverAt;
   if (S.upg.bulut && serverAt) serverRack(roomG, serverAt[0], serverAt[1]);
   ROAM.spots.forEach((s,i) => { if (s.kind!=='chat') return; let best = null, bd = 1.3; ROAM.spots.forEach((o,j) => { if (j===i) return; const d = Math.hypot(o.x-s.x, o.z-s.z); if (d < bd){ bd = d; best = j; } }); s.mate = best; });
   companySign(roomG, L, W, S.name.length > 22 ? S.name.slice(0,21)+'…' : S.name);
@@ -1458,7 +1475,7 @@ function build(){
   for (let i=0;i<nSeats;i++){
     const st = seats[i], who = people[i];
     const away = who && who.e && who.e.task && AWAY.includes(who.e.task.type) ? (who.e.task.type==='kurs' ? '🎓' : who.e.task.type==='izin' ? '🏖️' : '🎤') : null;
-    const role = who ? ((who.e && who.e.task && (who.e.task.type==='arge' || who.e.task.type==='ogren')) || (who.id==='me' && S.ftask) ? 'arge' : who.role) : 'none';
+    const role = who ? ((who.e && who.e.task && (who.e.task.type==='arge' || who.e.task.type==='ogren' || who.e.task.type==='egitim')) || (who.id==='me' && S.ftask) ? 'arge' : who.role) : 'none';
     addStation(st.x+1.3, st.y+0.75, who, role, i, false, away);
     if (who) nameTags.push({id:who.id, name: who.e ? who.e.name : 'Sen', st:roomG.children[roomG.children.length-1], me:!who.e, away:!!away});
   }
@@ -1477,6 +1494,12 @@ function build(){
   renderer.shadowMap.needsUpdate = true;
   needFit = true;
   for (const P of chars.values()) animPerson(P, 0, 1);
+  if (wasMeet) meetingOn(true);
+  if (launchG && launchSave){ launchSave.chars = chars; launchSave.roomBox = Object.assign({}, roomBox); chars = launchG.userData.chars; roomBox = {W:LRW, D:LRD}; roomG.visible = false; setLight(LRW, LRD); needFit = true; }
+  if (catG){ scene3.remove(catG); catG = null; }
+  if (decorG){ scene3.remove(decorG); decorG = null; } decorG = buildDecor(); if (decorG) scene3.add(decorG);
+  buildEnv();
+  if (S.ex && S.ex.cat){ catG = buildCat(); catG.position.set(roomBox.W*0.5, 0, Math.min(roomBox.D - 0.6, (ROAM.lane || roomBox.D*0.7))); scene3.add(catG); catS = {wait:2}; }
 }
 let roomBox = {W:5, D:5};
 function disposeTree(o){ o.traverse(c => { if (c.isMesh && c.userData.merged) c.geometry.dispose(); }); }
@@ -1491,9 +1514,11 @@ function fitView(){
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   for (const [x,y,z] of [[0,0,0],[roomBox.W,0,0],[0,0,roomBox.D],[roomBox.W,0,roomBox.D],[0,WALL_H*0.72,0],[roomBox.W,WALL_H*0.72,0],[0,WALL_H*0.72,roomBox.D],[roomBox.W,-0.2,roomBox.D]]){
     const p = V(x,y,z).applyMatrix4(inv); minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); }
-  const cx = (minX+maxX)/2, cy = (minY+maxY)/2, aspect = w/h;
+  let cx = (minX+maxX)/2, cy = (minY+maxY)/2, aspect = w/h;
   let hw = (maxX-minX)/2*0.99, hh = (maxY-minY)/2*0.98;
   if (hw/hh > aspect) hh = hw/aspect; else hw = hh*aspect;
+  // toplantıda sağda karar paneli açık: oda sola, panelin yanına kaysın
+  if (meetG && w > 520){ const k = Math.min(1.45, 1 + 400/w); hw *= k; hh *= k; cx += hw*(1 - 1/k)*0.55; }
   view = {cx, cy, hw, hh};
   needFit = false;
   applyView3();
@@ -1531,6 +1556,7 @@ function loop(){
   const t = clock.elapsedTime;
   for (const P of chars.values()){ animPerson(P, t, dt*(chars.size > 14 ? 2 : 1)); roamTick(P, t, dt*(chars.size > 14 ? 2 : 1)); }
   updateNames(dt*(chars.size > 14 ? 2 : 1));
+  alarmTick(t); catTick(t, dt); decorTick(t); envTick(t, dt); launchTick(t, dt);
   for (const a of screenAnims) a.tex.offset.y = (t*a.speed) % 1;
   for (const a of animated){
     if (a.vac){ const k = (Math.sin(t*0.35)+1)/2; a.vac.position.set(THREE.MathUtils.lerp(a.a, a.b, k), 0, a.z); a.vac.rotation.y = Math.cos(t*0.35) > 0 ? 0 : Math.PI; }
@@ -1560,8 +1586,383 @@ function headScreen(id){
   wp.project(camera);
   return [(wp.x+1)/2*canvas.clientWidth, (1-wp.y)/2*canvas.clientHeight];
 }
+/* =====================================================================
+   TOPLANTI – kurucu toplantı yapınca ofis yerine toplantı odası görünür:
+   uzun masanın başında kurucu, iki yanında bütün ekip oturur
+   ===================================================================== */
+let meetG = null, meetSave = null;
+function setLight(w, d){
+  const size = Math.max(w, d);
+  Object.assign(sun.shadow.camera, {left:-size*0.75, right:size*0.75, top:size*0.75, bottom:-size*0.75, near:0.5, far:size*4});
+  sun.shadow.camera.updateProjectionMatrix();
+  sun.position.set(w/2 + size*0.45, size*1.1, d/2 + size*0.6); sun.target.position.set(w/2, 0, d/2); sun.target.updateMatrixWorld();
+}
+function buildMeeting(){
+  const away = e => e.task && ['kurs','izin','konf'].includes(e.task.type);
+  const ppl = [{id:'me', role:'me'}];
+  if (S.office===4 && S.mgr) ppl.push({id:'mgr', role:'mgr'});
+  for (const e of S.emps) if (!away(e)) ppl.push({id:e.id, role:e.role, e});
+  const others = ppl.length - 1, per = Math.max(1, Math.ceil(others/2));
+  const TL = Math.max(2.0, per*0.92 + 0.5), TD = 1.3;
+  const RW = TL + 3.8, RD = TD + 3.6, cx = RW/2 + 0.25, cz = RD/2 + 0.2;
+  const g = new THREE.Group();
+  // zemin, halı, duvarlar
+  const fl = boxP(RW, 0.12, RD, M('#8a6a4f'), RW/2, -0.06, RD/2); fl.castShadow = false; g.add(fl);
+  g.add(boxP(RW+0.16, 0.08, RD+0.16, M('#5e4634'), RW/2, -0.13, RD/2));
+  g.add(boxP(TL+2.0, 0.014, TD+2.3, M('#2e3f66'), cx, 0.007, cz));
+  g.add(boxP(TL+1.8, 0.016, TD+2.1, M('#34497a'), cx, 0.008, cz));
+  g.add(boxP(RW+0.15, WALL_H, 0.15, M('#eef1f6'), RW/2-0.075, WALL_H/2, -0.075));
+  g.add(boxP(0.15, WALL_H, RD, M('#e6eaf1'), -0.075, WALL_H/2, RD/2));
+  g.add(boxP(RW+0.15, 0.06, 0.17, M('#c9ced8'), RW/2-0.075, WALL_H+0.03, -0.075));
+  g.add(boxP(0.17, 0.06, RD, M('#c9ced8'), -0.085, WALL_H+0.03, RD/2));
+  // sol duvarda büyük pencereler
+  for (let k=0; k<2; k++){ const z = RD*(0.3 + k*0.42);
+    g.add(boxP(0.05, 1.45, 1.15, M('#2b303b'), 0.01, 1.5, z));
+    g.add(boxP(0.06, 1.33, 1.03, M('#bfe0f7'), 0.02, 1.5, z));
+    g.add(boxP(0.07, 0.04, 1.03, M('#2b303b'), 0.03, 1.5, z)); }
+  // arka duvarda sunum ekranı
+  g.add(boxP(2.3, 1.28, 0.07, M('#1f2937'), cx, 1.62, 0.04));
+  { const scr = new THREE.Mesh(new THREE.PlaneGeometry(2.14, 1.12), new THREE.MeshBasicMaterial({map: textTex('ŞİRKETİN GELECEĞİ', {w:768, h:400, font:'900 66px Nunito, system-ui, sans-serif', bg:'#173a80', r:0})}));
+    scr.position.set(cx, 1.62, 0.08); g.add(scr); }
+  g.add(boxP(0.9, 0.06, 0.32, M('#d8dde6'), cx, 0.92, 0.2));          // ekranın altındaki konsol
+  // uzun toplantı masası
+  g.add(rbox(TL, 0.07, TD, 0.06, M('#5b3a26'), cx, 0.745, cz, {outline:.02}));
+  g.add(boxP(TL-0.6, 0.006, 0.34, M('#3d2719'), cx, 0.783, cz));
+  for (const s of [-1,1]) g.add(boxP(0.2, 0.71, TD*0.55, M('#2b303b'), cx + s*TL*0.32, 0.355, cz));
+  // köşelerde bitkiler, yanda su sebili
+  tallPlant(g, (RW-0.75)/U, 0.25/U, 0.95); tallPlant(g, (RW-0.75)/U, (RD-0.9)/U, 0.85);
+  g.add(cylP(0.17, 0.9, M('#e5e7eb'), 0.45, 0.45, 0.4)); g.add(cylP(0.13, 0.34, M('#9fd2f0'), 0.45, 1.07, 0.4));
+  // insanlar
+  const chair = chairTier(), crowd = ppl.length > 16, mc = new Map();
+  const place = (w, x, z, rot, nx, nz) => {
+    const P = buildPerson(w.id, w.role, looksOf(w.id, w.role), w.e && w.e.lead, {chair, crowd});
+    P.wantWork = false; P.state = 0; P.root.userData.dyn = true;
+    P.root.position.set(x, 0, z); P.root.rotation.y = rot; g.add(P.root); mc.set(String(w.id), P);
+    g.add(boxP(0.22, 0.012, 0.3, M('#f8fafc'), nx, 0.786, nz));                 // not defteri
+    g.add(cylP(0.035, 0.09, M('#ffffff'), nx + 0.2, 0.83, nz));                  // bardak
+  };
+  place(ppl[0], cx - TL/2 - 0.5, cz, -Math.PI/2, cx - TL/2 + 0.24, cz);
+  const rest = ppl.slice(1);
+  rest.forEach((w, i) => {
+    const side = i % 2, k = Math.floor(i/2), x = cx - TL/2 + TL*(k + 0.5)/per;
+    if (side === 0) place(w, x, cz - TD/2 - 0.48, Math.PI, x, cz - TD/2 + 0.22);
+    else place(w, x, cz + TD/2 + 0.48, 0, x, cz + TD/2 - 0.22);
+  });
+  mergeInto(g, c => c.isSprite || c.userData.dyn);
+  return {g, mc, RW, RD};
+}
+function meetingOn(on){
+  if (!renderer) return;
+  if (on){
+    if (meetG){ scene3.remove(meetG); disposeTree(meetG); }
+    else meetSave = {chars, roomBox:Object.assign({}, roomBox), zoom:zoom3, pan:pan3.slice()};
+    const m = buildMeeting(); meetG = m.g; scene3.add(meetG); roomG.visible = false;
+    chars = m.mc; roomBox = {W:m.RW, D:m.RD}; zoom3 = 1; pan3 = [0, 0]; setLight(m.RW, m.RD);
+    for (const P of chars.values()) animPerson(P, 0, 1);
+  } else if (meetG){
+    scene3.remove(meetG); disposeTree(meetG); meetG = null; roomG.visible = true;
+    if (meetSave){ chars = meetSave.chars; roomBox = meetSave.roomBox; zoom3 = meetSave.zoom; pan3 = meetSave.pan; meetSave = null; }
+    setLight(roomBox.W, roomBox.D);
+  }
+  needFit = true; renderer.shadowMap.needsUpdate = true;
+}
+/* =====================================================================
+   GECE KRİZİ ALARMI – ofis kararır, kırmızı alarm döner, sunucu dolabından
+   duman ve kıvılcım çıkar, çalışanlar panikle ellerini başlarına götürür
+   ===================================================================== */
+let hemi = null, alarmG = null, rackPos = null;
+function alarmOn(on){
+  if (!renderer) return;
+  if (on){
+    if (alarmG || meetG) return;
+    alarmG = new THREE.Group(); scene3.add(alarmG);
+    const rp = rackPos || [0.15, 0.1], cx = T(rp[0]) + 0.3, cz = T(rp[1]) + 0.3;
+    if (!(S.upg.bulut && rackPos)) serverRack(alarmG, rp[0], rp[1]);        // sunucu dolabı yoksa geçici bir tane
+    alarmG.add(boxP(0.62, 0.04, 0.62, new THREE.MeshBasicMaterial({color:0x111111}), cx, 2.02, cz));   // yanık üst kapak
+    const red = new THREE.PointLight(0xff2020, 0, 30, 1.2); red.position.set(roomBox.W/2, 2.8, roomBox.D/2); alarmG.add(red);
+    const fire = new THREE.PointLight(0xff7a1a, 0, 6, 1.6); fire.position.set(cx, 2.3, cz + 0.2); alarmG.add(fire);
+    const beacon = new THREE.Mesh(G.sph, new THREE.MeshBasicMaterial({color:0xff2a2a})); beacon.scale.setScalar(0.09); beacon.position.set(cx, 2.12, cz); alarmG.add(beacon);
+    const puffs = [], sparks = [];
+    for (let i = 0; i < 12; i++){ const m = new THREE.Mesh(G.sph, new THREE.MeshBasicMaterial({color:i%3 ? 0x4b5563 : 0x6b7280, transparent:true, opacity:0.5, depthWrite:false})); m.userData.ph = i/12; alarmG.add(m); puffs.push(m); }
+    for (let i = 0; i < 18; i++){ const m = new THREE.Mesh(G.box, new THREE.MeshBasicMaterial({color:i%2 ? 0xffd24a : 0xff8a1f})); m.scale.setScalar(0.04); m.userData.ph = Math.random(); m.userData.a = Math.random()*6.28; alarmG.add(m); sparks.push(m); }
+    alarmG.userData = {red, fire, beacon, cx, cz, puffs, sparks, saved:{bg:scene3.background, sun:sun.intensity, hemi:hemi ? hemi.intensity : 1}};
+    scene3.background = new THREE.Color(0x0a0f24); sun.intensity = 0.25; if (hemi) hemi.intensity = 0.38;
+    sceneEl.classList.add('alarm3');
+  } else if (alarmG){
+    const sv = alarmG.userData.saved; scene3.background = sv.bg; sun.intensity = sv.sun; if (hemi) hemi.intensity = sv.hemi;
+    scene3.remove(alarmG); alarmG = null; sceneEl.classList.remove('alarm3');
+  }
+}
+function alarmTick(t){
+  if (!alarmG) return;
+  const u = alarmG.userData, on = Math.sin(t*8) > 0;
+  u.red.intensity = on ? 14 : 1.5; u.beacon.visible = on;
+  u.fire.intensity = 3 + Math.random()*4;
+  for (const m of u.puffs){ const k = (t*0.32 + m.userData.ph) % 1;
+    m.position.set(u.cx + Math.sin(k*6 + m.userData.ph*9)*0.35*k, 2.1 + k*2.0, u.cz + Math.cos(k*5 + m.userData.ph*4)*0.3*k);
+    m.scale.setScalar(0.16 + k*0.75); m.material.opacity = 0.75*(1 - k); }
+  for (const s of u.sparks){ const k = (t*1.7 + s.userData.ph) % 1;
+    s.position.set(u.cx + Math.cos(s.userData.a)*k*0.8, 2.05 + Math.sin(k*3.14)*0.6 - k*0.3, u.cz + Math.sin(s.userData.a)*k*0.8 + 0.25);
+    s.visible = k < 0.85 && Math.random() > 0.15; }
+}
+// panik: eller başta, baş sağa sola
+function panicPose(P, tt){
+  P.head.rotation.y = Math.sin(tt*13)*0.45; P.torso.rotation.x = -0.18 + Math.sin(tt*9)*0.05;
+  P.root.updateMatrixWorld(true);
+  for (const A of P.arms){
+    const s = A.s, sh = P.torso.localToWorld(V(s*0.2, 0.36, 0)); P.root.worldToLocal(sh);
+    const hand = V(s*0.13, 1.36 + Math.sin(tt*11 + s)*0.035, -0.06), elbow = V(s*0.31, 1.12, -0.17);
+    placeLimb(A.up, sh, elbow); placeLimb(A.fo, elbow, hand); if (A.cuff) placeLimb(A.cuff, sh, sh.clone().lerp(elbow, 0.55));
+    A.hand.position.copy(hand); A.hand.rotation.set(-0.6, 0, s*0.4);
+  }
+}
+/* =====================================================================
+   LANSMAN SALONU – ürün lansmanında ofis yerine sahne, dev LED ekran,
+   spot ışıkları ve seyirciler; kurucu sahnede ürünü anlatır, sonra alkış ve konfeti
+   ===================================================================== */
+let launchG = null, launchSave = null;
+const LRW = 12.5, LRD = 10.5;
+function buildLaunch(info){
+  const g = new THREE.Group(), cx = LRW/2;
+  g.userData = {spots:[], conf:[], chars:new Map(), clap:false, t0:0};
+  // zemin ve duvarlar (mor-pembe ışıklı salon)
+  const fl = boxP(LRW, 0.12, LRD, M('#2b2f6b'), LRW/2, -0.06, LRD/2); fl.castShadow = false; g.add(fl);
+  g.add(boxP(LRW + 0.16, 0.08, LRD + 0.16, M('#1c1f4a'), LRW/2, -0.13, LRD/2));
+  const wallTex = canvasTex(512, 256, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, '#4c1d95'); gr.addColorStop(0.5, '#7e22ce'); gr.addColorStop(1, '#be185d'); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 18; i++){ c.fillStyle = `rgba(255,255,255,${0.04 + Math.random()*0.06})`; c.fillRect(i*30, 0, 3, h); } });
+  g.add(boxP(LRW + 0.15, 3.6, 0.15, M('#ffffff', {map:wallTex}), LRW/2 - 0.075, 1.8, -0.075));
+  g.add(boxP(0.15, 3.6, LRD, M('#ffffff', {map:wallTex}), -0.075, 1.8, LRD/2));
+  for (let z = 1.5; z < LRD; z += 2) g.add(boxP(0.05, 3.2, 0.12, new THREE.MeshBasicMaterial({color:0xf0abfc}), 0.02, 1.8, z));
+  // dev LED ekran
+  const scr = canvasTex(1024, 440, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#0f172a'); gr.addColorStop(1, '#1e3a8a'); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+    c.fillStyle = 'rgba(96,165,250,.25)'; c.beginPath(); c.arc(w/2, h/2, 190, 0, 7); c.fill();
+    c.textAlign = 'center'; c.fillStyle = '#7dd3fc'; c.font = '800 34px Nunito, system-ui, sans-serif'; c.fillText((info.company || '').toLocaleUpperCase('tr-TR') + ' SUNAR', w/2, 92);
+    c.fillStyle = '#ffffff'; c.font = '900 96px Nunito, system-ui, sans-serif'; c.fillText(info.name || 'Yeni Ürün', w/2, 238);
+    c.fillStyle = '#fbbf24'; c.font = '800 38px Nunito, system-ui, sans-serif'; c.fillText((info.type || '') + ' · Şimdi yayında', w/2, 318); });
+  g.add(boxP(7.4, 3.2, 0.12, M('#0b1020'), cx, 2.0, 0.12));
+  const sm = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 2.95), new THREE.MeshBasicMaterial({map:scr})); sm.position.set(cx, 2.0, 0.19); g.add(sm);
+  // sahne ve parlayan kenarı
+  g.add(boxP(8.4, 0.4, 3.2, M('#111827'), cx, 0.2, 1.9));
+  const edge = new THREE.MeshBasicMaterial({color:0x22d3ee}); g.userData.edge = edge;
+  g.add(boxP(8.4, 0.06, 0.06, edge, cx, 0.41, 3.5)); g.add(boxP(0.06, 0.06, 3.2, edge, cx + 4.2, 0.41, 1.9));
+  // kürsü
+  g.add(boxP(0.6, 1.0, 0.45, M('#e5e7eb'), cx + 2.6, 0.9, 2.6)); g.add(boxP(0.62, 0.06, 0.5, M('#7c3aed'), cx + 2.6, 1.42, 2.6));
+  // spot ışıkları (şeffaf ışık hüzmeleri)
+  const beamM = new THREE.MeshBasicMaterial({color:0xfff3c4, transparent:true, opacity:0.13, depthWrite:false, side:THREE.DoubleSide});
+  for (const [x, z] of [[cx - 3, 6.5], [cx - 1, 7], [cx + 1, 7], [cx + 3, 6.5]]){
+    const pv = new THREE.Group(); pv.position.set(x, 3.4, z);
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.9, 3.6, 18, 1, true), beamM); cone.position.y = -1.8; pv.add(cone);
+    pv.add(cylP(0.12, 0.25, M('#1f2937'), 0, 0, 0));
+    pv.lookAt(cx, 0.4, 2.2); pv.rotateX(Math.PI/2); g.add(pv); g.userData.spots.push({pv, ph:Math.random()*6});
+  }
+  const key = new THREE.PointLight(0xffe2b3, 6, 14, 1.4); key.position.set(cx, 3.2, 4); g.add(key);
+  const pink = new THREE.PointLight(0xf472b6, 3, 12, 1.4); pink.position.set(1, 2.5, LRD - 2); g.add(pink); g.userData.pink = pink;
+  // seyirci sıraları
+  const people = [{id:'me', role:'me'}].concat((S.emps || []).filter(e => !(e.task && ['kurs','izin','konf'].includes(e.task.type))).map(e => ({id:e.id, role:e.role, e})));
+  // doluluk ürünün kalitesine bağlı: çok beğenilen üründe salon ağzına kadar dolar
+  const fill = Math.max(0, Math.min(1, info.fill == null ? 0.7 : info.fill)), full = fill >= 0.9;
+  const chair = chairTier(), rows = full ? [5.6, 7.0, 8.4, 9.7] : [5.6, 7.0, 8.4], perRow = 7;
+  const seats = [];
+  rows.forEach((z, r) => { for (let i = 0; i < perRow; i++) seats.push({x:cx - 3.6 + i*1.2, z, o:r*10 + Math.abs(i - 3) + Math.random()*1.5}); });
+  seats.sort((a, b) => a.o - b.o);                       // önce ön sıralar ve orta koltuklar dolar
+  const team = people.length - 1, nSeat = full ? seats.length : Math.min(seats.length, Math.max(team, 2, Math.round(21*fill)));
+  let k = 0;
+  for (const s of seats){
+    if (k >= nSeat){ chairAtM(g, s.x, s.z, 0, chair, 1); continue; }   // boş koltuk
+    const w = people[k + 1];                             // 0. kişi kurucu, sahnede
+    const id = w ? w.id : 9000 + k, role = w ? w.role : pick(['prog','tas','test']);
+    const L = w ? looksOf(w.id, w.role) : empLook(9000 + k*7, role, k % 2 === 0);
+    const P = buildPerson(id, role, L, false, {chair, crowd:true}); P.wantWork = false; P.state = 0; P.root.userData.dyn = true;
+    P.root.position.set(s.x, 0, s.z); g.add(P.root); g.userData.chars.set('a' + k, P); k++;
+  }
+  // salon tıklım tıklım: yer bulamayanlar kenarlarda ayakta izler
+  g.userData.standers = [];
+  if (full) [[0.55, 5.0], [0.55, 6.4], [0.55, 7.8], [0.55, 9.2], [LRW - 0.55, 5.4], [LRW - 0.55, 6.8], [LRW - 0.55, 8.2], [LRW - 0.55, 9.6]].forEach(([x, z], i) => {
+    const role = pick(['prog','tas','test']), P = buildPerson(9600 + i, role, empLook(9600 + i*11, role, i % 2 === 1), false, {chair:0});
+    const W = buildWalker(P); W.root.visible = true; W.root.position.set(x, 0, z); W.root.rotation.y = x < cx ? -0.5 : 0.5; g.add(W.root);
+    g.userData.standers.push({W, t0:P.t0 + i*0.7});
+  });
+  g.userData.fill = fill;
+  // kurucu sahnede ayakta
+  const F = buildPerson('me', 'me', looksOf('me', 'me'), false, {chair:0});
+  const W = buildWalker(F); g.add(W.root); W.root.visible = true; W.root.position.set(cx - 0.6, 0.4, 2.4); W.root.rotation.y = Math.PI; g.userData.walker = W; g.userData.fT0 = F.t0;
+  // konfeti
+  const cols = [0xf472b6, 0xfbbf24, 0x60a5fa, 0x34d399, 0xffffff, 0xa78bfa];
+  for (let i = 0; i < 70; i++){ const m = new THREE.Mesh(G.box, new THREE.MeshBasicMaterial({color:cols[i % cols.length]})); m.scale.set(0.06, 0.012, 0.04); m.visible = false;
+    m.userData = {x:cx - 4 + Math.random()*8, z:2 + Math.random()*7, sp:0.6 + Math.random()*0.8, ph:Math.random()*6}; g.add(m); g.userData.conf.push(m); }
+  g.traverse(c => { if (c.isMesh) c.castShadow = false; });
+  return g;
+}
+function launchOn(on, info){
+  if (!renderer) return;
+  if (on){
+    if (launchG || meetG) return;
+    launchSave = {chars, roomBox:Object.assign({}, roomBox), zoom:zoom3, pan:pan3.slice()};
+    launchG = buildLaunch(info || {}); scene3.add(launchG); roomG.visible = false;
+    chars = launchG.userData.chars; roomBox = {W:LRW, D:LRD}; zoom3 = 1; pan3 = [0, 0]; setLight(LRW, LRD);
+    launchG.userData.t0 = clock.elapsedTime;
+    for (const P of chars.values()) animPerson(P, 0, 1);
+    sceneEl.classList.add('launch3');
+  } else if (launchG){
+    scene3.remove(launchG); disposeTree(launchG); launchG = null; roomG.visible = true;
+    if (launchSave){ chars = launchSave.chars; roomBox = launchSave.roomBox; zoom3 = launchSave.zoom; pan3 = launchSave.pan; launchSave = null; }
+    setLight(roomBox.W, roomBox.D); sceneEl.classList.remove('launch3');
+  }
+  needFit = true; renderer.shadowMap.needsUpdate = true;
+}
+function launchTick(t, dt){
+  if (!launchG) return;
+  const u = launchG.userData, lt = t - u.t0;
+  for (const s of u.spots){ s.pv.rotation.z = Math.sin(t*0.7 + s.ph)*0.18; }
+  u.edge.color.setHSL((t*0.12) % 1, 0.85, 0.6);
+  u.pink.intensity = 2.4 + Math.sin(t*2)*0.8;
+  // kurucu sahnede yürüyerek anlatır
+  const W = u.walker; W.root.position.x = LRW/2 - 0.6 + Math.sin(lt*0.5)*1.4;
+  poseWalker(W, 'chat', t + u.fT0, 0, 0); W.root.position.y = 0.4;
+  for (const s of u.standers || []){ poseWalker(s.W, 'chat', t + s.t0, 0, 0); s.W.root.position.y = 0; }
+  if (u.clap) for (const m of u.conf){ m.visible = true; const k = ((lt - u.clapT)*m.userData.sp*0.35 + m.userData.ph/6) % 1;
+    m.position.set(m.userData.x + Math.sin(t*2 + m.userData.ph)*0.3, 3.6 - k*3.6, m.userData.z); m.rotation.x += dt*4; m.rotation.y += dt*3; }
+}
+// alkış: eller göğüs hizasında birleşip ayrılır
+function clapPose(P, tt){
+  const o = Math.abs(Math.sin(tt*12))*0.07;
+  P.root.updateMatrixWorld(true);
+  for (const A of P.arms){
+    const s = A.s, sh = P.torso.localToWorld(V(s*0.2, 0.36, 0)); P.root.worldToLocal(sh);
+    const hand = V(s*(0.03 + o), 1.0, -0.3), elbow = V(s*0.28, 0.82, -0.2);
+    placeLimb(A.up, sh, elbow); placeLimb(A.fo, elbow, hand); if (A.cuff) placeLimb(A.cuff, sh, sh.clone().lerp(elbow, 0.55)); A.hand.position.copy(hand);
+  }
+  P.head.rotation.y = 0; P.head.rotation.x = -0.05;
+}
+/* ---- OFİS DEKORU: pencerelerin üstündeki duvar şeridine asılır (eşyalarla çakışmaz) ---- */
+let decorG = null, envG = null, envForceH = null, envForceM = null, envT = 0;
+function buildDecor(){
+  const own = (S.cy && S.cy.decor) || {}, on = k => own[k] === true;
+  if (!Object.keys(own).some(on)) return null;
+  const g = new THREE.Group(), W = roomBox.W, D = roomBox.D, Y = 2.33, Z = 0.1;
+  g.userData = {};
+  if (on('neon')){
+    const tex = textTex((S.name || 'BYTETOWN').toLocaleUpperCase('tr-TR'), {w:1024, h:140, font:'900 92px Nunito, system-ui, sans-serif', color:'#7df9ff'});
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(2.4, W*0.34), 0.3), new THREE.MeshBasicMaterial({map:tex, transparent:true}));
+    m.position.set(W*0.5, Y, Z); g.add(m);
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(2.5, W*0.36), 0.36), new THREE.MeshBasicMaterial({color:0x22d3ee, transparent:true, opacity:0.16}));
+    glow.position.set(W*0.5, Y, Z - 0.01); g.add(glow); g.userData.neon = glow;
+  }
+  if (on('saat')){
+    const c = new THREE.Group(); c.position.set(W*0.2, Y, Z); g.add(c);
+    const face = cylP(0.15, 0.03, M('#ffffff'), 0, 0, 0); face.rotation.x = Math.PI/2; c.add(face);
+    const rim = cylP(0.165, 0.025, M('#1f2937'), 0, 0, -0.004); rim.rotation.x = Math.PI/2; c.add(rim);
+    const hh = new THREE.Group(), mh = new THREE.Group(); hh.position.z = mh.position.z = 0.02; c.add(hh); c.add(mh);
+    hh.add(boxP(0.016, 0.08, 0.01, M('#111827'), 0, 0.04, 0)); mh.add(boxP(0.01, 0.12, 0.01, M('#dc2626'), 0, 0.06, 0));
+    g.userData.clock = {hh, mh};
+  }
+  if (on('tablo')) [0, 1, 2].forEach(i => {
+    const x = W*0.68 + i*0.42; g.add(boxP(0.34, 0.26, 0.03, M('#2b1d14'), x, Y, Z - 0.005));
+    const art = canvasTex(128, 96, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, h); gr.addColorStop(0, ['#f472b6','#60a5fa','#fbbf24'][i]); gr.addColorStop(1, ['#7c3aed','#14b8a6','#ef4444'][i]); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+      c.fillStyle = 'rgba(255,255,255,.7)'; c.beginPath(); c.arc(w*(0.3 + i*0.2), h*0.45, 18 + i*6, 0, 7); c.fill(); });
+    const pl = new THREE.Mesh(new THREE.PlaneGeometry(0.29, 0.21), new THREE.MeshBasicMaterial({map:art})); pl.position.set(x, Y, Z + 0.012); g.add(pl);
+  });
+  if (on('flama')){ const cols = [0xef4444, 0xf59e0b, 0x22c55e, 0x3b82f6, 0xa855f7];
+    for (let x = 0.4, i = 0; x < W - 0.3; x += 0.32, i++){ const tri = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.14, 3), new THREE.MeshBasicMaterial({color:cols[i % 5]})); tri.rotation.z = Math.PI; tri.position.set(x, 2.46 - Math.sin(x*1.3)*0.02, Z + 0.02); g.add(tri); } }
+  if (on('led')){ const mat = new THREE.MeshBasicMaterial({color:0xff00aa}); g.userData.led = mat;
+    g.add(boxP(W, 0.025, 0.025, mat, W/2, 2.53, 0.04)); g.add(boxP(0.025, 0.025, D, mat, 0.04, 2.53, D/2)); }
+  if (on('odul')){ const z = D*0.25; g.add(boxP(0.14, 0.03, 1.0, M('#5b3a26'), 0.1, 2.2, z));
+    const n = Math.max(1, Math.min(5, (S.awards||[]).length)), gold = M('#f5b301');
+    for (let i = 0; i < n; i++){ const tz = z - 0.4 + i*0.2; g.add(cylP(0.035, 0.05, gold, 0.1, 2.245, tz)); g.add(sphP(0.045, 0.05, 0.045, gold, 0.1, 2.31, tz)); } }
+  if (on('plak')) [0, 1, 2, 3].forEach(i => { const z = D*0.45 + i*0.32, d = cylP(0.13, 0.012, M('#111827'), 0.08, Y, z); d.rotation.z = Math.PI/2; g.add(d);
+    const l = cylP(0.045, 0.014, M(['#ef4444','#f59e0b','#22c55e','#3b82f6'][i]), 0.085, Y, z); l.rotation.z = Math.PI/2; g.add(l); });
+  if (on('pano')){ const tex = textTex('Hayal et · Kodla · Yayınla', {w:1024, h:120, font:'900 64px Nunito, system-ui, sans-serif', color:'#ffffff', bg:'#1f4aa0', r:24});
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.22), new THREE.MeshBasicMaterial({map:tex, transparent:true})); m.rotation.y = Math.PI/2; m.position.set(0.1, Y, Math.min(D - 0.9, D*0.82)); g.add(m); }
+  g.traverse(c => { if (c.isMesh) c.castShadow = false; });
+  return g;
+}
+function decorTick(t){
+  if (!decorG) return;
+  decorG.visible = !meetG && !launchG;
+  const u = decorG.userData;
+  if (u.clock){ const d = new Date(), m = d.getMinutes() + d.getSeconds()/60, h = (d.getHours() % 12) + m/60; u.clock.mh.rotation.z = -m/60*Math.PI*2; u.clock.hh.rotation.z = -h/12*Math.PI*2; }
+  if (u.led) u.led.color.setHSL((t*0.05) % 1, 0.9, 0.55);
+  if (u.neon) u.neon.material.opacity = 0.12 + Math.abs(Math.sin(t*1.3))*0.1;
+}
+/* ---- GECE-GÜNDÜZ (gerçek saate göre) VE MEVSİMLER (oyun ayına göre) ---- */
+const SEASON = m => (m === 11 || m <= 1) ? 'kis' : m <= 4 ? 'ilkbahar' : m <= 7 ? 'yaz' : 'sonbahar';
+function buildEnv(){
+  if (envG){ scene3.remove(envG); envG = null; }
+  const m = envForceM != null ? envForceM : (typeof monthIdx === 'function' ? monthIdx() : 5), se = SEASON(m), W = roomBox.W, D = roomBox.D;
+  envG = new THREE.Group(); envG.userData = {se, parts:[]};
+  const gcol = {kis:'#eef3fa', ilkbahar:'#9ad49a', yaz:'#a8d67e', sonbahar:'#c4c27a'}[se];
+  const ground = new THREE.Mesh(new THREE.BoxGeometry(W + 40, 0.1, D + 40), new THREE.MeshLambertMaterial({color:gcol})); ground.position.set(W/2, -0.24, D/2); ground.receiveShadow = false; envG.add(ground);
+  const lamp = new THREE.PointLight(0xffc98a, 0, 40, 1.1); lamp.position.set(W/2, 2.4, D/2); envG.add(lamp); envG.userData.lamp = lamp;
+  if (se !== 'yaz'){
+    const col = {kis:0xffffff, ilkbahar:0xf9a8d4, sonbahar:0xea7a2a}[se], mat = new THREE.MeshBasicMaterial({color:col});
+    for (let i = 0; i < 90; i++){
+      let x, z; do { x = -3 + Math.random()*(W + 9); z = -3 + Math.random()*(D + 9); } while (x > -0.2 && x < W + 0.2 && z > -0.2 && z < D + 0.2);
+      const p = new THREE.Mesh(se === 'kis' ? G.sph : G.box, mat); p.scale.setScalar(se === 'kis' ? 0.045 : 0.06);
+      p.position.set(x, Math.random()*5, z); p.userData.sp = 0.4 + Math.random()*0.6; p.userData.ph = Math.random()*6; envG.add(p); envG.userData.parts.push(p);
+    }
+  }
+  scene3.add(envG); envT = 0;
+}
+function envTick(t, dt){
+  if (!envG) return;
+  envG.visible = !meetG && !launchG;
+  for (const p of envG.userData.parts){ p.position.y -= p.userData.sp*dt*(envG.userData.se === 'kis' ? 0.8 : 0.6); p.position.x += Math.sin(t*1.2 + p.userData.ph)*dt*0.25; p.rotation.x += dt*2; if (p.position.y < -0.2) p.position.y = 5; }
+  envT -= dt; if (envT > 0 || alarmG) return; envT = 1;
+  if (launchG){ canvas.style.filter = ''; scene3.background = new THREE.Color(0x1a1440); return; }
+  { const m = envForceM != null ? envForceM : (typeof monthIdx === 'function' ? monthIdx() : 5); if (SEASON(m) !== envG.userData.se){ buildEnv(); return; } }
+  const d = new Date(), h = envForceH != null ? envForceH : d.getHours() + d.getMinutes()/60;
+  const day = h >= 7 && h <= 17 ? 1 : h > 17 && h < 20 ? 1 - (h - 17)/3 : h > 6 && h < 7 ? h - 6 : 0;
+  const dayCol = new THREE.Color(envG.userData.se === 'kis' ? 0xdde8f3 : 0xd3e6f7), nightCol = new THREE.Color(0x0d1633);
+  scene3.background = nightCol.clone().lerp(dayCol, day);
+  sun.intensity = 0.3 + day*1.55; if (hemi) hemi.intensity = 0.5 + day*0.65;
+  envG.userData.lamp.intensity = (1 - day)*3.2;
+  canvas.style.filter = day < 0.99 ? `brightness(${(1 - 0.42*(1 - day)).toFixed(2)}) saturate(${(1 - 0.15*(1 - day)).toFixed(2)})` : '';
+}
+/* ---- OFİS KEDİSİ: ofiste dolaşır, arada oturup dinlenir ---- */
+let catG = null, catS = null;
+function buildCat(){
+  const g = new THREE.Group(), fur = M('#f59e0b'), furD = M('#c2680a'), white = M('#fff4e0'), dark = M('#1f2937');
+  const body = new THREE.Group(); g.add(body); g.userData.body = body;
+  body.add(sphP(0.11, 0.1, 0.2, fur, 0, 0.21, 0, {outline:.05}));
+  for (const z of [-0.08, 0, 0.08]) body.add(boxP(0.18, 0.012, 0.025, furD, 0, 0.305, z));
+  body.add(sphP(0.07, 0.06, 0.08, white, 0, 0.17, -0.12));
+  const head = new THREE.Group(); head.position.set(0, 0.31, -0.2); body.add(head); g.userData.head = head;
+  head.add(sphP(0.095, 0.085, 0.085, fur, 0, 0, 0, {outline:.05}));
+  for (const s of [-1, 1]){ const ear = boxP(0.045, 0.06, 0.03, furD, s*0.05, 0.085, 0); ear.rotation.z = -s*0.35; head.add(ear);
+    head.add(sphP(0.013, 0.016, 0.01, dark, s*0.034, 0.01, -0.08)); }
+  head.add(sphP(0.04, 0.03, 0.03, white, 0, -0.025, -0.075)); head.add(sphP(0.012, 0.009, 0.008, M('#f472b6'), 0, -0.008, -0.1));
+  const tail = new THREE.Group(); tail.position.set(0, 0.26, 0.19); body.add(tail); g.userData.tail = tail;
+  const tl = cylP(0.025, 0.3, fur, 0, 0.15, 0); tail.add(tl); tail.rotation.x = 0.5;
+  g.userData.legs = [];
+  for (const [x, z] of [[-0.06,-0.12],[0.06,-0.12],[-0.06,0.12],[0.06,0.12]]){ const l = cylP(0.025, 0.14, furD, x, 0.07, z); g.add(l); g.userData.legs.push(l); }
+  g.traverse(c => { if (c.isMesh) c.castShadow = false; });
+  g.scale.setScalar(1.5);
+  return g;
+}
+function catTick(t, dt){
+  if (!catG) return;
+  catG.visible = !meetG && !launchG;
+  const s = catS, W = roomBox.W, D = roomBox.D;
+  if (!s.tx){ s.tx = 0.8 + Math.random()*(W - 1.6); s.tz = Math.min(D - 0.6, Math.max(0.6, (ROAM.lane || D*0.7) + (Math.random() - 0.5)*0.8)); }
+  const u = catG.userData, dx = s.tx - catG.position.x, dz = s.tz - catG.position.z, d = Math.hypot(dx, dz);
+  if (s.wait > 0){ s.wait -= dt; u.body.position.y = -0.06; u.body.rotation.x = 0.25; u.tail.rotation.z = Math.sin(t*2)*0.4; u.head.rotation.y = Math.sin(t*0.7)*0.5;
+    for (const l of u.legs) l.visible = false; if (s.wait <= 0) s.tx = 0; return; }
+  for (const l of u.legs) l.visible = true;
+  u.body.position.y = Math.abs(Math.sin(t*9))*0.015; u.body.rotation.x = 0; u.tail.rotation.z = Math.sin(t*4)*0.25; u.head.rotation.y = 0;
+  u.legs.forEach((l, i) => { l.position.y = 0.07 + Math.max(0, Math.sin(t*9 + (i%2 ? Math.PI : 0)))*0.03; });
+  if (d < 0.05){ s.wait = 3 + Math.random()*6; return; }
+  const step = Math.min(d, 0.55*dt);
+  catG.position.x += dx/d*step; catG.position.z += dz/d*step;
+  catG.rotation.y = Math.atan2(-dx, -dz);
+}
 const api = {
   ok:false,
+  alarm(on){ alarmOn(!!on); },
+  launch(on, info){ launchOn(!!on, info); },
+  launchClap(){ if (launchG){ launchG.userData.clap = true; launchG.userData.clapT = clock.elapsedTime - launchG.userData.t0; } },
+  env(h, m){ envForceH = h; envForceM = m; buildEnv(); },
+  meeting(on){ meetingOn(!!on); },
+  inMeeting(){ return !!meetG; },
   build(){ build(); },
   setStates(state){ for (const [id, P] of chars) P.wantWork = !!state[id]; },
   idle(){ const out = []; for (const [id, P] of chars) if (!P.wantWork) out.push(id); return out; },
@@ -1569,7 +1970,7 @@ const api = {
   pick(e){
     if (e.target !== canvas) return {empty:true};
     ray.setFromCamera(ndcFromEvent(e), camera);
-    const hits = ray.intersectObject(roomG, true);
+    const hits = meetG ? [] : ray.intersectObject(roomG, true);
     // önce en yakın karakteri ekranda ara (küçük ve hareket eden karakterlere dokunmak kolay olsun)
     const n = ndcFromEvent(e), cw = canvas.clientWidth, ch = canvas.clientHeight, px = (n.x+1)/2*cw, py = (1-n.y)/2*ch;
     let best = null, bd = 34;
@@ -1595,6 +1996,31 @@ const api = {
   panStart(e){ if (zoom3 <= 1) return; drag3 = {x:e.clientX, y:e.clientY, p:pan3.slice()}; },
   panMove(e){ if (!drag3) return; const k = (view.hw*2/zoom3) / Math.max(1, canvas.getBoundingClientRect().width); pan3 = [drag3.p[0] - (e.clientX-drag3.x)*k, drag3.p[1] + (e.clientY-drag3.y)*k]; applyView3(); },
   panEnd(){ drag3 = null; },
+  // karakter seçimi için küçük resim: masada oturan, arkası dönük karakter (ofisteki ile aynı model)
+  thumb(L, key){
+    if (thumbCache.has(key)) return thumbCache.get(key);
+    if (!thumbR){ thumbR = new THREE.WebGLRenderer({antialias:true, alpha:true, preserveDrawingBuffer:true}); thumbR.setPixelRatio(2); thumbR.setSize(220, 220); }
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xeaf4ff, 0x9a8f80, 1.25));
+    const dl = new THREE.DirectionalLight(0xfff3e0, 1.7); dl.position.set(2.5, 4, 3); sc.add(dl);
+    const fill = new THREE.DirectionalLight(0xbcd7ff, 0.5); fill.position.set(-3, 2, -1); sc.add(fill);
+    const g = new THREE.Group(); sc.add(g);
+    g.add(rbox(1.3, 0.05, 0.66, 0.012, M('#e2c49a'), 0, 0.74, -0.8, {outline:.012}));
+    for (const s of [-1,1]) g.add(boxP(0.05, 0.72, 0.6, M('#262a33'), s*0.6, 0.36, -0.8));
+    buildMonitors(g, 2, -0.8, 'prog', 1, 1.3);
+    buildKeyboard(g, 2, 0, 0.775, -0.63);
+    g.add(cylP(0.04, 0.09, M('#2f54eb'), -0.45, 0.81, -0.62, {outline:.05}));
+    const P = buildPerson('thumb', 'prog', L, false, {chair:0});   // alçak arkalık: kıyafet görünsün
+    P.state = 1; g.add(P.root); animPerson(P, 1.3, 0.016);
+    const cam = new THREE.OrthographicCamera(-0.6, 0.6, 0.6, -0.6, 0.1, 30);
+    cam.position.set(2.5, 1.85, 1.15); cam.lookAt(-0.05, 0.8, -0.25);
+    thumbR.render(sc, cam);
+    const url = thumbR.domElement.toDataURL('image/png');
+    thumbCache.set(key, url);
+    sc.traverse(o => { if (o.isMesh && o.userData.merged) o.geometry.dispose(); });
+    return url;
+  },
+  head(id){ return headScreen(id); },
   _room(){ return roomG; },
   _roam(){ return {spots:ROAM.spots.length, lane:ROAM.lane, ppl:[...chars.values()].map(P => (P.wantWork?'W':'i') + (P.roam ? P.roam.mode+':'+P.roam.spot.kind : '-'))}; },
   _info(){ const t0 = performance.now(); renderer.render(scene3, camera); return {calls:renderer.info.render.calls, tris:renderer.info.render.triangles, ms:+(performance.now()-t0).toFixed(1), px:[renderer.domElement.width, renderer.domElement.height]}; },
@@ -1610,7 +2036,7 @@ function init(){
   canvas = renderer.domElement; canvas.className = 'scene3d';
   scene3 = new THREE.Scene();
   camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
-  scene3.add(new THREE.HemisphereLight(0xeaf4ff, 0x9a8f80, 1.15));
+  hemi = new THREE.HemisphereLight(0xeaf4ff, 0x9a8f80, 1.15); scene3.add(hemi);
   sun = new THREE.DirectionalLight(0xfff3e0, 1.85); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.02;
   scene3.add(sun); scene3.add(sun.target);
   const fill = new THREE.DirectionalLight(0xbcd7ff, 0.45); fill.position.set(-6, 5, 3); scene3.add(fill);

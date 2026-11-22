@@ -7,19 +7,188 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kod Patronu">
+<meta name="apple-mobile-web-app-title" content="Bytetown">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
-<title>Kod Patronu – Yazılım Şirketi Simülasyonu</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap"><link rel="stylesheet" href="stil.css?v=59">
+<title>Bytetown – Yazılım Şirketi Simülasyonu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap"><link rel="stylesheet" href="stil.css?v=103">
+<style id="bootcss">
+#boot{position:fixed;inset:0;z-index:100000;overflow:hidden;color:#fff;font-family:Nunito,ui-rounded,"Segoe UI",system-ui,sans-serif;-webkit-user-select:none;user-select:none;
+  background:radial-gradient(70% 55% at 50% 38%,#1c3f8f 0%,#0f2560 42%,#07142f 78%,#050d22 100%);transition:opacity .8s cubic-bezier(.4,0,.2,1)}
+#boot.out{opacity:0;pointer-events:none}
+#boot.out .bt-center{transform:translateY(-10px) scale(1.03);transition:transform .8s cubic-bezier(.4,0,.2,1)}
+#boot .bt-noise{position:absolute;inset:0;opacity:.05;background-image:radial-gradient(rgba(255,255,255,.9) .6px,transparent .7px);background-size:3px 3px;mix-blend-mode:overlay;pointer-events:none}
+#boot .bt-halo{position:absolute;left:50%;top:36%;width:min(760px,120vw);height:min(760px,120vw);transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,rgba(86,140,255,.32) 0%,rgba(86,140,255,.10) 35%,transparent 65%);animation:btHalo 6s ease-in-out infinite alternate}
+@keyframes btHalo{to{transform:translate(-50%,-50%) scale(1.08);opacity:.85}}
+#boot .bt-stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#dfe9ff;animation:btTw 3.4s ease-in-out infinite}
+@keyframes btTw{50%{opacity:.12}}
+#boot .bt-city{position:absolute;left:0;right:0;bottom:0;height:40vh;min-height:150px;opacity:0;transform:translateY(24px);animation:btUp 1.2s .15s cubic-bezier(.2,.8,.2,1) forwards}
+#boot .bt-city svg{width:100%;height:100%;display:block}
+#boot .bt-city .w{fill:#1b2f60;transition:fill .6s ease}
+#boot .bt-city .w.on{fill:#ffd27a}
+#boot .bt-city .w.on.c{fill:#a9e0ff}
+#boot .bt-city .w.on.f{animation:btFl 4s ease-in-out infinite}
+@keyframes btFl{50%{opacity:.55}}
+#boot .bt-city .bk{animation:btBk 1.6s steps(1) infinite}
+@keyframes btBk{50%{opacity:.1}}
+#boot .bt-fade{position:absolute;left:0;right:0;bottom:0;height:45vh;background:linear-gradient(180deg,transparent 0%,rgba(5,13,34,.0) 40%,rgba(5,13,34,.55) 100%);pointer-events:none}
+#boot .bt-center{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;width:min(440px,90vw)}
+#boot .bt-logo{width:clamp(72px,13vmin,104px);height:auto;filter:drop-shadow(0 14px 28px rgba(10,30,90,.55)) drop-shadow(0 0 24px rgba(80,140,255,.35));
+  opacity:0;transform:translateY(10px) scale(.9);animation:btIn .9s .1s cubic-bezier(.2,.8,.2,1) forwards}
+#boot .bt-logo .by{animation:btBy 2.6s ease-in-out infinite}
+#boot .bt-logo .by2{animation-delay:-.9s}#boot .bt-logo .by3{animation-delay:-1.7s}
+@keyframes btBy{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.75}}
+#boot .bt-logo .ant{animation:btBk 1.6s steps(1) infinite}
+@keyframes btIn{to{opacity:1;transform:none}}
+@keyframes btUp{to{opacity:1;transform:none}}
+#boot .bt-title{margin:clamp(12px,2.6vmin,20px) 0 0;font-weight:900;font-size:clamp(28px,7vmin,50px);letter-spacing:.16em;line-height:1;white-space:nowrap;display:flex;gap:.06em}
+#boot .bt-title span{display:inline-block;opacity:0;transform:translateY(12px);animation:btIn .8s cubic-bezier(.2,.8,.2,1) forwards}
+#boot .bt-title span:first-child{animation-delay:.28s;background:linear-gradient(180deg,#fff 35%,#c4d6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#boot .bt-title span:last-child{animation-delay:.4s;background:linear-gradient(180deg,#ffe7a3 15%,#ffb43b 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#boot .bt-tag{display:flex;align-items:center;gap:12px;margin-top:clamp(8px,1.8vmin,12px);font-weight:800;font-size:clamp(9.5px,1.75vmin,12px);letter-spacing:.42em;color:#93abdc;text-transform:uppercase;white-space:nowrap;opacity:0;animation:btIn .8s .55s forwards}
+#boot .bt-tag::before,#boot .bt-tag::after{content:"";width:28px;height:1px;background:linear-gradient(90deg,transparent,rgba(147,171,220,.7))}
+#boot .bt-tag::after{transform:scaleX(-1)}
+#boot .bt-load{width:min(300px,72vw);margin-top:clamp(22px,5vmin,40px);opacity:0;animation:btIn .8s .7s forwards}
+#boot .bt-bar{position:relative;height:4px;border-radius:999px;background:rgba(255,255,255,.1);overflow:visible}
+#boot .bt-bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:linear-gradient(90deg,#2f6bff,#62c8ff)}
+#boot .bt-bar i::after{content:"";position:absolute;right:-4px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#e9f7ff;box-shadow:0 0 0 3px rgba(98,200,255,.25),0 0 16px 4px rgba(98,200,255,.75)}
+#boot .bt-meta{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px;font-size:11.5px;font-weight:800;letter-spacing:.06em;color:#a8bce4}
+#boot .bt-meta b{font-weight:900;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em;background:none;padding:0;border:0;box-shadow:none}
+#boot .bt-tip{position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(460px,88vw);display:flex;gap:12px;align-items:center;
+  padding:11px 14px;border-radius:14px;background:rgba(10,24,60,.55);border:1px solid rgba(160,190,255,.16);box-shadow:0 10px 30px rgba(0,0,0,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  opacity:0;animation:btFade .8s .9s forwards}
+@keyframes btFade{to{opacity:1}}
+#boot .bt-tip em{flex:none;font-style:normal;font-weight:900;font-size:10px;letter-spacing:.18em;color:#0b1a3d;background:linear-gradient(180deg,#ffe29a,#ffb43b);padding:4px 7px;border-radius:6px}
+#boot .bt-tip span{font-weight:700;font-size:12.5px;line-height:1.4;color:#d5e1f8;transition:opacity .35s}
+#boot .bt-ver{position:absolute;right:calc(14px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));font-size:10.5px;font-weight:800;letter-spacing:.14em;color:rgba(168,188,228,.45)}
+@media (max-height:480px){
+  #boot .bt-center{top:38%} #boot .bt-load{margin-top:16px} #boot .bt-city{height:34vh}
+  #boot .bt-tip{bottom:10px;padding:8px 12px} #boot .bt-tip span{font-size:11.5px}
+}
+@media (max-width:440px){ #boot .bt-tag{letter-spacing:.26em;gap:8px} #boot .bt-tag::before,#boot .bt-tag::after{width:16px} }
+@media (prefers-reduced-motion:reduce){ #boot *{animation-duration:.01s!important;animation-iteration-count:1!important} }
+</style>
 </head>
 <body>
+<div id="boot" aria-label="Bytetown yükleniyor">
+  <div class="bt-halo"></div><div class="bt-stars"></div>
+  <div class="bt-city"><svg viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg></div>
+  <div class="bt-fade"></div><div class="bt-noise"></div>
+  <div class="bt-center">
+    <svg class="bt-logo" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="btg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a86ff"/><stop offset=".55" stop-color="#2853d0"/><stop offset="1" stop-color="#16359a"/></linearGradient>
+        <linearGradient id="btg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0c2"/><stop offset=".5" stop-color="#ffcf5a"/><stop offset="1" stop-color="#f29b1d"/></linearGradient>
+        <linearGradient id="btg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <linearGradient id="btw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d3e1ff"/></linearGradient>
+      </defs>
+      <rect x="10" y="10" width="100" height="100" rx="26" fill="url(#btg1)"/>
+      <rect x="10" y="10" width="100" height="50" rx="26" fill="url(#btg3)"/>
+      <rect x="10.75" y="10.75" width="98.5" height="98.5" rx="25.3" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.5"/>
+      <g class="by by1"><rect x="27" y="44" width="7" height="7" rx="1.6" fill="url(#btg2)"/></g>
+      <g class="by by2"><rect x="34.5" y="35" width="5.4" height="5.4" rx="1.3" fill="#fff" fill-opacity=".85"/></g>
+      <g class="by by3"><rect x="27.5" y="27" width="4.2" height="4.2" rx="1" fill="#fff" fill-opacity=".55"/></g>
+      <rect x="23" y="56" width="22" height="38" rx="4" fill="url(#btw)"/>
+      <rect x="49" y="32" width="22" height="62" rx="4" fill="url(#btw)"/>
+      <rect x="59" y="20" width="2.2" height="13" rx="1" fill="#fff"/>
+      <circle class="ant" cx="60.1" cy="18.4" r="3.6" fill="url(#btg2)"/>
+      <rect x="75" y="46" width="22" height="48" rx="4" fill="url(#btw)"/>
+      <rect x="28.5" y="62" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="35.5" y="62" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="28.5" y="70" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="35.5" y="70" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="28.5" y="78" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="35.5" y="78" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/>
+      <rect x="54.2" y="38" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="61.2" y="38" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="54.2" y="46" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="61.2" y="46" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="54.2" y="54" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="61.2" y="54" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="54.2" y="62" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="61.2" y="62" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="54.2" y="70" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="61.2" y="70" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/>
+      <rect x="56.5" y="80" width="7" height="14" rx="1.8" fill="#2450c4"/>
+      <rect x="80.2" y="52" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="87.2" y="52" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="80.2" y="60" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="87.2" y="60" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="80.2" y="68" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="87.2" y="68" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/><rect x="80.2" y="76" width="4.6" height="4.6" rx="1.1" fill="#2450c4"/><rect x="87.2" y="76" width="4.6" height="4.6" rx="1.1" fill="#ffc94d"/>
+      <rect x="17" y="92" width="86" height="5" rx="2.5" fill="#fff" fill-opacity=".92"/>
+    </svg>
+    <div class="bt-title"><span>BYTE</span><span>TOWN</span></div>
+    <div class="bt-tag">Yazılım Şirketi Simülasyonu</div>
+    <div class="bt-load"><div class="bt-bar"><i></i></div><div class="bt-meta"><span class="bt-st">Ofis kapısı açılıyor</span><b class="bt-pc">0%</b></div></div>
+  </div>
+  <div class="bt-tip"><em>İPUCU</em><span></span></div>
+</div>
+<script>
+/* AÇILIŞ EKRANI: logo, katmanlı gece şehri (pencereler yüklendikçe yanar), ilerleme ve ipuçları */
+(function(){
+  var B = document.getElementById('boot'); if (!B) return;
+  var NS = 'http://www.w3.org/2000/svg', svg = B.querySelector('.bt-city svg');
+  var seed = 7; function rnd(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  function el(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; }
+  var wins = [];
+  // üç derinlik katmanı: arkadakiler daha açık ve sisli, öndekiler koyu ve pencereli
+  var layers = [
+    {col:'#15306b', minH:120, maxH:300, minW:60, maxW:120, gap:6, win:false},
+    {col:'#0f2558', minH:90, maxH:250, minW:70, maxW:140, gap:10, win:true, wcol:'#17305f'},
+    {col:'#0a1b44', minH:60, maxH:190, minW:80, maxW:170, gap:14, win:true, wcol:'#132a57'}
+  ];
+  var crane = false;
+  layers.forEach(function(L, li){
+    var g = el('g', {}), x = -40;
+    while (x < 1640){
+      var w = L.minW + rnd()*(L.maxW - L.minW), h = L.minH + rnd()*(L.maxH - L.minH);
+      if (li === 1 && x > 700 && x < 900) h = 330;                 // ortada uzun kule
+      var y = 420 - h;
+      el('rect', {x:x.toFixed(0), y:y.toFixed(0), width:w.toFixed(0), height:h.toFixed(0), fill:L.col}, g);
+      if (rnd() < 0.35) el('rect', {x:(x + w*0.3).toFixed(0), y:(y - 10).toFixed(0), width:(w*0.4).toFixed(0), height:10, fill:L.col}, g);   // çatı katı
+      if (h > 260){ el('rect', {x:(x + w/2 - 1.5).toFixed(0), y:(y - 34).toFixed(0), width:3, height:34, fill:L.col}, g); el('circle', {cx:(x + w/2).toFixed(0), cy:(y - 36).toFixed(0), r:3.2, fill:'#ff5d5d', 'class':'bk'}, g); }
+      if (li === 1 && !crane && x > 1050 && h < 220){ crane = true;    // inşaat vinci: büyüme
+        var cx = x + w*0.6, top = y - 80; el('rect', {x:cx.toFixed(0), y:top.toFixed(0), width:4, height:80, fill:L.col}, g);
+        el('rect', {x:(cx - 70).toFixed(0), y:top.toFixed(0), width:110, height:4, fill:L.col}, g);
+        el('rect', {x:(cx - 62).toFixed(0), y:(top + 4).toFixed(0), width:1.5, height:36, fill:L.col}, g); }
+      if (L.win){
+        var cols = Math.max(2, Math.floor((w - 16) / 16)), rows = Math.floor((h - 24) / 22), cw = (w - 16) / cols;
+        for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++){
+          if (rnd() < 0.18) continue;
+          var wr = el('rect', {x:(x + 8 + c*cw + 2).toFixed(1), y:(y + 14 + r*22).toFixed(1), width:(cw - 6).toFixed(1), height:9, rx:1.2, fill:L.wcol, 'class':'w' + (rnd() < 0.22 ? ' c' : '') + (rnd() < 0.15 ? ' f' : '')}, g);
+          wr.style.animationDelay = (-rnd()*4).toFixed(2) + 's'; wins.push(wr);
+        }
+      }
+      x += w + L.gap * (0.4 + rnd());
+    }
+  });
+  // yıldızlar
+  var st = B.querySelector('.bt-stars');
+  for (var s = 0; s < 46; s++){ var i0 = document.createElement('i'); i0.style.left = (Math.random()*100).toFixed(2) + '%'; i0.style.top = (Math.random()*52).toFixed(2) + '%'; i0.style.opacity = (0.25 + Math.random()*0.6).toFixed(2); i0.style.animationDelay = (-Math.random()*3.4).toFixed(2) + 's'; if (Math.random() < 0.2){ i0.style.width = i0.style.height = '3px'; } st.appendChild(i0); }
+  // pencereler aşağıdan yukarı ve rastgele bir sırayla yanar
+  wins.sort(function(a, b){ return (+b.getAttribute('y') + Math.random()*120) - (+a.getAttribute('y') + Math.random()*120); });
+  var bar = B.querySelector('.bt-bar i'), pc = B.querySelector('.bt-pc'), stx = B.querySelector('.bt-st'), tip = B.querySelector('.bt-tip span');
+  var MSG = ['Ofis kapısı açılıyor', 'Bilgisayarlar açılıyor', 'Kahve demleniyor', 'Ekip masalarına oturuyor', 'Projeler hazırlanıyor', 'Son rötuşlar', 'Hazır'];
+  var TIPS = ['Mutlu ekip daha hızlı çalışır. Yorulan ekibini tatile göndermeyi unutma.',
+    'Kendi karakterine dokun: toplantı yapıp şirketin geleceğine karar ver.',
+    'Her ürün türünde kullanıcılar farklı şeyleri önemser. İlk ürününü bitirince öğrenirsin.',
+    'Trend olan konuda ürün çıkarırsan çok daha fazla kullanıcı gelir.',
+    'Eski bilgisayarlar ekibi yavaşlatır. Ekipmanlarını zamanında yenile.',
+    'Kredi taksitlerini zamanında öde; kredi puanın yükselir, faizler düşer.',
+    'Ar-Ge puanlarıyla Teknoloji sayfasında kalıcı yenilikler geliştir.',
+    'Gökdelende bir yönetici tut; e-postalar, eğitimler ve yeni işlerle o ilgilensin.'];
+  var ti = Math.floor(Math.random()*TIPS.length); tip.textContent = TIPS[ti];
+  var tipT = setInterval(function(){ tip.style.opacity = 0; setTimeout(function(){ ti = (ti + 1) % TIPS.length; tip.textContent = TIPS[ti]; tip.style.opacity = 1; }, 350); }, 3400);
+  var p = 0, target = 16, t0 = Date.now(), done = false, lit = 0;
+  window.bootStage = function(v){ if (v > target) target = v; };
+  function draw(){
+    p += Math.max(0.1, (target - p) * 0.045); if (p > target) p = target;
+    bar.style.width = p.toFixed(1) + '%'; pc.textContent = Math.floor(p) + '%';
+    stx.textContent = MSG[Math.min(MSG.length - 1, Math.floor(p / 100 * (MSG.length - 1) + 0.0001))];
+    var want = Math.floor(wins.length * Math.min(1, p / 92));
+    while (lit < want){ wins[lit].classList.add('on'); lit++; }
+    if (p >= 100 && !done){ done = true; clearInterval(tipT); setTimeout(function(){ B.classList.add('out'); setTimeout(function(){ if (B.parentNode) B.parentNode.removeChild(B); }, 850); }, 420); return; }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+  document.addEventListener('DOMContentLoaded', function(){ window.bootStage(45); });
+  window.addEventListener('load', function(){ window.bootStage(72); });
+  var poll = setInterval(function(){
+    var e2 = Date.now() - t0, ok3 = window.S3D && window.S3D.ok;
+    if (ok3) window.bootStage(92);
+    if (document.readyState === 'complete' && (ok3 || e2 > 5000) && e2 > 2600){ clearInterval(poll); window.bootStage(100); }
+  }, 120);
+})();
+</script>
 <div id="probe" style="position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)"></div>
 <div id="app">
   <div id="scene" class="tapper"></div>
   <div class="hud">
-    <button class="pillw cmp" data-act="page" data-v="finans"><span class="ico" data-ic="sirket"></span><span class="t"><b id="hName">Kod Patronu</b><small id="hTitle"></small></span></button>
+    <button class="pillw cmp" data-act="page" data-v="finans"><span class="ico" data-ic="sirket"></span><span class="t"><b id="hName">Bytetown</b><small id="hTitle"></small></span></button>
     <button class="pillw money" id="hMoneyP" data-act="page" data-v="finans"><span class="ico" data-ic="para"></span><span class="t"><b id="hMoney">₺0</b><small id="hInc"></small></span></button>
     <button class="pillw" data-act="page" data-v="sirala"><span class="ico" data-ic="yildiz"></span><span class="t"><b id="hRep">0</b><small>itibar</small></span></button>
     <button class="pillw rp" data-act="page" data-v="tekno"><span class="ico" data-ic="arge"></span><span class="t"><b id="hRp">0</b><small>Ar-Ge puanı</small></span></button>
@@ -30,15 +199,17 @@
     <button class="rb teal" data-act="page" data-v="ayarlar" data-ic="ayar"></button>
   </div>
   <div id="banner"></div>
+  <div id="devbar"></div>
   <div id="hintp" class="hintp" style="display:none"></div>
-  <div class="zoomc"><button class="zb zteam" data-act="team" title="Ekiple aktivite"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><path d="M14.5 14.6c.8-.4 1.6-.6 2.5-.6 2.1 0 3.8 1.4 4.3 4"/></svg></button><button class="zb" data-act="zin">＋</button><span id="zoomLvl"></span><button class="zb" data-act="zout">－</button></div>
+  <div class="zoomc"><button class="zb zteam" data-act="team" title="Ekiple aktivite"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><path d="M14.5 14.6c.8-.4 1.6-.6 2.5-.6 2.1 0 3.8 1.4 4.3 4"/></svg></button><button class="zb zcity" data-act="page" data-v="sehir" title="Şehir haritası"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M3 21V10l5-3v14M8 21V4l7 4v13M15 21V11l6 2v8M2 21h20"/></svg></button><button class="zb" data-act="zin">＋</button><span id="zoomLvl"></span><button class="zb" data-act="zout">－</button></div>
   <div id="side">
     <div class="panel" style="display:flex;flex-direction:column;min-height:0;flex:1">
-      <div class="ptl"><span>PROJELER</span><span id="slotInfo" class="slotinfo"></span></div>
+      <div class="ptl"><span>PROJELER</span><span id="slotInfo" class="slotinfo"></span><button class="sideclose" data-act="side-toggle" aria-label="Projeleri kapat"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div id="plist"></div>
     </div>
     <div class="panel goalc" id="goal"></div>
   </div>
+  <button id="sideTab" data-act="side-toggle"></button>
   <div id="dock"></div>
   <div id="page" class="hidden"><div class="sheet">
     <div class="phead"><button class="backb" data-act="home">‹</button><div class="ptitle" id="pTitle"></div>
@@ -50,10 +221,14 @@
   <div id="toasts"></div>
 </div>
 
-<script src="ofis.js?v=59"></script>
-<script src="brif.js?v=59"></script>
-<script src="ikon.js?v=59"></script>
-<script type="module" src="ofis3d.js?v=59"></script>
+<script src="ofis.js?v=103"></script>
+<script src="brif.js?v=103"></script>
+<script src="hikaye.js?v=103"></script>
+<script src="bilgisayar.js?v=103"></script>
+<script src="ekstra.js?v=103"></script>
+<script src="sehir.js?v=103"></script>
+<script src="ikon.js?v=103"></script>
+<script type="module" src="ofis3d.js?v=103"></script>
 <script>
 'use strict';
 /* ================= SABİTLER ================= */
@@ -65,8 +240,8 @@ const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağu
 const WEEKDAYS = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
 
 const TYPES = {
-  web:   {ad:'Web Sitesi',     ikon:'🌐', kod:60,  tas:30,  users:15000, arpu:2.1,  fiyat:0,       rep:0,   tier:1, butce:[620000, 1200000, 8000000]},
-  mobil: {ad:'Mobil Uygulama', ikon:'📱', kod:120, tas:80,  users:15000, arpu:2.5,  fiyat:250000,  rep:10,  tier:1.5, butce:[750000, 1600000, 9500000]},
+  mobil: {ad:'Mobil Uygulama', ikon:'📱', kod:60,  tas:40,  users:15000, arpu:2.1,  fiyat:0,       rep:0,   tier:1, butce:[620000, 1200000, 8000000]},
+  web:   {ad:'Web Sitesi',     ikon:'🌐', kod:110, tas:70,  users:15000, arpu:2.5,  fiyat:250000,  rep:10,  tier:1.5, butce:[750000, 1600000, 9500000]},
   oyun:  {ad:'Oyun',           ikon:'🎮', kod:220, tas:200, users:16000, arpu:2.75, fiyat:900000,  rep:35,  tier:2, butce:[850000, 2200000, 12000000]},
   ai:    {ad:'Yapay Zekâ',     ikon:'🤖', kod:550, tas:150, users:18000, arpu:2.9,  fiyat:5000000, rep:100, tier:3, butce:[1000000, 3000000, 15000000]},
 };
@@ -82,7 +257,7 @@ const OFFICES = [
   {ad:'Stüdyo Daire',  ikon:'🛋️', kap:2,  slot:2, fiyat:350000,    kira:18000,   esik:500000,     acik:'Hem ev hem ofis: ilk çalışanlarını alabileceğin küçük bir daire.'},
   {ad:'Ofis',          ikon:'🏢', kap:4,  slot:3, fiyat:3500000,   kira:120000,  esik:5000000,   acik:'Gerçek bir ofis! 4 çalışana kadar ekip kurabilirsin.'},
   {ad:'Büyük Ofis',    ikon:'🏙️', kap:6,  slot:4, fiyat:25000000,  kira:600000,  esik:40000000,  acik:'Geniş bir ofis katı: 6 kişilik güçlü bir ekip.'},
-  {ad:'Gökdelen Katı', ikon:'🌆', kap:12, slot:5, fiyat:150000000, kira:2500000, esik:250000000, acik:'Şehrin tepesinde dev bir teknoloji şirketi.'},
+  {ad:'Gökdelen Katı', ikon:'🌆', kap:12, slot:5, fiyat:100000000, kira:2500000, esik:120000000, acik:'Şehrin tepesinde dev bir teknoloji şirketi.'},
 ];
 const ROLES = {
   prog:{ad:'Programcı', emo:['👨‍💻','👩‍💻'], acik:'Kod yazar', renk:'#3b82f6'},
@@ -104,7 +279,7 @@ const BIZ = [
   {id:'netkafe',  ikon:'🕹️', ad:'İnternet Kafe & E-spor', acik:'Turnuva düzenle, e-spor takımı kur.', fiyat:7000000,  gelir:65000,  rep:80},
   {id:'muzik',    ikon:'🎵', ad:'Müzik Şirketi',          acik:'Şarkıcı keşfet, hit şarkılar çıkar.', fiyat:25000000, gelir:220000, rep:150},
 ];
-const BIZ_MAX = 100;
+const BIZ_MAX = 15;        // yatırımların son seviyesi
 // Ar-Ge yenilikleri: çalışanlar araştırır, bitince kalıcı avantaj sağlar
 const INNOV = [
   {id:'kutuphane', ikon:'📚', ad:'Ortak Kod Kütüphanesi', acik:'Yeni projelerde kod işi %12 azalır', puan:120},
@@ -123,7 +298,7 @@ const RIVALS = [
   {n:'Atom Labs', b:600e6, g:0.008}, {n:'Nova Teknoloji', b:1.8e9, g:0.009}, {n:'Mega Kod Holding', b:6e9, g:0.01},
 ];
 const TITLES = [[0,'Garaj Girişimi'],[15,'Yerel Firma'],[50,'Tanınan Şirket'],[150,'Sektör Lideri'],[400,'Teknoloji Devi'],[1000,'Dünya Efsanesi']];
-const FIRST = ['Ahmet','Mehmet','Ayşe','Fatma','Can','Ece','Emre','Zeynep','Burak','Elif','Mert','Selin','Kerem','Deniz','Oğuz','Merve','Barış','İrem','Kaan','Buse','Arda','Derya','Tolga','Gizem','Onur','Esra','Yusuf','Nazlı','Serkan','Ceren','Eren','Damla','Furkan','Melis','Hakan','Sude'];
+const FIRST = ['Ahmet','Mehmet','Ayşe','Fatma','Can','Ece','Emre','Zeynep','Burak','Elif','Mert','Selin','Kerem','Deniz','Oğuz','Merve','Barış','İrem','Kaan','Buse','Arda','Derya','Tolga','Gizem','Onur','Esra','Yusuf','Nazlı','Serkan','Ceren','Eren','Damla','Furkan','Melis','Hakan','Sude','Ali','Zehra','Cem','Ebru','Volkan','Pelin','Umut','Aslı','Batuhan','Gamze'];
 const LAST_I = 'ABÇDEFGHIKLMNOÖPRSŞTUÜVYZ';
 const CLIENTS = ['Kardeşler Mobilya','Yıldız Market','Anadolu Lojistik','Mavi Turizm','Demir Hukuk Bürosu','Lezzet Lokantası','Güneş Eczanesi','Ekin Tarım','Atlas Sigorta','Kuzey Otomotiv','Bulut Kafe','Marmara Emlak','Çınar Okulları','Deniz Balıkçılık','Altın Kuyumculuk','Zirve Spor Salonu','Kardelen Çiçekçilik','Ufuk Kargo','Toros Un Fabrikası','Lale Kuaför','Belediye Bilgi İşlem','Vali Konağı Müzesi'];
 const NAMES = {
@@ -137,7 +312,7 @@ const GOALS = [
   {t:'Kendi ürününü geliştirip yayınla', c:()=>S.stats.prodsDone>=1, r:100000},
   {t:'Stüdyo daireye taşın', c:()=>S.office>=1, r:50000},
   {t:'İlk çalışanını işe al (Personel)', c:()=>S.emps.length>=1, r:30000},
-  {t:'Mobil Uygulama teknolojisini aç', c:()=>S.tech.mobil, r:50000},
+  {t:'Web Sitesi teknolojisini aç', c:()=>S.tech.web, r:50000},
   {t:'Aynı anda 2 proje yürüt', c:()=>S.projs.length>=2, r:60000},
   {t:'Bir çalışanı uzmanlık kursuna gönder', c:()=>S.emps.some(e=>e.spec||(e.task&&e.task.type==='kurs')), r:80000},
   {t:'Ar-Ge ile ilk yeniliğini geliştir', c:()=>Object.values(S.innov||{}).some(v=>v.done), r:120000},
@@ -185,7 +360,7 @@ let S = null;
 let paused = false;
 let curChoices = [];
 let page = null, pageArg = null;
-let form = {type:'web', size:'kucuk', focus:'dengeli', name:'', topic:null, aud:'herkes'};
+let form = {type:'mobil', size:'kucuk', focus:'dengeli', name:'', topic:null, aud:'herkes'};
 let bankForm = {bank:'kod', pct:0.5, term:6};
 // üç banka: her bankadan aynı anda tek kredi; faiz, limit ve şartlar farklı
 const BANKS = [
@@ -204,7 +379,7 @@ let stockMul = 10, invTab = 'isletme';
 function newState(name){
   return {
     v:3, name, money:100000, offered:{}, rep:0, day:1, dayFrac:0, office:0, ownership:100, holders:[],
-    emps:[], cands:[], offers:[], projs:[], sel:null, prods:[], upg:{}, eq:{pc:0, klavye:0, koltuk:0}, eqStd:0, tech:{web:true},
+    emps:[], cands:[], offers:[], projs:[], sel:null, prods:[], upg:{}, eq:{pc:0, klavye:0, koltuk:0}, eqStd:0, tech:{mobil:true},
     biz:{}, loans:[], score:600, sound:true, lastDaily:'', streak:0, taps:0, innov:{}, rp:0,
     stats:{earned:0, done:0, prodsDone:0, best:0}, goal:0, boost:0,
     nextEvent:30, lastDayInc:0, lastSeen:Date.now(), idSeq:1,
@@ -221,6 +396,7 @@ function teamSpeed(){
   if (S.upg.kahve) m *= 1.15;
   m *= eqSpeed();      // klavye, koltuk, bilgisayar (eskiyen ekipman yavaşlatır)
   if (S.boost > 0) m *= 1.20;
+  m *= exSpeed();          /* şirket kültürü */
   return m;
 }
 const bugRate = s => Math.max(0.005, (11-s)*0.01) * (S.upg.otest?0.8:1) * (hasInv('guvenlik')?0.85:1) * eqBug();
@@ -237,15 +413,15 @@ function title(){ let t = TITLES[0][1]; for (const [r,n] of TITLES) if (S.rep >=
 function calcQuality(p){
   const avg = p.pts > 0 ? p.skillPts/p.pts : founderSkill();
   const total = p.kodReq + p.tasReq;
-  const q = 25 + avg*6.5 + FOCUS[p.focus].q + sprintQ(p) + (S.upg.arge?8:0) + (hasInv('karanlik')?3:0) + (hasInv('motor')&&p.type==='oyun'?6:0) - (p.bugs/total)*200;
+  const q = 25 + avg*6.5 + FOCUS[p.focus].q + sprintQ(p) + (S.upg.arge?8:0) + (hasInv('karanlik')?3:0) + (hasInv('motor')&&p.type==='oyun'?6:0) - (p.bugs/total)*200 + (S.meetQ && S.day <= S.meetQ ? 4 : 0) + (S.st && S.st.stolenQ && S.day <= S.st.stolenQ ? 6 : 0) + exQBonus() + (p.launch && p.launch.q || 0);
   return Math.round(clamp(q,1,100));
 }
 function salaryFor(skill){ return (skill*skill*60 + skill*300)*12; }
 function randName(){ return pick(FIRST)+' '+pick(LAST_I)+'.'; }
 function randProdName(type){ const [a,b] = NAMES[type]; return pick(a)+' '+pick(b); }
-function bizMult(l){ return (l>=10?2:1)*(l>=25?2:1)*(l>=50?2:1)*(l>=100?2:1); }
+function bizMult(l){ return (l>=5?2:1)*(l>=10?2:1)*(l>=15?2:1); }
 function seasonMult(){ const m = monthIdx(); return (m>=5&&m<=7) ? 2.5 : (m===11||m<=1) ? 0.3 : 1; }
-function bizIncome(b, l){ if (!l) return 0; let v = b.gelir*l*bizMult(l); if (b.mevsim) v *= seasonMult(); return v; }
+function bizIncome(b, l){ if (!l) return 0; l = Math.min(l, BIZ_MAX); let v = b.gelir*l*bizMult(l); if (b.mevsim) v *= seasonMult(); return v; }
 function bizCost(b, l){ return l===0 ? b.fiyat : Math.round(b.fiyat*0.3*Math.pow(1.13,l-1)/10)*10; }
 function bizBulk(b, l, mul){
   let n = 0, cost = 0;
@@ -269,10 +445,11 @@ function valuation(){
   v += OFFICES[S.office].fiyat*0.6;
   for (const k in S.tech) v += TYPES[k].fiyat*0.5;
   v += S.rep*2000 + S.emps.length*5000;
+  v += cyAcqValue();
   return Math.round(v);
 }
 const rivalVal = r => r.b*(1+(S.day-1)*r.g);
-function myRank(){ const me = valuation(); return 1 + RIVALS.filter(r=>rivalVal(r)>me).length; }
+function myRank(){ const me = valuation(); return 1 + rvActive().filter(r=>rivalVal(r)>me).length; }
 function scoreWord(s){ return s<500?'Kötü':s<600?'Orta':s<700?'İyi':s<850?'Çok iyi':s<950?'Mükemmel':'Kusursuz'; }
 function loanLimit(){ return Math.max(50000, Math.round(((S.score-300)/700)*(400000 + valuation()*0.4)/1000)*1000); }
 function loanRate(){ return clamp(0.45 - (S.score-300)/700*0.35, 0.10, 0.45); }
@@ -403,29 +580,66 @@ function researchTick(e, sp, dt){
   }
 }
 // her aşamanın en kısa süresi (gün): kalabalık ekip bile aşamayı bir anda bitiremez
-const phaseMinDays = p => [5, 8, 11][SIZES[p.size].i] || 5;
+const phaseMinDays = p => [1, 2.5, 4][SIZES[p.size].i] || 1;
 function paceCap(need, dt){ for (const p of need){ const cap = (p.kodReq+p.tasReq)/3 / (phaseMinDays(p)*DAY_SEC) * dt; p._k = p._want > 0 ? Math.min(1, cap/p._want) : 1; p._want = 0; } }
+// proje katkı kaydı: kim ne kadar kod / tasarım / hata düzeltme yaptı
+function addC(p, id, k, v){ if (!v || v <= 0) return; const c = p.cs || (p.cs = {}), r = c[id] || (c[id] = {kod:0, tas:0, fix:0}); r[k] = (r[k]||0) + v; if (k !== 'fix') p.rpg = (p.rpg||0) + v*0.04; }
+// proje çubuğu: geliştirilen projenin adı, aşaması ve 4 sayaç (kod, tasarım, hata, Ar-Ge); katkı yazıları bu sayaçlara uçar
+let devbarPid = null;
+function devbarProj(){ const need = S.projs.filter(p => needsWork(p) && !devDone(p)); return need.find(p => p.id===S.sel) || need[0] || null; }
+function updDevbar(){
+  const el = $('devbar'); if (!el) return;
+  const p = page ? null : devbarProj();
+  if (!p){ if (devbarPid !== null){ el.classList.remove('on'); devbarPid = null; } return; }
+  const sum = k => Math.round(Object.values(p.cs||{}).reduce((a,r) => a + (r[k]||0), 0));
+  if (devbarPid !== p.id){
+    devbarPid = p.id;
+    // kart açılınca sayaçlar mevcut toplamdan başlar; sonra yalnızca uçan yazılarla artar
+    p.flown = JSON.parse(JSON.stringify(p.cs || {})); p.flownRp = p.rpg || 0; p.shown = {kod:sum('kod'), tas:sum('tas'), arge:Math.round(p.rpg||0)};
+    const ic = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    el.innerHTML = `<div class="dvtop"><b class="dvn"></b><small class="dvs"></small></div><i class="dvbar"><i></i></i>
+      <div class="dvrow"><div class="dvc kod">${ic('<path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/>')}<b>0</b><span>Kod</span></div>
+      <div class="dvc tas">${ic('<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/>')}<b>0</b><span>Tasarım</span></div>
+      <div class="dvc fix">${ic('<circle cx="12" cy="13" r="5"/><path d="M12 8V5M7 11H4M20 11h-3M7.5 17l-2 2M16.5 17l2 2"/>')}<b>0</b><span>Hata</span></div>
+      <div class="dvc arge">${ic('<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/>')}<b>0</b><span>Ar-Ge</span></div></div>`;
+    el.classList.add('on');
+  }
+  const set = (sel, v) => { const b = el.querySelector(sel); if (b && b.textContent !== String(v)) b.textContent = v; };
+  const sh = p.shown || {}; set('.dvc.kod b', Math.round(sh.kod||0)); set('.dvc.tas b', Math.round(sh.tas||0)); set('.dvc.fix b', Math.round(p.bugs||0)); set('.dvc.arge b', Math.round(sh.arge||0));
+  set('.dvn', p.name); set('.dvs', sprWait(p) ? 'Karar bekliyor' : TYPES[p.type].ad + (p.spr ? ' · ' + (sprCur(p)+1) + '/3 ' + sprStage(p.type, sprCur(p)).ad : '')); el.classList.toggle('wait', sprWait(p));
+  const bar = el.querySelector('.dvbar i'), w = Math.min(100, Math.round(sprProg(p)*100)) + '%'; if (bar.style.width !== w) bar.style.width = w;
+}
+function contribHTML(p){
+  if (!p.cs) return '';
+  const rows = Object.entries(p.cs).map(([id, r]) => { const e = id==='me' ? null : S.emps.find(x => String(x.id)===String(id)); return {ad: id==='me' ? (S.boss || 'Sen') : e ? e.name : 'Eski çalışan', kod:r.kod||0, tas:r.tas||0, fix:r.fix||0}; })
+    .map(x => Object.assign(x, {top: x.kod + x.tas + x.fix*4})).sort((a,b) => b.top - a.top);
+  const sum = k => Math.round(rows.reduce((a,x) => a + x[k], 0));
+  const list = rows.slice(0, 6).map(x => `<div class="ctrow"><b>${esc(x.ad)}</b><span class="kod">${Math.round(x.kod)} kod</span><span class="tas">${Math.round(x.tas)} tasarım</span><span class="fix">${Math.round(x.fix)} hata</span></div>`).join('');
+  return `<div class="ctbox"><div class="npey">KATKILAR</div><div class="cttot"><div><b>${sum('kod')}</b><span>Kod</span></div><div><b>${sum('tas')}</b><span>Tasarım</span></div><div><b>${sum('fix')}</b><span>Hata düzeltme</span></div></div>${list}</div>`;
+}
 function workTick(dt){
+  if (S.meeting) return;          // toplantıda iş durur
   for (const e of S.emps) if (e.task && e.task.type==='arge') researchTick(e, teamSpeed(), dt);
   const need = S.projs.filter(p => needsWork(p) && !sprWait(p));
   if (!need.length) return;
   const n = need.length, sp = teamSpeed(), fs = founderSkill();
-  const fa = 0.55*fs*sp*dt/n;      // kurucu kendi kendine çalışır
+  const solo = 1 + 2/(1 + S.emps.filter(e => !isAway(e)).length*0.8);   // tek başınayken x3, ekip büyüdükçe azalır
+  const fa = 0.8*fs*sp*solo*dt/n * cyBossMult();      // kurucu kendi kendine çalışır
   let fk = 0, ft = 0;
   for (const p of need){
     if (S.ftask) continue;
-    if (!devDone(p)){ const part = lowerPart(p), a = give(p, part, fa*knowMult(S.fknow, p.type, 'me'), fs, knowBug(S.fknow)); if (part==='kod') fk += a; else ft += a; } else fixBugs(p, fa*0.3*knowFix(S.fknow,'me'));
+    if (!devDone(p)){ const part = lowerPart(p), a = give(p, part, fa*knowMult(S.fknow, p.type, 'me'), fs, knowBug(S.fknow)); if (part==='kod') fk += a; else ft += a; addC(p, 'me', part, a); } else addC(p, 'me', 'fix', fixBugs(p, fa*0.3*knowFix(S.fknow,'me')));
   }
   if (fk+ft > 0){ fxAdd('me', fk>=ft?'prog':'tas', fk+ft); S.rp = (S.rp||0) + (fk+ft)*0.04; }
   for (const e of S.emps){
     if (e.task && e.task.type!=='mentor') continue;
-    const m = moodMult(e) * leadBonus(e) * (e.task ? 0.8 : 1) * ((e.fresh||0) > 0 ? 1.15 : 1) * (0.85 + skillsOf(e).hiz*0.03);
+    const m = moodMult(e) * leadBonus(e) * (e.task ? 0.8 : 1) * ((e.fresh||0) > 0 ? 1.15 : 1) * (0.85 + skillsOf(e).hiz*0.03) * (e.ceza && S.day < e.ceza.until ? 1.35 : 1);   /* ek mesai cezası */
     const ms = (e.skill + skMain(e))/2;
     let w = 0, b = 0;
     for (const p of need){
       const spec = (e.spec===p.type ? 1.35 : 1) * knowMult(e.know, p.type, e.role), bm = knowBug(e.know);
-      if (e.role==='test'){ b += fixBugs(p, ms*0.15*testMult()*sp*m*spec*knowFix(e.know, e.role)*dt/n); }
-      else { const [k,v] = workOn(p, e.role==='prog'?'kod':'tas', ms*0.6*sp*m*spec*dt/n, skMain(e), bm); if (k==='w') w += v; else b += v; }
+      if (e.role==='test'){ const x = fixBugs(p, ms*0.15*testMult()*sp*m*spec*knowFix(e.know, e.role)*dt/n); b += x; addC(p, e.id, 'fix', x); }
+      else { const [k,v] = workOn(p, e.role==='prog'?'kod':'tas', ms*0.6*sp*m*spec*dt/n, skMain(e), bm); if (k==='w'){ w += v; addC(p, e.id, e.role==='prog'?'kod':'tas', v); } else { b += v; addC(p, e.id, 'fix', v); } }
     }
     if (w > 0){ fxAdd(e.id, e.role, w); S.rp = (S.rp||0) + w*0.04; }
     if (b > 0) fxAdd(e.id, 'fix', b*6);
@@ -481,36 +695,33 @@ function moodDay(){
 }
 function taskDay(){
   if (S.ftask && S.day >= S.ftask.until){ const it = LEARN_BY[S.ftask.item]; S.fknow = (S.fknow||[]).concat(S.ftask.item); S.ftask = null; sceneKey = ''; toast(`🎓 Artık ${it.ad} biliyorsun! ${it.acik}`); snd('ok'); }
+  let grpBack = 0;
   for (const e of [...S.emps]){
     const t = e.task;
     if (!t || !t.until || S.day < t.until) continue;
     e.task = null; sceneKey = '';
     if (t.type==='kurs'){ e.spec = t.spec; toast(`🎓 ${esc(e.name)} kursu bitirdi: artık ${TYPES[t.spec].ikon} ${TYPES[t.spec].ad} uzmanı!`); snd('ok'); }
-    else if (t.type==='izin'){ e.mood = 100; e.fresh = 10; toast(`🏖️ ${esc(e.name)} izinden dinç döndü! 10 gün daha hızlı.`); }
+    else if (t.type==='izin'){ if (t.grp){ e.mood = clamp((e.mood??70) + t.grp, 5, 100); e.fresh = t.grp >= 100 ? 10 : 5; grpBack++; } else { e.mood = 100; e.fresh = 10; toast(`🏖️ ${esc(e.name)} izinden dinç döndü! 10 gün daha hızlı.`); } }
     else if (t.type==='konf'){
-      const g = 2 + Math.round(e.skill/2); S.rep += g;
+      e.konfDone = true; const g = 2 + Math.round(e.skill/2); S.rep += g;
       let msg = `🎤 ${esc(e.name)} konferanstan döndü: +${g} ⭐`;
       if (Math.random() < 0.5){ const c = genCand(); c.skill = clamp(c.skill+2, 1, 10); c.salary = round10(salaryFor(c.skill)*(0.9+Math.random()*0.25)); S.cands.unshift(c); msg += ' ve yetenekli bir aday buldu!'; }
       toast(msg);
     }
+    else if (t.type==='egitim'){ if (e.skill < 10){ e.salary = round10(e.salary*salaryFor(e.skill+1)/salaryFor(e.skill)); e.skill++; skillUp(e); } toast(`${esc(e.name)} eğitimden döndü: yetenek ${e.skill}/10`); snd('ok'); }
     else if (t.type==='ogren'){ const it = LEARN_BY[t.item]; e.know = (e.know||[]).concat(t.item); toast(`🎓 ${esc(e.name)} artık ${it.ad} biliyor! ${it.acik}`); snd('ok'); setTimeout(()=>speak(e.id,'🤓'),200); }
     else if (t.type==='mentor'){
       const m = S.emps.find(x=>x.id===t.target);
       if (m && m.skill < 10){ m.salary = round10(m.salary*salaryFor(m.skill+1)/salaryFor(m.skill)); m.skill++; skillUp(m); toast(`🧑‍🏫 ${esc(e.name)} sayesinde ${esc(m.name)} yetenek ${m.skill} oldu!`); snd('ok'); }
     }
   }
+  if (grpBack){ toast(`Ekip tatilden döndü: ${grpBack} kişi dinlenmiş ve dinç!`); snd('ok'); }
 }
+// para yetince yeni ofis sessizce açılır; açılır pencere yok, taşınma Ofisim sayfasından yapılır
 function checkOfficeOffer(){
   const i = S.office+1, n = OFFICES[i];
-  if (!n || S.offered[i] || S.money < n.esik || paused) return;
+  if (!n || S.offered[i] || S.money < n.esik) return;
   S.offered[i] = true;
-  curChoices = [()=>ACTIONS['office-up'](), null];
-  snd('event');
-  showModal('📞', `<h3>Emlakçı Arıyor!</h3><p style="text-align:center">"Patron, işler çok iyi gidiyor! Sana harika bir yer buldum: <b>${n.ikon} ${n.ad}</b>"</p>
-    <p class="sub" style="text-align:center">${n.acik}</p>
-    <div class="grid4" style="margin:8px 0"><div class="kv"><b>${n.kap}</b><span>Çalışan</span></div><div class="kv"><b>${n.slot}</b><span>Proje slotu</span></div><div class="kv"><b>${tl(n.kira)}</b><span>Aylık kira</span></div><div class="kv"><b>${tl(n.fiyat)}</b><span>Taşınma ücreti</span></div></div>
-    <div class="grid2"><button class="btn gray block" data-act="choice" data-i="1">Şimdi değil</button><button class="btn block lg" data-act="choice" data-i="0" ${S.money<n.fiyat?'disabled':''}>Taşınalım!</button></div>
-    <p class="hint" style="text-align:center">İstersen sonra da 🏢 Ofisim'den taşınabilirsin.</p>`);
 }
 function newDay(){
   S.day++; tagPts = {};
@@ -520,7 +731,8 @@ function newDay(){
   taskDay();
   eqDay();
   for (const p of S.projs){ const pr = (p.kod+p.tas)/(p.kodReq+p.tasReq); const d = Math.max(0, pr - (p.prevProg ?? pr)); p.rate = p.rate === undefined ? d : p.rate*0.7 + d*0.3; p.prevProg = pr; }
-  staffMailDay(); staffNoteDay(); mgrDay();
+  staffMailDay(); staffNoteDay(); acilDay(); mgrDay(); storyDay(); osDay(); exDay(); cyDay();
+  if (S.meeting && Date.now() - (S.meeting.t||0) > 4000 && $('modal').classList.contains('hidden') && !page){ if (window.S3D && S3D.inMeeting && S3D.inMeeting()) showMeeting(); else S.meeting = null; }
   let inc = 0;
   for (const pr of S.prods) if (pr.active) inc += prodDay(pr);
   for (const b of BIZ) inc += bizIncome(b, S.biz[b.id]||0);
@@ -541,12 +753,12 @@ function newDay(){
 }
 function prodDay(pr){
   pr.age++;
-  const f = pr.age <= 8 ? pr.age/8 : Math.exp(-(pr.age-8)/pr.life);
+  const pl = pr.plat || 0, f = pr.age <= 8 ? pr.age/8 : pr.age <= 8+pl ? 1 : Math.exp(-(pr.age-8-pl)/pr.life);
   if (pr.viral > 0) pr.viral--;
   pr.users = Math.round(pr.peak * f * (pr.ad?1.3:1) * (pr.viral>0?2:1));
-  const rev = pr.users * TYPES[pr.type].arpu * revMult();
+  const rev = pr.users * TYPES[pr.type].arpu * revMult() * (pr.pcut && S.day < pr.pcut ? 0.8 : 1) * cyWorldRev(pr);
   pr.earned += rev;
-  if (pr.age > 8 && f < 0.03){ pr.active = false; pr.users = 0; toast(`📴 ${esc(pr.name)} kapandı. Yeni ürün zamanı!`); }
+  if (pr.age > 8+pl && f < 0.03){ pr.active = false; pr.users = 0; toast(`📴 ${esc(pr.name)} kapandı. Yeni ürün zamanı!`); }
   return rev;
 }
 // kredi bitişine yaklaşınca uyarı (son 2 taksit)
@@ -617,7 +829,7 @@ const EVENTS = [
     return {ikon:'🖥️', title:'Sunucu Çöktü!', text:`<b>${esc(p.name)}</b> sunucuları çöktü! Acil ekip çağırırsan ${tl(cost)} tutacak. Çağırmazsan kullanıcıların %35'i kaçacak.`,
       choices:[{label:'Bekle, düzelir', cls:'gray', fn:()=>{ p.peak *= 0.65; toast(`📉 ${esc(p.name)} kullanıcı kaybetti.`); }},
                {label:`Acil ekip (${tl(cost)})`, cls:'orange', fn:()=>{ S.money -= cost; toast('🛠️ Sunucular düzeldi.'); }}]}; },
-  () => { if (S.day < 20) return null; const cost = Math.round((25000+S.rep*1800)/100)*100; const gain = 3 + Math.floor(Math.random()*6);
+  () => { if (S.day < 20 || S.office < 2) return null;   /* fuar teklifi 3. seviye ofisten (Ofis) itibaren gelir */ const cost = Math.round((25000+S.rep*1800)/100)*100; const gain = 3 + Math.floor(Math.random()*6);
     return {ikon:'🎪', title:'Teknoloji Fuarı', text:`Büyük teknoloji fuarına stand açabilirsin. Maliyeti ${tl(cost)}. Şirketin daha çok tanınır.`,
       choices:[{label:'Bu sefer geç', cls:'gray'},{label:`Katıl (${tl(cost)}, +${gain} ⭐)`, cls:'blue', fn:()=>{ S.money -= cost; S.rep += gain; toast(`⭐ Fuarda çok ilgi gördün! +${gain} itibar`); }}]}; },
   () => { const amt = Math.round((12000+S.rep*1200)*(0.5+Math.random())/100)*100;
@@ -654,9 +866,64 @@ function checkGoals(){
     S.money += g.r; S.goal++;
     toast(`🎯 Hedef tamamlandı! +${tl(g.r)}`); snd('ok');
   }
+  checkFinal();
+}
+/* ================= OYUNUN SONU =================
+   Hedef listesi bitince "Bytetown'un zirvesi" başlar. Bu 7 şart tamamlanınca
+   oyun biter: tebrik ekranı ve şirketin özeti gösterilir, oyuncu devam edebilir. */
+const FINAL = [
+  {t:'Gökdelen katına taşın', c:() => S.office >= 4},
+  {t:'12 kişilik tam bir ekip kur', c:() => S.emps.length >= 12},
+  {t:'Bir yönetici işe al', c:() => !!S.mgr},
+  {t:'Bütün ekipmanları en üst seviyeye çıkar', c:() => Object.keys(EQUIP).every(k => eqTier(k) >= EQUIP[k].tiers.length - 1)},
+  {t:'Bütün şirket yükseltmelerini al', c:() => UPGRADES.every(u => (S.upg[u.id]||0) >= u.max)},
+  {t:'Bütün ürün türlerini aç', c:() => Object.keys(TYPES).every(k => S.tech[k])},
+  {t:'Teknoloji Devi ol (400 itibar)', c:() => S.rep >= 400},
+];
+const finalDone = () => FINAL.filter(f => f.c()).length;
+function checkFinal(){
+  if (!S || S.won || S.goal < GOALS.length || finalDone() < FINAL.length) return;
+  if (page || !$('modal').classList.contains('hidden')) return;      // pencere açıksa sonraki kontrolde
+  S.won = {day:S.day}; save();
+  setTimeout(showEnding, 600);
+}
+function finalMenu(){
+  curChoices = [];
+  const rows = FINAL.map(f => { const ok = f.c(); return `<div class="finrow ${ok ? 'ok' : ''}"><span class="fck">${ok ? '✓' : ''}</span><b>${f.t}</b><span class="pill ${ok ? 'green' : ''}">${ok ? 'Tamam' : 'Eksik'}</span></div>`; }).join('');
+  showModal('', `<div class="npey">SON HEDEF</div><h3 style="margin:2px 0 4px">Bytetown'un zirvesi</h3>
+    <p class="sub" style="margin:0 0 10px">Bu şartların hepsini tamamlayınca oyunu bitirmiş olursun. ${finalDone()}/${FINAL.length} tamam.</p>
+    <div class="finlist">${rows}</div><button class="btn teal block" data-act="close">Kapat</button>`, 'pro');
+}
+function showEnding(){
+  if (!S) return;
+  curChoices = [];
+  const box = $('app'), conf = document.createElement('div'); conf.className = 'endconf';
+  const cols = ['#ffd27a', '#5fd3ff', '#ff7a90', '#8be38b', '#ffffff', '#b69cff'];
+  for (let i = 0; i < 70; i++){ const s = document.createElement('i'); s.style.left = (Math.random()*100) + '%'; s.style.background = cols[i % cols.length];
+    s.style.animationDelay = (Math.random()*1.6) + 's'; s.style.animationDuration = (2.6 + Math.random()*2.2) + 's'; s.style.transform = 'rotate(' + Math.floor(Math.random()*360) + 'deg)'; conf.appendChild(s); }
+  box.appendChild(conf); setTimeout(() => conf.remove(), 7500);
+  const st = (v, l) => `<div class="kv"><b>${v}</b><span>${l}</span></div>`;
+  showModal('', `<div class="endhd"><div class="npey">OYUN TAMAMLANDI</div><h2>Tebrikler, oyunu bitirdin!</h2>
+      <p>Annenlerin garajında tek bir eski bilgisayarla başlayan yolculuk, şehrin tepesindeki gökdelende tamamlandı. <b>${esc(S.name || 'Şirketin')}</b> artık Bytetown'un en güçlü teknoloji şirketlerinden biri.</p></div>
+    <div class="endstats">${st(S.day + '. gün', 'Yolculuğun süresi')}${st(tl(valuation()), 'Şirket değeri')}${st(tl(S.stats.earned||0), 'Toplam kazanç')}
+      ${st(S.stats.done||0, 'Teslim edilen müşteri işi')}${st(S.stats.prodsDone||0, 'Yayınlanan ürün')}${st(S.stats.best||0, 'En iyi ürün kalitesi')}</div>
+    <div class="endnote"><b>Bundan sonra?</b> Oyunda tamamlanacak büyük bir hedef kalmadı. Ama şirket hâlâ senin: oynamaya devam edebilir, yeni projeler üretip ürünler çıkarabilir, yatırımlarını büyütebilir ve sıralamadaki yerini koruyabilirsin.</div>
+    <button class="btn block lg" data-act="close">Oynamaya devam et</button>`, 'endm');
+  snd('ok'); setTimeout(() => snd('cash'), 450);
 }
 
+
 /* ================= EYLEMLER ================= */
+// proje bitince emek veren çalışanlar yorulur: büyük proje ve büyük katkı daha çok yorar
+function projectFatigue(p){
+  if (!p.cs) return;
+  const tot = Object.values(p.cs).reduce((a, r) => a + (r.kod||0) + (r.tas||0) + (r.fix||0)*4, 0) || 1;
+  let n = 0, sum = 0;
+  for (const e of S.emps){ const r = p.cs[e.id]; if (!r) continue;
+    const share = ((r.kod||0) + (r.tas||0) + (r.fix||0)*4) / tot, d = Math.round(4 + SIZES[p.size].i*4 + share*14);
+    e.mood = clamp((e.mood??70) - d, 5, 100); n++; sum += d; }
+  if (n) setTimeout(() => toast(`Proje bitti, emek veren ${n} çalışan yoruldu (moral ortalama −${Math.round(sum/n)}). Dinlenmeleri iyi olur.`), 1200);
+}
 function release(id){
   const p = S.projs.find(x=>x.id===id); if (!p || !devDone(p)) return;
   const q = calcQuality(p);
@@ -664,6 +931,8 @@ function release(id){
   S.projs = S.projs.filter(x=>x!==p);
   S.stats.best = Math.max(S.stats.best, q);
   closePage();
+  projectFatigue(p);
+  setTimeout(() => { if (S) pcComplain(p); }, 2500);
   for (const e of S.emps) setTimeout(()=>speak(e.id, pick(['🎉','🥳','👏','🙌'])), Math.random()*900);
   speak('me','🎉');
   if (p.kind === 'is'){
@@ -671,20 +940,23 @@ function release(id){
     let pay = Math.round(p.pay * (0.5 + sc/10*0.8) * (1 + carPayBonus()));
     let rep = sc >= 8 ? Math.ceil(sm*1.5*T.tier*sc/7) : sc >= 6 ? Math.ceil(sm*T.tier) : sc >= 4 ? 0 : -3;
     S.money += pay; S.stats.earned += pay; S.rep = Math.max(0, S.rep+rep); S.stats.done++;
+    storyRelease(p, q, null); osRecord(p, q, {sc, pay});
     S.stats.scoreSum = (S.stats.scoreSum||0) + sc;
     S.goodStreak = sc >= 7 ? (S.goodStreak||0) + 1 : sc < 6 ? 0 : (S.goodStreak||0);
     const letter = reviewLetter(p, q, R);
     const msg = {id:S.idSeq++, day:S.day, from:p.client, who:(p.brief&&p.brief.contact)||'Müşteri', type:p.type, score:sc, q, pay, rep, lines:letter, read:true, replyable:true, answered:null};
     S.inbox = [msg].concat(S.inbox||[]).slice(0, 30);
     snd(sc >= 6 ? 'cash' : 'bad');
-    showModal('📩', messageHTML(msg, true).replace('<button', retroHTML(p) + '<button'));
+    showModal('📩', messageHTML(msg, true).replace('<button', retroHTML(p) + contribHTML(p) + '<button'));
     if (sc >= 8) moodAll(6, 'Müşteri bayıldı, ekip gururlu'); else if (sc < 5) moodAll(-10, 'Kötü müşteri yorumu ekibi üzdü');
   } else {
     const tf = p.topic ? TOPICS[p.topic].fit[p.type] : 1, af = p.topic ? audFit(p.topic, p.aud) : 1, trd = p.topic && p.topic===S.trend ? 1.4 : 1;
     if (p.topic){ S.known = S.known || {}; S.known[p.type+':'+p.topic] = tf; }
-    const peak = Math.round(T.users*SIZES[p.size].um*Math.pow(q/100,2.4)*(1+Math.min(S.rep,600)/300)*(S.upg.pazarlama?1.3:1)*(hasInv('dil')?1.15:1)*tf*af*trd*(0.8+Math.random()*0.45));
-    const pr = {id:S.idSeq++, name:p.name, type:p.type, topic:p.topic, aud:p.aud, size:p.size, q, peak, life:(30+q*0.9)*(hasInv('oneri')?1.25:1), age:0, users:0, earned:0, ad:false, upd:0, viral:0, active:true, day:S.day};
+    const peak = Math.round(T.users*SIZES[p.size].um*Math.pow(q/100,2.4)*(1+Math.min(S.rep,600)/300)*(S.upg.pazarlama?1.3:1)*(hasInv('dil')?1.15:1)*tf*af*trd*(0.8+Math.random()*0.45) * cyLaunchApply(p) * cyWorldPeak(p));
+    const pr = {id:S.idSeq++, name:p.name, type:p.type, topic:p.topic, aud:p.aud, size:p.size, q, peak, life:(45+q*1.3)*(hasInv('oneri')?1.25:1), plat:Math.round(15+q*0.35), age:0, users:0, earned:0, ad:false, upd:0, viral:0, active:true, day:S.day};
+    if (S.os && S.os.adBoost){ S.os.adBoost = false; pr.peak = Math.round(pr.peak*1.15); }
     S.prods.unshift(pr);
+    storyRelease(p, q, pr, tf, af, trd); osRecord(p, q, {pid:pr.id});
     const rep = Math.max(-3, Math.round(q/25*Math.sqrt(sm)*T.tier) - (q<30?3:0));
     S.rep = Math.max(0, S.rep+rep); S.stats.prodsDone++;
     S.goodStreak = q >= 70 ? (S.goodStreak||0) + 1 : q < 45 ? 0 : (S.goodStreak||0);
@@ -695,7 +967,8 @@ function release(id){
       ${p.topic ? `<div class="lbl"><span>${TOPICS[p.topic].ikon} Konu & tür uyumu</span><b class="${tf>=1.1?'green':tf<0.95?'red':''}">${fitStars(tf)} ${fitWord(tf)}</b></div>
       <div class="lbl"><span>${AUDS[p.aud].ikon} Hedef kitle</span><b class="${af>1?'green':af<1?'red':''}">${af>1?'Tam isabet!':af<1?'Bu konuya pek uymadı':'Herkese hitap ediyor'}</b></div>
       ${trd>1?'<div class="lbl"><span>🔥 Trend bonusu</span><b class="green">+%40 kullanıcı</b></div>':''}`:''}
-      ${retroHTML(p)}
+      ${retroHTML(p)}${contribHTML(p)}
+      ${cyLaunchLine(p)}
       <div class="lbl"><span>Beklenen zirve</span><b>~${fmt(peak)} kullanıcı</b></div>
       <div class="lbl"><span>İtibar</span><b>${rep>=0?'+':''}${rep} ⭐</b></div>
       <p class="sub">Ürünün her gün para kazandıracak. Zamanla ilgi azalır; reklam ve güncellemeyle canlı tut, yeni ürünler çıkar!</p>
@@ -791,6 +1064,7 @@ function taskText(e){
   if (t.type==='konf') return `🎤 Konferansta${left}`;
   if (t.type==='mentor'){ const m = S.emps.find(x=>x.id===t.target); return `🧑‍🏫 ${m?esc(m.name.split(' ')[0]):'?'} adlı çalışana mentorluk${left}`; }
   if (t.type==='ogren') return `📖 ${LEARN_BY[t.item].ad} öğreniyor${left}`;
+  if (t.type==='egitim') return `Yetenek eğitiminde${left}`;
   if (t.type==='arge'){ const i = INNOV.find(x=>x.id===t.innov); const st = S.innov[t.innov]||{pts:0}; return `🔬 Ar-Ge: ${i?i.ad:''} (%${i?Math.floor(st.pts/i.puan*100):0})`; }
   return '';
 }
@@ -827,7 +1101,8 @@ function empMenu(id){
     <dl class="npdl"><div><dt>Durum</dt><dd>${taskText(e)}</dd></div>
       <div><dt>Moral</dt><dd><span class="mood" style="width:110px;margin:0"><i style="width:${e.mood}%"></i></span> ${Math.round(e.mood)}/100</dd></div></dl>
     ${skillRows(e, 'inmenu')}
-    <div class="elist">${acts}</div>
+    ${empStoryHTML(e)}
+    <div class="elist">${talkRow(e)}${acts}</div>
     <button class="erow danger" data-act="fire" data-id="${e.id}"><b>İşten çıkar</b><small>Ekibin morali düşer</small><span class="echev">›</span></button>`, 'pro');
 }
 function chooser(icon, title, sub, items){
@@ -846,13 +1121,14 @@ const ACTIONS = {
     const n = (setup && setup.co || '').trim() || 'Garaj Yazılım', b = (setup && setup.boss || '').trim();
     S = newState(n.slice(0,24)); refreshOffers(); refreshCands();
     if (setup){ S.me = setupLook(); S.boss = b.slice(0,16); }
-    setup = null; closeModal(); save(); sceneKey = ''; $('app').classList.remove('nogame'); updateAll(true);
+    setup = null; closeModal(); save(); sceneKey = ''; $('app').classList.remove('nogame', 'sideopen'); updateAll(true);
     toast(`👋 Hoş geldin ${b ? esc(b) : 'patron'}!`); setTimeout(() => { if (S && $('modal').classList.contains('hidden')) tutorAsk(); }, 700);
   },
-  intro: el => { const i = +el.dataset.v; closeModal(); if (i < INTRO.length) showWelcome(i); else showSetup(false); },
+  intro: el => { const i = +el.dataset.v, w = $('modal').querySelector('.mwrap.introm'); if (w){ if (w.classList.contains('leave')) return; w.classList.add('leave'); } snd('click');
+    setTimeout(() => { closeModal(); if (i < INTRO.length) showWelcome(i); else showSetup(false); }, w ? 290 : 0); },
   'su-pick': el => setupPick(el.dataset.k, +el.dataset.v),
   'su-g': el => setupGender(el.dataset.v),
-  'su-rand': () => { Object.assign(setup, setupRandomLook(setup.g)); setupRender(); },
+  'su-rand': () => { Object.assign(setup, setupRandomLook()); setupRender(); },
   'su-dice': el => setupDice(el.dataset.k),
   'mgr-open': () => mgrMenu(),
   'mgr-reroll': () => { if (S.money < MGR_REROLL) return; S.money -= MGR_REROLL; S.mgrCands = null; toast('Yeni yönetici adayları geldi.'); },
@@ -869,7 +1145,7 @@ const ACTIONS = {
   'mgr-no': () => { if (S.mgr){ S.mgr.pending = null; S.mgr.nextJob = S.day + 6; } closeModal(); },
   'side-toggle': () => { $('app').classList.toggle('sideopen'); },
   'tut-start': () => tutorStart(),
-  'tut-skip': () => { closeModal(); if (S) S.tutorDone = true; toast("İstediğin zaman Ayarlar'dan oyun rehberini açabilirsin."); },
+  'tut-skip': () => { closeModal(); if (S) S.tutorDone = true; toast("İyi eğlenceler, patron!"); },
   'tut-next': () => { tutI++; tutorShow(); },
   'tut-prev': () => { tutI = Math.max(0, tutI-1); tutorShow(); },
   'tut-end': () => tutorEnd(),
@@ -885,6 +1161,23 @@ const ACTIONS = {
   },
   proj: el => { S.sel = +el.dataset.id; openPage('proje', +el.dataset.id); },
   flearn: () => learnChooser('me'),
+  meet: () => startMeeting(),
+  ev: el => evAct(el),
+  cy: el => cyAct(el),
+  iv: el => exInterview(+el.dataset.id),
+  'hire-go': el => { closeModal(); ACTIONS.hire(el); },
+  exq: el => exAct('q', el), excult: el => exAct('cult', el), excat: el => exAct('cat', el), exipo: el => exAct('ipo', el), exhack: el => exAct('hack', el),
+  os: el => osAct(el),
+  'pc-open': () => { closeModal(); openPage('pc'); },
+  final: () => { if (S.won) showEnding(); else finalMenu(); },
+  'tatil-all': () => tatilMenu(),
+  'tatil-go': el => tatilGo(el.dataset.v),
+  'meet-ch': el => meetChoose(el.dataset.id, +el.dataset.v),
+  'meet-end': () => endMeeting(),
+  'acil-lie': el => acilLie(+el.dataset.id),
+  'idea-fu': el => ideaFollow(+el.dataset.id, +el.dataset.v),
+  'idea-start': el => ideaStart(+el.dataset.id),
+  'meet-hide': () => { $('modal').classList.toggle('mhid'); snd('click'); },
   fkurs: el => { closeModal(); ACTIONS.upg(el); },
   learn: el => {
     const it = LEARN_BY[el.dataset.v]; if (!it) return;
@@ -977,6 +1270,7 @@ const ACTIONS = {
   'f-type': el => { const t = el.dataset.v; if (!S.tech[t]){ toast(`🔒 ${TYPES[t].ad} teknolojisini 🧬 Teknoloji'den açmalısın.`); return; } form.type = t; form.name=''; renderPage(true); },
   'f-size': el => { const k = el.dataset.v; if (S.rep < SIZES[k].rep){ toast(`🔒 ${SIZES[k].ad} ürün için ${SIZES[k].rep} itibar gerekir.`); return; } form.size = k; renderPage(true); },
   'f-focus': el => { form.focus = el.dataset.v; renderPage(true); },
+  'f-tg': el => { form.tg = el.dataset.v; renderPage(true); },
   'f-topic': el => { form.topic = el.dataset.v; form.name = ''; renderPage(true); },
   'f-aud': el => { form.aud = el.dataset.v; renderPage(true); },
   'f-dice': () => { form.name = form.topic ? topicProdName(form.topic, form.type) : randProdName(form.type); const i=$('pname'); if (i) i.value = form.name; },
@@ -1002,7 +1296,7 @@ const ACTIONS = {
   },
   'sp-lead': el => { spForm.lead = el.dataset.v==='me' ? 'me' : +el.dataset.v; renderPage(true); },
   'sp-ex': el => { const v = el.dataset.v, k = spForm.ex.indexOf(v); if (k >= 0) spForm.ex.splice(k, 1); else spForm.ex.push(v); renderPage(true); },
-  'sp-quick': () => { const p = S.projs.find(x=>x.id===spForm.pid); spForm.focus = sprBest(p, spForm.i); spForm.pace = 'dengeli'; spForm.ex = []; startSprint(); },
+  'sp-quick': () => { const p = S.projs.find(x=>x.id===spForm.pid); spForm.focus = needKnown(p.type) && Math.random() < 0.6 ? sprBest(p, spForm.i) : Math.floor(Math.random()*3); spForm.pace = 'dengeli'; spForm.ex = []; startSprint(); },
   'sp-focus': el => { spForm.focus = +el.dataset.v; renderPage(true); },
   'sp-pace': el => { spForm.pace = el.dataset.v; renderPage(true); },
   'sp-go': () => startSprint(),
@@ -1073,7 +1367,7 @@ const ACTIONS = {
   'client-rep': el => clientReply(+el.dataset.id, +el.dataset.v),
   'mail-rep': el => staffReply(+el.dataset.id, +el.dataset.v),
   'refresh-offers': () => { if (S.money < 3000) return; S.money -= 3000; refreshOffers(); },
-  release: el => release(+el.dataset.id),
+  release: el => cyRelease(+el.dataset.id),
   cancel: el => {
     const p = S.projs.find(x=>x.id===+el.dataset.id); if (!p) return;
     confirmBox('🗑️','Proje iptal edilsin mi?', p.kind==='is' ? 'Müşteri işini yarıda bırakırsan <b>-3 itibar</b> kaybedersin.' : 'Bu üründe yapılan tüm çalışma çöpe gider.', 'İptal et', ()=>{
@@ -1140,7 +1434,7 @@ const ACTIONS = {
     const p = S.prods.find(x=>x.id===+el.dataset.id); if (!p || p.upd>=3) return;
     const c = updCost(p); if (S.money < c) return;
     S.money -= c; p.upd++; p.age = Math.max(8, Math.round(p.age - p.life*0.6));
-    toast(`🔧 ${esc(p.name)} güncellendi! Kullanıcılar geri dönüyor.`);
+    toast(`🔧 ${esc(p.name)} güncellendi! Kullanıcılar geri dönüyor.`); exUpdated(p);
   },
   'bank-pct': el => { bankForm.pct = +el.dataset.v; },
   'bank-term': el => { bankForm.term = +el.dataset.v; },
@@ -1186,6 +1480,8 @@ const ACTIONS = {
 /* ---- dokunma: kaydırırken basılmasın, yeniden çizimde tık kaybolmasın ---- */
 let downX = 0, downY = 0, skipUp = false, downSig = null, emptyTap = false;
 const actSig = el => el ? [el.dataset.act, el.dataset.id||'', el.dataset.v||'', el.dataset.k||'', el.dataset.i||''].join('|') : null;
+/* oyun alanı asla kaymasın (odaklanma ya da kaydırma ile yana kayıp kalmasın) */
+$('app').addEventListener('scroll', e => { const a = e.currentTarget; if (a.scrollLeft || a.scrollTop){ a.scrollLeft = 0; a.scrollTop = 0; } });
 document.addEventListener('pointerdown', e => { const a = $('app'); if (a && a.classList.contains('sideopen') && !e.target.closest('#side') && !e.target.closest('[data-act="side-toggle"]') && !e.target.closest('#modal') && !e.target.closest('#page')) a.classList.remove('sideopen'); }, true);
 document.addEventListener('pointerdown', e => {
   downX = e.clientX; downY = e.clientY; skipUp = false; emptyTap = false;
@@ -1211,7 +1507,7 @@ document.addEventListener('pointermove', e => panMove(e));
 document.addEventListener('pointercancel', panEnd);
 document.addEventListener('pointerup', e => {
   panEnd();
-  if (emptyTap){ emptyTap = false; if (S && !paused && Math.hypot(e.clientX-downX, e.clientY-downY) <= 12){ snd('click'); teamMenu(); } return; }
+  if (emptyTap){ emptyTap = false; return; }   /* boşluk artık bir şey açmaz; aktiviteler Personel sayfasında */
   if (skipUp){ skipUp = false; return; }
   if (Math.hypot(e.clientX-downX, e.clientY-downY) > 12) return;
   const el = e.target.closest('[data-act]');
@@ -1262,6 +1558,7 @@ const STC = {blue:'linear-gradient(90deg,var(--t4),var(--t6))', orange:'linear-g
 function updateHome(){
   renderScene();
   updateSceneStates();
+  updDevbar();
   const sel = selProj();
   // proje başlığı: tür simgesi, ad, aşama göstergesi ve Kod / Arayüz / Hata puanları
   let ban;
@@ -1311,7 +1608,7 @@ function updateHome(){
   else if (S.office === 0 && S.offered[1]) ht = '🏢 Stüdyo daireye taşınabilirsin (Ofisim) → çalışan alabilirsin';
   else if (S.office >= 1 && !S.emps.length) ht = '👥 Personel menüsünden ilk çalışanını al: işler hızlanır';
   else if (S.emps.length && !S.seenEmp && S.day > 20) ht = '👆 Bir karaktere dokun: yeni dil öğret, Ar-Ge, kurs!';
-  else if (S.emps.length && teamMood() < 45 && !S.seenTeam) ht = '😟 Ekip mutsuz! Ofisin dışındaki boşluğa dokun: aktivite yap';
+  else if (S.emps.length && teamMood() < 45 && !S.seenTeam) ht = 'Ekip mutsuz! Personel sayfasından ekip aktivitesi düzenle';
   else if (typeof eqBehindAll === 'function' && eqBehindAll() > 0) ht = '🐌 Ekipmanların eskidi, ekip yavaşladı → Geliştir';
   else if (S.stats.done >= 3 && S.stats.prodsDone === 0 && S.money >= prodBudget('web','kucuk')) ht = '💡 Paran yetiyor: kendi ürününü yap (Yeni Proje → Kendi Ürünün)';  hint.style.display = ht ? '' : 'none'; if (ht && hint.textContent !== ht) hint.textContent = ht;
   // sprint panosu
@@ -1321,8 +1618,8 @@ function updateHome(){
   let list = S.projs.map(p => {
     const prog = Math.min(1, (p.kod+p.tas)/(p.kodReq+p.tasReq)), done = devDone(p), wait = sprWait(p), bug = done && p.bugs > 0.001;
     const late = p.kind==='is' && S.day > p.deadline, isSel = sel && sel.id===p.id;
-    const ph = p.spr ? SPRINTS[sprCur(p)] : null;
-    const phase = wait ? '🧭 Karar bekliyor' : !done ? (ph ? `${sprCur(p)+1}/3 · ${ph.ikon} ${ph.ad}` : '⌨️ Geliştirme') : bug ? `🐞 Hata ayıklama (${Math.ceil(p.bugs)})` : '✅ Hazır!';
+    const ph = p.spr ? sprStage(p.type, sprCur(p)) : null;
+    const phase = wait ? '🧭 Karar bekliyor' : !done ? (ph ? `${sprCur(p)+1}/3 · ${ph.ad}` : '⌨️ Geliştirme') : bug ? `🐞 Hata ayıklama (${Math.ceil(p.bugs)})` : '✅ Hazır!';
     const pl = p.spr && p.spr.plans[sprCur(p)], focus = pl && pl.focus !== undefined && !done ? sprTask(p.type, pl.i, pl.focus) : null;
     const rate = p.rate || 0, eta = !done && rate > 0.0005 ? Math.ceil((1-prog)/rate) : null;
     const pctTxt = done ? (bug ? 'Test' : '%100') : `%${Math.floor(prog*100)}`;
@@ -1343,7 +1640,11 @@ function updateHome(){
   if (active.length) list += `<div class="pc2 live" data-act="page" data-v="urunler"><div class="pc2h"><div class="pi">${IC.urunler}</div><div class="grow"><b>${active.length} ürün yayında</b><div class="pmeta2">👥 ${fmt(active.reduce((a,p)=>a+p.users,0))} kullanıcı · 💰 ${tl(prodIncome())}/gün</div></div><span class="stg s3">Canlı</span></div></div>`;
   setHTML($('plist'), list);
   const g = GOALS[S.goal];
-  setHTML($('goal'), g ? `🎯 <b>HEDEF</b><br>${g.t}<br><span class="gr">Ödül ${tl(g.r)}</span>` : '🏆 Tüm hedefler tamam!');
+  { const fd = finalDone(), nx = FINAL.find(f => !f.c());
+    setHTML($('goal'), g ? `🎯 <b>HEDEF</b><br>${g.t}<br><span class="gr">Ödül ${tl(g.r)}</span>`
+      : S.won ? `<b>OYUN TAMAMLANDI</b><br>Tebrikler! İstediğin kadar devam et.<br><span class="gr">Özeti gör</span>`
+      : `<b>SON HEDEF · ${fd}/${FINAL.length}</b><br>${nx ? nx.t : 'Bytetown\'un zirvesi'}<br><span class="gr">Listeyi gör</span>`);
+    if (g) delete $('goal').dataset.act; else $('goal').dataset.act = 'final'; }
   // alt menü
   const n = OFFICES[S.office+1];
   const dots = {
@@ -1359,6 +1660,7 @@ function updateHome(){
     db('tekno','Teknoloji',dots.tekno) + db('gelis','Geliştir',dots.gelis) + db('yatirim','Yatırım',dots.yatirim) + db('sirala','Sıralama',false) +
     `<button class="db dbproj" data-act="side-toggle">${S.projs.some(p => sprWait(p) || devDone(p) && !needsWork(p)) ? '<span class="badge-dot">!</span>' : ''}<span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span><span>Projeler ${S.projs.length}/${slots()}</span></button>` +
     `<button class="btn newp" data-act="newproj" ${S.projs.length>=slots()?'disabled':''}><span class="pi2">${IC.arti}</span>Yeni Proje</button>`);
+  { const st = $('sideTab'), al = S.projs.some(p => sprWait(p) || devDone(p) && !needsWork(p)), h = `<span>PROJELER ${S.projs.length}/${slots()}</span>` + (al ? '<i></i>' : ''); if (st && st.innerHTML !== h){ st.innerHTML = h; } if (st) st.classList.toggle('alert', al); }
   fillIcons();
 }
 
@@ -1377,18 +1679,22 @@ const PAGES = {
   brif:    {t:'📝 İş Brifi', html:()=>briefHTML(), stat:true},
   sprint:  {t:'🧭 Geliştirme Aşaması', html:()=>sprintHTML(), stat:true},
   mesaj:   {t:'📩 Gelen Kutusu', html:()=>inboxHTML()},
+  pc:      {t:'Bilgisayarım', html:()=>osHTML(), stat:true},
+  sehir:   {t:'Bytetown Şehri', html:()=>cyHTML(), stat:true},
   sirala:  {t:'🏆 Sıralama', html:()=>rankHTML()},
   finans:  {t:'📊 Şirket Durumu', html:()=>financeHTML()},
   ayarlar: {t:'⚙️ Ayarlar', html:()=>settingsHTML()},
 };
 function openPage(name, arg){
+  holdToasts();
+  if (name === 'yeni' && S && S.ideaNext){ const I = S.ideaNext; if (S.tech[I.ty]){ form.type = I.ty; form.topic = I.tp; form.name = ''; } S.ideaNext = null; }
   page = name; pageArg = arg;
   $('pTitle').textContent = PAGES[name].t;
   $('page').classList.remove('hidden');
   $('pBody').scrollTop = 0;
   renderPage(true);
 }
-function closePage(){ page = null; $('page').classList.add('hidden'); }
+function closePage(){ page = null; $('page').classList.add('hidden'); flushToasts(); }
 function renderPage(force){
   if (!page || !S) return;
   const P = PAGES[page];
@@ -1407,6 +1713,7 @@ function offersHTML(){
       <div class="pxtop"><div class="npic">${TYPE_SVG[o.type]||NP_ICON.is}</div><div class="grow"><b class="npt">${esc(o.client)}</b><div class="pxmeta">${t.ad} · ${SIZES[o.size].ad}</div></div>
         <div class="pxpay"><span>Ödeme</span><b>${tl(o.pay)}</b></div></div>
       <dl class="npdl"><div><dt>Teslim süresi</dt><dd>${o.days} gün</dd></div><div><dt>İş miktarı</dt><dd>${(t.kod+t.tas)*SIZES[o.size].m} puan</dd></div><div><dt>Min. kalite</dt><dd>${o.minQ||'Yok'}</dd></div></dl>
+      ${ok && !o.negDone ? `<button class="pxghost" data-act="cy" data-k="neg" data-v="${o.id}" style="margin-bottom:6px">Pazarlık yap</button>` : o.negDone ? '<div class="pxmeta" style="margin-bottom:6px">Pazarlık yapıldı</div>' : ''}
       ${ok ? `<button class="npgo" data-act="take-offer" data-id="${o.id}" ${full?'disabled':''}>Brifi incele ${NP_ICON.ok}</button>` : `<button class="npgo" disabled>Bilgisayar yetersiz</button><div class="pxwarn">${pcLockText(o.type)}</div>`}
     </div>`;
   }).join('');
@@ -1422,7 +1729,9 @@ function newProdHTML(){
   const work = Math.round((T.kod+T.tas)*m);
   const chip = (act, k, on, label, extra='') => `<button class="chip ${on?'on':''} ${extra}" data-act="${act}" data-v="${k}">${label}</button>`;
   const typeChips = Object.entries(TYPES).map(([k,t]) => chip('f-type', k, form.type===k, `${S.tech[k]?'':LOCK_SVG}${t.ad}`, S.tech[k]?'':'lock')).join('');
-  const topicChips = Object.entries(TOPICS).map(([k,t]) => {
+  const curG = form.tg || (form.topic && TOPICS[form.topic] && TOPICS[form.topic].g) || TOPIC_GROUPS[0][0];
+  const gTabs = TOPIC_GROUPS.map(([g, a]) => `<button class="tgtab ${curG===g?'on':''}" data-act="f-tg" data-v="${g}">${a}${TOPICS[S.trend] && TOPICS[S.trend].g===g ? ' <i class="ttag">TREND</i>' : ''}</button>`).join('');
+  const topicChips = Object.entries(TOPICS).filter(([k,t]) => t.g===curG).map(([k,t]) => {
     const kn = (S.known||{})[form.type+':'+k];
     return chip('f-topic', k, form.topic===k, `${t.ad}${k===S.trend?' <i class="ttag">TREND</i>':''}${kn!==undefined?` <b class="kst">${fitStars(kn)}</b>`:''}`);
   }).join('');
@@ -1437,7 +1746,7 @@ function newProdHTML(){
     <div class="pxpanel">
       <div class="pxtrend"><span class="pxdot"></span>Bu dönemin trendi: <b>${tr.ad}</b><span class="pxmeta"> · ${Math.max(0,(S.trendUntil||0)-S.day)} gün daha</span></div>
       ${step(1, 'Ürün türü')}<div class="chips">${typeChips}</div>
-      ${step(2, 'Konu', `<span class="pxmeta">★ daha önce denediğin ${T.ad.toLowerCase()} uyumu</span>`)}<div class="chips">${topicChips}</div>
+      ${step(2, 'Konu', form.topic && TOPICS[form.topic] ? `<span class="pxmeta">Seçilen: <b>${TOPICS[form.topic].ad}</b> · ★ daha önce denediğin uyum</span>` : `<span class="pxmeta">★ daha önce denediğin ${T.ad.toLowerCase()} uyumu</span>`)}<div class="tgtabs">${gTabs}</div><div class="chips tgchips">${topicChips}</div>
       ${step(3, 'Hedef kitle')}<div class="chips">${audChips}</div>
     </div>
     <div class="pxpanel">
@@ -1512,15 +1821,15 @@ function teamHTML(){
     return `<div class="card"><div class="row"><div class="big av">${avatarSVG(c.id, c.role, c.emo)}</div><div class="grow">
       <b>${esc(c.name)}</b><div class="sub">${ROLES[c.role].ad} · ${tl(c.salary)}/ay</div>
       <div class="sub">Genel yetenek ${c.skill}/10</div></div>
-      <div style="text-align:right"><button class="btn sm" data-act="hire" data-id="${c.id}" ${full||S.money<hc?'disabled':''}>İşe Al</button><div class="sub">${tl(hc)}</div></div></div>${skillRows(c)}</div>`;
+      <div style="text-align:right"><button class="btn sm" data-act="iv" data-id="${c.id}" ${full||S.money<hc?'disabled':''}>Görüşme yap</button><div class="sub">${tl(hc)}</div></div></div>${skillRows(c)}</div>`;
   }).join('');
   return `<div class="grid4" style="margin-bottom:8px">
       <div class="kv"><b>${S.emps.length}/${O.kap}</b><span>Çalışan (${O.ad})</span></div>
       <div class="kv"><b>${founderSkill()}/10</b><span>Senin yeteneğin</span></div>
       <div class="kv"><b class="orange">${tl(salaries())}</b><span>Aylık maaşlar</span></div>
-      <div class="kv" data-act="team"><b>${S.emps.length?`${moodFace(teamMood())} %${teamMood()}`:'—'}${S.boost>0?' · ⚡+%20':''}</b><span>Ekip morali · 🎉 aktivite</span></div>
+      <div class="kv"><b>${S.emps.length?`${moodFace(teamMood())} %${teamMood()}`:'—'}${S.boost>0?' · ⚡+%20':''}</b><span>Ekip morali</span><button class="btn sm" data-act="team" style="margin-top:5px" ${S.emps.length?'':'disabled'}>Aktivite düzenle</button></div>
     </div>
-    ${mgrCardHTML()}
+    ${mgrCardHTML()}${kulisHTML()}${exCultureHTML()}
     <h2>Çalışanların</h2>
     ${emps?`<div class="cards">${emps}</div>`:'<p class="sub" style="margin-bottom:8px">Henüz çalışanın yok. Aşağıdan birini işe al, ofiste masasına oturduğunu göreceksin!</p>'}
     <h2>İş başvuruları</h2>
@@ -1533,14 +1842,15 @@ function productsHTML(){
   if (!S.prods.length) return `<div class="empty-msg">📦 Henüz yayınlanmış ürünün yok.<br>"Yeni Proje" → "Kendi Ürünün" ile ilk ürününü geliştir!</div>`;
   const cards = act.map(p => {
     const T = TYPES[p.type];
-    const status = p.viral>0 ? '🔥 Viral!' : p.age<=8 ? '📈 Yükselişte' : p.age<=8+p.life*0.4 ? '🏔️ Zirvede' : '📉 Düşüşte';
+    const status = p.viral>0 ? '🔥 Viral!' : p.age<=8 ? '📈 Yükselişte' : p.age<=8+(p.plat||0)+p.life*0.4 ? '🏔️ Zirvede' : '📉 Düşüşte';
     const rev = p.users*T.arpu*revMult();
     const ac = adCost(p), uc = updCost(p);
     return `<div class="card"><div class="row"><div class="big">${T.ikon}</div><div class="grow">
-      <b>${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">${p.topic?TOPICS[p.topic].ikon+' '+TOPICS[p.topic].ad+' · ':''}${T.ad} · ${status} · ${p.age}. gün · toplam ${tl(p.earned)}</div></div></div>
+      <b>${esc(p.name)}</b> ${qBadge(p.q)}<div class="sub">${p.topic?TOPICS[p.topic].ikon+' '+TOPICS[p.topic].ad+' · ':''}${T.ad} · ${status} · ${p.age}. gün · toplam ${tl(p.earned)}${exProdTag(p)}</div></div></div>
       <div class="grid2" style="margin-top:6px"><div class="kv"><b>${fmt(p.users)}</b><span>Kullanıcı</span></div><div class="kv"><b class="green">${tl(rev)}</b><span>Günlük gelir</span></div></div>
       <div class="row" style="margin-top:6px;flex-wrap:wrap">
         ${p.ad?'<span class="pill orange">📣 REKLAM AKTİF</span>':`<button class="btn sm orange" data-act="ad" data-id="${p.id}" ${S.money<ac?'disabled':''}>📣 Reklam (${tl(ac)})</button>`}
+        ${p.comments?`<button class="btn sm" data-act="ev" data-k="yorum" data-id="${p.id}">Yorumlar</button>`:''}
         ${p.upd<3?`<button class="btn sm blue" data-act="update" data-id="${p.id}" ${S.money<uc?'disabled':''}>🔧 Güncelle (${tl(uc)})</button>`:'<span class="sub">🔧 Güncellemeler bitti</span>'}
       </div></div>`;
   }).join('');
@@ -1628,26 +1938,27 @@ function invHTML(){
 function bizHTML(){
   const mulChips = [1,10,'max'].map(v=>`<button class="chip ${bizMul===v?'on':''}" data-act="biz-mul" data-v="${v}">${v==='max'?'MAX':'x'+v}</button>`).join('');
   const cards = BIZ.map(b => {
+    if ((S.biz[b.id]||0) > BIZ_MAX) S.biz[b.id] = BIZ_MAX;     /* eski kayıtlar: en fazla son seviye */
     const l = S.biz[b.id]||0, ok = S.rep >= b.rep;
     let btn;
     if (!ok) btn = `<button class="btn sm" disabled>🔒 ${b.rep} ⭐</button>`;
     else if (l===0) btn = `<button class="btn sm gold" data-act="biz" data-v="${b.id}" ${S.money<b.fiyat?'disabled':''}>Satın al ${tl(b.fiyat)}</button>`;
-    else if (l>=BIZ_MAX) btn = '<span class="pill green">MAKS</span>';
+    else if (l>=BIZ_MAX) btn = '<span class="pill green">SON SEVİYE</span>';
     else { const {n,cost} = bizBulk(b,l,bizMul); btn = `<button class="btn sm" data-act="biz" data-v="${b.id}" ${(n<=0||S.money<cost)?'disabled':''}>+${Math.max(n,1)} Sv. ${tl(n>0?cost:bizCost(b,l))}</button>`; }
-    const next = [10,25,50,100].find(x=>x>l);
-    return `<div class="card ${l?'hl':''}"><div class="row"><div class="big">${b.ikon}</div><div class="grow"><b>${b.ad}</b> ${l?`<span class="pill gold">Sv. ${l}</span>`:''}
+    const next = [5,10,15].find(x=>x>l);
+    return `<div class="card ${l?'hl':''}"><div class="row"><div class="big">${b.ikon}</div><div class="grow"><b>${b.ad}</b> ${l?`<span class="pill gold">Sv. ${l}/${BIZ_MAX}</span>`:''}
       <div class="sub">${b.acik}</div>
       <div class="sub">${l?`Günlük gelir: <b class="green">${tl(bizIncome(b,l))}</b>`:`Açılınca günlük ~${tl(b.gelir)}`}${b.mevsim&&l?` (mevsim x${seasonMult()})`:''}${next&&l?` · Sv.${next}'da gelir x2!`:''}</div></div></div>
       <div class="row" style="margin-top:6px;justify-content:flex-end">${btn}</div></div>`;
   }).join('');
-  return `<div class="row" style="margin-bottom:6px"><div class="grow"><p class="sub">Yan işler kur, şirketin büyüsün! Yatırımların her gün <b class="green">${tl(bizTotal())}</b> kazandırıyor. Sen yokken de çalışırlar.</p></div><div class="chips" style="margin:0">${mulChips}</div></div>
+  return `<div class="row" style="margin-bottom:6px"><div class="grow"><p class="sub">Yan işler kur, şirketin büyüsün! Her yatırım en fazla ${BIZ_MAX}. seviyeye çıkar; 5, 10 ve 15. seviyede gelir ikiye katlanır. Yatırımların her gün <b class="green">${tl(bizTotal())}</b> kazandırıyor. Sen yokken de çalışırlar.</p></div><div class="chips" style="margin:0">${mulChips}</div></div>
     <div class="cards">${cards}</div>`;
 }
 function rankHTML(){
   const me = valuation();
-  const list = RIVALS.map(r=>({n:r.n, v:rivalVal(r), me:false})).concat([{n:S.name, v:me, me:true}]).sort((a,b)=>b.v-a.v);
+  const list = rvActive().map(r=>({n:r.n, v:rivalVal(r), me:false})).concat([{n:S.name, v:me, me:true}]).sort((a,b)=>b.v-a.v);
   const medal = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
-  return `<p class="sub" style="margin-bottom:8px">Türkiye'nin en değerli yazılım şirketleri. Şirket değerin; kasan, gelirlerin, yatırımların, ofisin ve itibarınla hesaplanır. Zirveye çık!</p>` +
+  return '<button class="btn block" data-act="page" data-v="sehir" style="margin-bottom:10px">Bytetown şehir haritasını aç</button>' + cityMapHTML() + exAchHTML() + `<p class="sub" style="margin-bottom:8px">Bytetown'un en değerli yazılım şirketleri. Şirket değerin; kasan, gelirlerin, yatırımların, ofisin ve itibarınla hesaplanır. Zirveye çık!</p>` +
     list.map((x,i)=>`<div class="rank ${x.me?'me':''}"><div class="no">${medal(i)}</div><div class="grow"><b>${esc(x.n)}</b>${x.me?' <span class="pill gold">SEN</span>':''}</div><b class="${x.me?'gold':''}">${tl(x.v)}</b></div>`).join('');
 }
 function financeHTML(){
@@ -1656,6 +1967,8 @@ function financeHTML(){
     <div class="card hl"><div class="row"><div class="big">💻</div><div class="grow"><b style="font-size:16px">${esc(S.name)}</b><div class="sub">${title()} · ⭐ ${S.rep} itibar · Şirkette payın %${S.ownership}</div></div></div>
       <div class="grid2" style="margin-top:8px"><div class="kv"><b class="green">${tlFull(S.money)}</b><span>Kasa</span></div><div class="kv"><b class="gold">${tl(valuation())}</b><span>Şirket değeri (${myRank()}. sıra)</span></div></div></div>
     ${sharesHTML()}
+    ${boardHTML()}
+    ${exIpoHTML()}
     <div class="card"><b>📈 Günlük gelir</b>
       <div class="lbl"><span>📦 Ürünler</span><b class="green">+${tl(prodIncome())}</b></div>
       <div class="lbl"><span>💼 Yatırımlar</span><b class="green">+${tl(bizTotal())}</b></div>
@@ -1671,9 +1984,7 @@ function financeHTML(){
 }
 function settingsHTML(){
   return `<div class="cards">
-    <div class="card"><div class="row"><div class="big">📘</div><div class="grow"><b>Oyun rehberi</b><div class="sub">Ekranı adım adım gezdirip oyunun nasıl oynandığını anlatır.</div></div><button class="btn sm" data-act="tut-start">Rehberi aç</button></div></div>
     <div class="card"><div class="row"><div class="big">🔊</div><div class="grow"><b>Ses efektleri</b><div class="sub">Dokunma, para ve başarı sesleri</div></div><button class="toggle ${S.sound?'on':''}" data-act="sound"></button></div></div>
-    <div class="card"><div class="row"><div class="big">💾</div><div class="grow"><b>Kayıt</b><div class="sub">Oyun her 5 saniyede otomatik kaydedilir, dakikada bir yedek alınır. Sen yokken ürünlerin ve yatırımların para kazanmaya devam eder (en fazla 4 saat).</div></div></div></div>
   </div>
   <h2>İstatistikler</h2>
   <div class="grid4" style="margin-bottom:8px">
@@ -1686,7 +1997,22 @@ function settingsHTML(){
 }
 
 /* ---- bildirimler / modal ---- */
+let toastQ = [], lastTap = 0;
+document.addEventListener('pointerdown', () => { lastTap = performance.now(); }, true);
+const uiBusy = () => !!page || !$('modal').classList.contains('hidden');
+function flushToasts(){
+  if (uiBusy()) return;
+  const q = toastQ.slice(-6); toastQ = []; q.forEach((h, k) => setTimeout(() => { if (!uiBusy()) showToast(h); else toastQ.push(h); }, 350 + k*1300));
+  /* sayfa açıkken gelen acil izin mesajı ofise dönünce açılır */
+  const am = S && (S.inbox||[]).find(m => m.tpl==='acil' && !m.read && mailNeedsReply(m));
+  if (am) setTimeout(() => { if (!uiBusy() && mailNeedsReply(am)) openNoteModal(am); }, 600);
+}
 function toast(html){
+  /* bir sayfa açıkken yalnızca oyuncunun kendi tıklamasına verilen cevaplar görünür */
+  if (uiBusy() && performance.now() - lastTap > 400){ toastQ.push(html); if (toastQ.length > 12) toastQ.shift(); return; }
+  showToast(html);
+}
+function showToast(html){
   const t = document.createElement('div'); t.className='toast'; t.innerHTML = html;
   const box = $('toasts'); box.appendChild(t);
   while (box.children.length > 2) box.firstChild.remove();
@@ -1759,25 +2085,27 @@ function newProjHTML(){
     </button>
   </div>`;
 }
+function holdToasts(){ const box = $('toasts'); if (!box) return; for (const t of [...box.children]){ toastQ.push(t.innerHTML); t.remove(); } }
 function showModal(icon, html, cls){
+  if (performance.now() - lastTap > 400) holdToasts();     /* ekrandaki oyun bildirimleri pencere kapanınca tekrar gelir */
   const m = $('modal');
   m.innerHTML = `<div class="mwrap ${cls||''}">${icon ? `<div class="evc">${icon}</div>` : ''}<div class="mbox">${html}</div></div>`;
   m.classList.remove('hidden'); paused = true; snd('pop');
   artIcons(m);
 }
-function closeModal(){ const m = $('modal'); m.classList.add('hidden'); m.innerHTML=''; paused = false; }
+function closeModal(){ const m = $('modal'); m.classList.add('hidden'); m.classList.remove('mhid'); m.innerHTML=''; paused = false; setTimeout(flushToasts, 50); }
 // ilk açılış: kısa bir hikâye, sonra Şirketini Kur ekranı
 const INTRO = [
-  ['💻', 'Kod Patronu\'na Hoş Geldin!', `Elinde tek bir eski bilgisayar, kafanda yüzlerce fikir var. Annenlerin evinin garajını ofise çevirdin ve kararını verdin: <b>kendi yazılım şirketini kuracaksın!</b>`],
+  ['💻', 'Bytetown\'a Hoş Geldin!', `Elinde tek bir eski bilgisayar, kafanda yüzlerce fikir var. Annenlerin evinin garajını ofise çevirdin ve kararını verdin: <b>kendi yazılım şirketini kuracaksın!</b>`],
   ['🚀', 'Hedefin Büyük', `Müşterilere web siteleri ve uygulamalar yap, kendi ürünlerini çıkar, ekibini büyüt. Garajdan stüdyo daireye, oradan gökdelen katına uzanan yolda şehrin <b>en değerli teknoloji şirketi</b> olmaya çalış.`],
   ['🏢', 'Önce Şirketini Kur', `Maceraya başlamadan önce şirketine bir isim vermeli ve kendini tanıtmalısın. Patron sensin!`],
 ];
 function showWelcome(i=0){
-  $('app').classList.add('nogame'); $('scene').innerHTML = ''; closePage();
+  $('app').classList.add('nogame'); $('app').classList.remove('sideopen'); $('scene').innerHTML = ''; closePage();
   const [ic, t, x] = INTRO[i];
   showModal(ic, `<h3>${t}</h3><p style="text-align:center;margin:6px 0 10px">${x}</p>
     <div class="introdots">${INTRO.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')}</div>
-    <button class="btn gold block lg" data-act="intro" data-v="${i+1}">${i < INTRO.length-1 ? 'Devam ▶' : 'Tamam, kuralım!'}</button>`);
+    <button class="btn gold block lg" data-act="intro" data-v="${i+1}">${i < INTRO.length-1 ? 'Devam' : 'Tamam, kuralım!'}</button>`, 'introm');
 }
 
 /* ================= KAYIT ================= */
@@ -1832,7 +2160,9 @@ window.addEventListener('pagehide', save);
 /* ================= ÖLÇEKLEME: her telefonda aynı oranlar ================= */
 function fit(){
   const app = $('app'), probe = $('probe');
-  const vw = window.innerWidth, vh = window.innerHeight;
+  // iPhone ana ekran uygulamasında ölçüler gecikmeli gelebilir: en büyük güvenilir ölçüyü kullan
+  const vv = window.visualViewport, de = document.documentElement;
+  const vw = Math.max(window.innerWidth, de.clientWidth || 0, vv ? Math.round(vv.width) : 0), vh = Math.max(window.innerHeight, de.clientHeight || 0, vv ? Math.round(vv.height) : 0);
   const portrait = vh > vw;
   const W = portrait ? vh : vw, H = portrait ? vw : vh;
   const z = clamp(Math.min(H/390, W/800), 0.72, 2.2);
@@ -1850,6 +2180,8 @@ function fit(){
   app.style.setProperty('--ah', (H/z)+'px');
 }
 window.addEventListener('resize', fit);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+window.addEventListener('pageshow', () => { fit(); setTimeout(fit, 300); setTimeout(fit, 1200); });
 window.addEventListener('orientationchange', () => setTimeout(fit, 250));
 fit();
 fillIcons();
@@ -1872,6 +2204,9 @@ function stripEmoji(node){
 new MutationObserver(ms => { for (const m of ms){ if (m.type === 'characterData') stripEmoji(m.target); else for (const a of m.addedNodes) stripEmoji(a); } })
   .observe(document.body, {subtree:true, childList:true, characterData:true});
 stripEmoji(document.body);
+// test paneli: yalnızca bilgisayarda, adres ?test=1 ile açılınca (test.js sitede yok)
+if (/[?&]test=1/.test(location.search)){ const ts = document.createElement('script'); ts.src = 'test.js?v=' + Date.now(); document.body.appendChild(ts); }
+
 /* ================= DÖNGÜ ================= */
 let last = performance.now(), acc = 0;
 function loop(){

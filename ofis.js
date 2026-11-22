@@ -1,6 +1,6 @@
 'use strict';
 /* =====================================================================
-   Kod Patronu – izometrik ofis sahnesi + arayüz ikonları
+   Bytetown – izometrik ofis sahnesi + arayüz ikonları
    Oda, masalar, karakterler, ekran içerikleri ve baloncuk efektleri.
    Ana oyun durumu (S) ve yardımcılar index.html içindeki betikten gelir.
    ===================================================================== */
@@ -10,7 +10,7 @@ const TW = 64, TH = 32, WALLH = 88;
 // 0 Garaj · 1 Stüdyo Daire · 2 Ofis · 3 Büyük Ofis · 4 Gökdelen Katı
 const ROOMS = [
   {w:6,  d:6,  wall:'#d9d4cc', floor:'#bdb8af', base:'#8d877d', desk:['#b98a5a','#4b4f63']},
-  {w:8,  d:6,  wall:'#efe4d2', floor:'#c68e5a', base:'#ffffff', desk:['#d9a86f','#8a5a32']},
+  {w:10, d:7,  wall:'#f3f0ea', floor:'#845a3c', base:'#2b303b', desk:['#e2c49a','#262a33']},
   {w:12, d:9,  wall:'#e9ecf1', floor:'#8e9ab0', base:'#3c4a66', desk:['#f7f7f5','#5d6474']},
   {w:15, d:11, wall:'#f3f1ec', floor:'#d8bd94', base:'#2b2f3a', desk:['#e2c49a','#262a33']},
   {w:22, d:14, wall:'#e9edf2', floor:'#e2e5ea', base:'#2b303b', desk:['#ffffff','#7a5434'], glass:true},
@@ -19,7 +19,7 @@ const SKINS = ['#fcdcbf','#f3c592','#e2a96f','#c6864f','#8d5a37'];
 const HAIRS = ['#2b1a10','#4a2c1a','#7a4424','#c58b3c','#151821','#8b2d1a','#d9d4cc','#5b3a8c'];
 const SHIRTS = {prog:['#6c8cf5','#4f6fe0','#5aa0f0','#7c6cf0'], tas:['#f472b6','#fb7185','#e879f9','#f9a8d4'], test:['#fbbf24','#fb923c','#f59e0b','#fca5a5'], me:['#2f54eb']};
 
-let sceneKey = '', seatPos = {}, fxAcc = {}, chatterT = 0, tagPts = {};
+let sceneKey = '', seatPos = {}, fxAcc = {}, chatterT = 0, tagPts = {}, fxBurst = {}, fxKind = {};
 
 /* ---------- arayüz ikonları (elle çizilmiş SVG, emoji yerine) ---------- */
 const ICV = '#2f54eb', ICO = '#1e97f6', ICP = '#dcf0ff';
@@ -102,7 +102,7 @@ const ACCS = ['Yok','Gözlük','Kulaklık'];
 // kayıtlı seçimden görünüş: {g:'k'|'e', hair, out, ac, sk}
 function lookFrom(m){
   const hl = HAIR_OPTS[m.g==='k' ? 'k' : 'e'], H = hl[(m.hair||0) % hl.length], O = OUTFIT_OPTS[(m.out||0) % OUTFIT_OPTS.length];
-  return {skin:SKINS[(m.sk||0) % SKINS.length], hair:HAIRS[H.hc], shirt:O.renk, kind:O.kind, hs:H.hs, long:H.hs===1, glasses:m.ac===1, phones:m.ac===2, beard:false};
+  return {skin:SKINS[(m.sk||0) % SKINS.length], hair:HAIRS[H.hc], shirt:O.renk, kind:O.kind, hs:H.hs, long:H.hs===1, glasses:m.ac===1, phones:m.ac===2, beard:false, f:m.g==='k'};
 }
 // çalışanların görünüşü (aynı kişi ofiste ve portrede aynı görünsün)
 const EMP_KINDS = ['tee','hoodie','shirt','sweater'];
@@ -110,14 +110,14 @@ function empLook(id, role, female){
   const h = hashN(id*7919+13), set = SHIRTS[role] || SHIRTS.prog;
   const hs = female ? [1,1,2,3,4][(h>>12)%5] : [0,0,0,4,5][(h>>12)%5];
   return {skin:SKINS[h%SKINS.length], hair:HAIRS[(h>>3)%HAIRS.length], shirt:set[(h>>6)%set.length], kind:EMP_KINDS[(h>>14)%4], hs, long:hs===1,
-          glasses:((h>>9)%4)===0, phones:((h>>16)%7)===0, beard:!female && ((h>>11)%5)===0};
+          glasses:((h>>9)%4)===0, phones:((h>>16)%7)===0, beard:!female && ((h>>11)%5)===0, f:!!female};
 }
 function looksOf(id, role){
   if (role==='me' && S && S.me) return lookFrom(S.me);
   if (id==='mgr' && S && S.mgr) return empLook(S.mgr.seed || 777, 'prog', !!S.mgr.f);
   if (typeof id !== 'number') return empLook(4242, 'prog', false);
   const e = S.emps.find(x=>x.id===id);
-  return empLook(id, role, e ? /👩|♀/.test(e.emo) : false);
+  return empLook(id, role, e ? nameFem(e.name) : false);
 }
 /* ---------- karakter ---------- */
 function charSVG(id, role, F, lead, look){
@@ -723,7 +723,7 @@ function roomSVG(){
     const st = seats[i], who = people[i];
     const F = P(st.x+1.22, st.y+0.78);
     const away = who && who.e && who.e.task && AWAY.includes(who.e.task.type);
-    const role = who ? ((who.e && who.e.task && (who.e.task.type==='arge' || who.e.task.type==='ogren')) || (who.id==='me' && S.ftask) ? 'arge' : who.role) : 'none';
+    const role = who ? ((who.e && who.e.task && (who.e.task.type==='arge' || who.e.task.type==='ogren' || who.e.task.type==='egitim')) || (who.id==='me' && S.ftask) ? 'arge' : who.role) : 'none';
     add(st.x+0.4+st.y+0.75, deskSVG(st, R, who && !away ? who.id : 0, role, i, L));
     if (who && !away){ seatPos[who.id] = [F[0], F[1]-66]; add(st.x+1.22+st.y+0.78, charSVG(who.id, who.role, F, who.e && who.e.lead)); }
     else if (away){ const t = who.e.task.type; seatPos[who.id] = [F[0], F[1]-70]; add(st.x+1.22+st.y+0.78, emptyChairSVG(F, t==='kurs'?'🎓':t==='izin'?'🏖️':'🎤')); }
@@ -782,7 +782,7 @@ function updateSceneStates(){
   const anyBug = need.some(p=>p.bugs>0.001);
   const state = {me: need.length > 0 || !!S.ftask};
   for (const e of S.emps){
-    if (e.task && (e.task.type==='arge' || e.task.type==='ogren')) state[e.id] = true;
+    if (e.task && (e.task.type==='arge' || e.task.type==='ogren' || e.task.type==='egitim')) state[e.id] = true;
     else if (e.task && AWAY.includes(e.task.type)) state[e.id] = false;
     else state[e.id] = e.role==='test' ? anyBug : (anyDev || anyBug);
   }
@@ -795,8 +795,38 @@ function updateSceneStates(){
 }
 function fxAdd(id, kind, v){
   tagPts[id] = (tagPts[id]||0) + (kind==='fix' ? v/6 : kind==='arge' ? v/3 : v);   // katkı, masanın altındaki isimde görünür
-  if (window.S3D && S3D.ok) return;
-  if (page || document.hidden || paused) return;
+  if (window.S3D && S3D.ok){
+    // baloncuksuz yazılar dalga dalga gelir: bir süre sessiz, sonra art arda 2-4 yazı, sonra yine sessiz
+    if (page || document.hidden || paused) return;
+    fxAcc[id] = (fxAcc[id]||0) + (kind==='arge' ? v/3 : kind==='fix' ? v/4 : v);
+    fxKind[id] = kind;
+    const now = performance.now(), B = fxBurst[id] || (fxBurst[id] = {next: now + 1500 + Math.random()*4000});
+    if (now < B.next) return;
+    const val = fxAcc[id];
+    if (val < 1){ B.next = now + 700; return; }
+    fxAcc[id] = 0;
+    // sayaçlar yalnızca uçan yazı gelince artar: yazıdaki sayı, kişinin o projede o arada gerçekten yaptığı iş
+    const p = typeof devbarProj === 'function' ? devbarProj() : null;
+    let tsum = 0;
+    const LBL = {kod:'Kod', tas:'Tasarım', fix:'Hata'};
+    if (p && p.cs && p.cs[id] && p.flown){
+      const c = p.cs[id], fr = p.flown[id] || (p.flown[id] = {kod:0, tas:0, fix:0});
+      for (const k of ['kod', 'tas', 'fix']){
+        let n = Math.floor((c[k]||0) - (fr[k]||0)); if (n < 1) continue;
+        fr[k] += n;
+        const pops = Math.min(n, 1 + Math.floor(Math.random()*3));
+        for (let q=0; q<pops; q++){
+          const m = q === pops-1 ? n : Math.max(1, Math.round(n/(pops-q) * (0.6 + Math.random()*0.8))); n -= m;
+          tsum += 260 + Math.random()*320;
+          setTimeout(() => flyPts(id, (k==='fix' ? '−' : '+') + m + ' ' + LBL[k], k, () => { p.shown[k] = (p.shown[k]||0) + m; }), tsum);
+        }
+      }
+      const ag = Math.floor((p.rpg||0) - (p.flownRp||0));
+      if (ag >= 1 && Math.random() < 0.6){ p.flownRp = (p.flownRp||0) + ag; tsum += 380; setTimeout(() => flyPts(id, '+' + ag + ' Ar-Ge', 'arge', () => { p.shown.arge = (p.shown.arge||0) + ag; }), tsum); }
+    }
+    B.next = now + tsum + 2500 + Math.random()*6000;      // sonraki dalgaya kadar sessizlik
+    return;
+  }  if (page || document.hidden || paused) return;
   fxAcc[id] = (fxAcc[id]||0) + v;
   const thr = 0.8 * Math.max(1, S.emps.length/10) * (kind==='arge' ? 3 : 1);
   if (fxAcc[id] >= thr){
@@ -806,7 +836,31 @@ function fxAdd(id, kind, v){
     if (k==='kod' || k==='ui') { const rp = Math.max(1, Math.round(val*0.04*3)); if (Math.random() < 0.3) setTimeout(()=>bubble(id, 'rp', rp), 350); }
   }
 }
-// iş puanı baloncuğu: türe göre simge + sayı (Kod mor, Arayüz mavi, Hata beyaz, Ar-Ge koyu mor)
+// katkı yazısı: başın üstünde çıkar, biraz yükselir, sonra proje çubuğundaki ilgili sayaca uçar
+// bir öğenin #app içindeki konumu (CSS transform kaymaları dahil; zoom/döndürmeden bağımsız)
+function appPos(el, app, center){
+  let x = center ? el.offsetWidth/2 : 0, y = center ? el.offsetHeight/2 : 0, e = el;
+  while (e && e !== app){
+    x += e.offsetLeft; y += e.offsetTop;
+    const tf = getComputedStyle(e).transform;
+    if (tf && tf !== 'none'){ const m = new DOMMatrix(tf); x += m.m41; y += m.m42; }
+    e = e.offsetParent;
+  }
+  return [x, y];
+}
+function flyPts(id, txt, cls, onArrive){
+  const bar = document.getElementById('devbar'), tgt = bar && bar.classList.contains('on') ? bar.querySelector('.dvc.' + cls) : null;
+  const hp = window.S3D && S3D.head ? S3D.head(id) : null, sc = document.getElementById('scene'), app = document.getElementById('app');
+  if (page || !hp || !tgt){ if (onArrive) onArrive(); return; }
+  const s0 = appPos(sc, app, false), x0 = s0[0] + hp[0] + (Math.random()*14-7), y0 = s0[1] + hp[1] - 14;
+  const d = document.createElement('div'); d.className = 'flypt'; d.style.left = x0 + 'px'; d.style.top = y0 + 'px';
+  d.innerHTML = `<span class="ftx ${cls}">${txt}</span>`; app.appendChild(d);
+  requestAnimationFrame(() => { d.classList.add('up'); });
+  // hedef: sayacın rakamının tam ortası (kart o an kaymış olabilir, uçuş başlarken ölçülür)
+  setTimeout(() => { const nb = tgt.querySelector('b') || tgt, t1 = appPos(nb, app, true);
+    d.classList.add('go'); d.style.transform = `translate(${t1[0]-x0}px, ${t1[1]-(y0-16)}px) scale(.6)`; }, 520);
+  setTimeout(() => { d.remove(); if (onArrive) onArrive(); if (typeof updDevbar === 'function') updDevbar(); tgt.classList.remove('pulse'); void tgt.offsetWidth; tgt.classList.add('pulse'); }, 520 + 620);
+}// iş puanı baloncuğu: türe göre simge + sayı (Kod mor, Arayüz mavi, Hata beyaz, Ar-Ge koyu mor)
 function bubble(id, kind, n){
   if (window.S3D && S3D.ok){
     if (!GL[kind] && kind!=='rp') kind = 'kod';
