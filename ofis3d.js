@@ -1556,7 +1556,7 @@ function loop(){
   const t = clock.elapsedTime;
   for (const P of chars.values()){ animPerson(P, t, dt*(chars.size > 14 ? 2 : 1)); roamTick(P, t, dt*(chars.size > 14 ? 2 : 1)); }
   updateNames(dt*(chars.size > 14 ? 2 : 1));
-  alarmTick(t); catTick(t, dt); decorTick(t); envTick(t, dt); launchTick(t, dt);
+  alarmTick(t); catTick(t, dt); decorTick(t); envTick(t, dt); launchTick(t, dt); taskBarTick(t);
   for (const a of screenAnims) a.tex.offset.y = (t*a.speed) % 1;
   for (const a of animated){
     if (a.vac){ const k = (Math.sin(t*0.35)+1)/2; a.vac.position.set(THREE.MathUtils.lerp(a.a, a.b, k), 0, a.z); a.vac.rotation.y = Math.cos(t*0.35) > 0 ? 0 : Math.PI; }
@@ -1723,6 +1723,7 @@ function panicPose(P, tt){
 let launchG = null, launchSave = null;
 const LRW = 12.5, LRD = 10.5;
 function buildLaunch(info){
+  if (info && info.mode === 'court') return buildCourt(info);
   const g = new THREE.Group(), cx = LRW/2;
   g.userData = {spots:[], conf:[], chars:new Map(), clap:false, t0:0};
   // zemin ve duvarlar (mor-pembe ışıklı salon)
@@ -1738,7 +1739,7 @@ function buildLaunch(info){
     c.fillStyle = 'rgba(96,165,250,.25)'; c.beginPath(); c.arc(w/2, h/2, 190, 0, 7); c.fill();
     c.textAlign = 'center'; c.fillStyle = '#7dd3fc'; c.font = '800 34px Nunito, system-ui, sans-serif'; c.fillText((info.company || '').toLocaleUpperCase('tr-TR') + ' SUNAR', w/2, 92);
     c.fillStyle = '#ffffff'; c.font = '900 96px Nunito, system-ui, sans-serif'; c.fillText(info.name || 'Yeni Ürün', w/2, 238);
-    c.fillStyle = '#fbbf24'; c.font = '800 38px Nunito, system-ui, sans-serif'; c.fillText((info.type || '') + ' · Şimdi yayında', w/2, 318); });
+    c.fillStyle = '#fbbf24'; c.font = '800 38px Nunito, system-ui, sans-serif'; c.fillText(info.sub || ((info.type || '') + ' · Şimdi yayında'), w/2, 318); });
   g.add(boxP(7.4, 3.2, 0.12, M('#0b1020'), cx, 2.0, 0.12));
   const sm = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 2.95), new THREE.MeshBasicMaterial({map:scr})); sm.position.set(cx, 2.0, 0.19); g.add(sm);
   // sahne ve parlayan kenarı
@@ -1813,6 +1814,7 @@ function launchOn(on, info){
 function launchTick(t, dt){
   if (!launchG) return;
   const u = launchG.userData, lt = t - u.t0;
+  if (u.mode === 'court'){ courtTick(t, dt, u, lt); return; }
   for (const s of u.spots){ s.pv.rotation.z = Math.sin(t*0.7 + s.ph)*0.18; }
   u.edge.color.setHSL((t*0.12) % 1, 0.85, 0.6);
   u.pink.intensity = 2.4 + Math.sin(t*2)*0.8;
@@ -1833,6 +1835,138 @@ function clapPose(P, tt){
     placeLimb(A.up, sh, elbow); placeLimb(A.fo, elbow, hand); if (A.cuff) placeLimb(A.cuff, sh, sh.clone().lerp(elbow, 0.55)); A.hand.position.copy(hand);
   }
   P.head.rotation.y = 0; P.head.rotation.x = -0.05;
+}
+/* =====================================================================
+   MAHKEME SALONU – ödemeyen müşteriye açılan davanın duruşması.
+   Lansman salonuyla aynı yuvayı kullanır (ofis gizlenir, kimse dolaşmaz).
+   Hâkim kürsüde, iki taraf masalarında, avukatlar sırayla konuşur, sonunda tokmak.
+   ===================================================================== */
+function buildCourt(info){
+  const g = new THREE.Group(), cx = LRW/2;
+  g.userData = {mode:'court', bg:0x2a1d14, chars:new Map(), phase:'acilis', phT:0, gavel:0, t0:0};
+  const wood = M('#8a5a32'), woodD = M('#5b3a1f'), woodL = M('#b07a48');
+  // zemin: koyu parke ve ortada kırmızı halı
+  const flTex = canvasTex(512, 512, (c, w, h) => { c.fillStyle = '#7a4e2b'; c.fillRect(0, 0, w, h);
+    for (let y = 0; y < h; y += 32){ c.fillStyle = `rgba(0,0,0,${0.06 + (y/32 % 2)*0.05})`; c.fillRect(0, y, w, 2); for (let x = (y/32 % 2)*64; x < w; x += 128) c.fillRect(x, y, 2, 32); } });
+  g.add(boxP(LRW, 0.12, LRD, M('#ffffff', {map:flTex}), cx, -0.06, LRD/2));
+  g.add(boxP(LRW + 0.16, 0.08, LRD + 0.16, woodD, cx, -0.13, LRD/2));
+  g.add(boxP(1.6, 0.02, LRD - 3.2, M('#7f1d1d'), cx, 0.01, (LRD + 3.2)/2));
+  // duvarlar: alt kısmı ahşap lambri, üstü krem
+  const wallTex = canvasTex(512, 256, (c, w, h) => { c.fillStyle = '#efe3cf'; c.fillRect(0, 0, w, h); c.fillStyle = '#6b4424'; c.fillRect(0, h*0.55, w, h*0.45);
+    c.fillStyle = 'rgba(0,0,0,.18)'; for (let x = 0; x < w; x += 64) c.fillRect(x, h*0.55, 3, h*0.45); c.fillStyle = '#4a2e17'; c.fillRect(0, h*0.55 - 6, w, 8); });
+  g.add(boxP(LRW + 0.15, 3.6, 0.15, M('#ffffff', {map:wallTex}), cx - 0.075, 1.8, -0.075));
+  g.add(boxP(0.15, 3.6, LRD, M('#ffffff', {map:wallTex}), -0.075, 1.8, LRD/2));
+  // yüksek pencereler (sol duvar)
+  for (const z of [3, 6, 9]){ g.add(boxP(0.04, 1.3, 1.1, new THREE.MeshBasicMaterial({color:0xfff1c9}), 0.02, 2.55, z)); g.add(boxP(0.06, 1.4, 0.08, woodD, 0.03, 2.55, z)); }
+  // arka duvarda adalet terazisi amblemi (özgün çizim)
+  const emb = canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#7f1d1d'; c.beginPath(); c.arc(128, 128, 120, 0, 7); c.fill(); c.strokeStyle = '#fbbf24'; c.lineWidth = 8; c.beginPath(); c.arc(128, 128, 108, 0, 7); c.stroke();
+    c.lineWidth = 7; c.beginPath(); c.moveTo(128, 56); c.lineTo(128, 196); c.moveTo(70, 84); c.lineTo(186, 84); c.moveTo(96, 200); c.lineTo(160, 200); c.stroke();
+    for (const x of [70, 186]){ c.beginPath(); c.moveTo(x, 84); c.lineTo(x - 26, 138); c.moveTo(x, 84); c.lineTo(x + 26, 138); c.stroke(); c.beginPath(); c.arc(x, 138, 28, 0, Math.PI); c.stroke(); }
+    c.fillStyle = '#fbbf24'; c.beginPath(); c.arc(128, 52, 10, 0, 7); c.fill(); });
+  const em = new THREE.Mesh(new THREE.CircleGeometry(0.75, 40), new THREE.MeshBasicMaterial({map:emb})); em.position.set(cx, 2.85, 0.02); g.add(em);
+  for (const s of [-1, 1]){ g.add(boxP(0.5, 2.4, 0.06, M(s < 0 ? '#b91c1c' : '#1e3a8a'), cx + s*2.2, 2.3, 0.04)); }   // iki yanda flama
+  // hâkim kürsüsü (yükseltilmiş)
+  g.add(boxP(4.2, 0.45, 2.0, woodD, cx, 0.225, 1.0));
+  g.add(boxP(4.0, 1.15, 0.35, wood, cx, 1.0, 1.85)); g.add(boxP(4.2, 0.08, 0.6, woodL, cx, 1.6, 1.75));
+  g.add(boxP(3.6, 0.5, 0.04, woodL, cx, 1.0, 2.03));
+  // tokmak
+  const gav = new THREE.Group(); gav.position.set(cx + 0.9, 1.68, 1.7);
+  const head = cylP(0.09, 0.22, woodD, 0, 0.05, 0); head.rotation.z = Math.PI/2; gav.add(head);
+  const hdl = cylP(0.025, 0.3, woodL, 0.0, 0.05, 0.16); hdl.rotation.x = Math.PI/2; gav.add(hdl);
+  g.add(gav); g.add(cylP(0.12, 0.03, woodD, cx + 0.9, 1.65, 1.7)); g.userData.gav = gav;
+  // tanık kürsüsü ve zabıt kâtibi masası
+  g.add(boxP(1.1, 0.95, 0.9, wood, cx - 3.3, 0.48, 2.2)); g.add(boxP(1.2, 0.06, 1.0, woodL, cx - 3.3, 0.98, 2.2));
+  g.add(boxP(1.4, 0.75, 0.7, wood, cx + 3.4, 0.38, 2.4)); g.add(boxP(0.5, 0.32, 0.04, M('#1f2937'), cx + 3.4, 0.95, 2.3));
+  // taraf masaları
+  for (const s of [-1, 1]){ const x = cx + s*2.4;
+    g.add(boxP(2.6, 0.08, 1.0, woodL, x, 0.76, 4.3)); g.add(boxP(2.5, 0.72, 0.06, wood, x, 0.38, 3.85));
+    g.add(boxP(0.35, 0.03, 0.26, M('#f8fafc'), x - 0.5, 0.82, 4.3)); g.add(boxP(0.32, 0.12, 0.24, M(s > 0 ? '#1e3a8a' : '#7f1d1d'), x + 0.6, 0.86, 4.25)); }
+  // seyirciyi ayıran parmaklık
+  g.add(boxP(LRW - 2.4, 0.07, 0.1, woodL, cx - 1.6, 0.95, 6.0)); g.add(boxP(1.3, 0.07, 0.1, woodL, LRW - 1.0, 0.95, 6.0));
+  for (let x = 0.8; x < LRW - 0.3; x += 0.5) if (Math.abs(x - (cx + 2.4)) > 0.45) g.add(boxP(0.05, 0.92, 0.05, wood, x, 0.46, 6.0));
+  const L0 = (seed, role, fem, shirt, kind) => Object.assign(empLook(seed, role, fem), shirt ? {shirt, kind:kind || 'blazer'} : {});
+  const seat = (id, role, L, x, z, rotY, y0, tier) => { const P = buildPerson(id, role, L, false, {chair:tier == null ? 4 : tier, crowd:true}); P.wantWork = false; P.state = 0; P.root.userData.dyn = true;
+    P.root.position.set(x, y0 || 0, z); P.root.rotation.y = rotY || 0; g.add(P.root); g.userData.chars.set('c' + g.userData.chars.size, P); return P; };
+  // hâkim: siyah cübbe, kürsüde, salona dönük
+  seat(9801, 'prog', L0(9801, 'prog', !!info.judgeF, '#111827', 'blazer'), cx, 0.95, Math.PI, 0.45, 4);
+  // kâtip
+  seat(9802, 'tas', L0(9802, 'tas', true), cx + 3.4, 2.95, 0, 0, 1);
+  // biz: patron masada oturur; karşı taraf temsilcisi
+  seat('me', 'me', looksOf('me', 'me'), cx + 2.0, 4.95, 0, 0, 4);
+  seat(9803, 'prog', L0(9803, 'prog', !!info.repF, '#475569', 'shirt'), cx - 2.8, 4.95, 0, 0, 4);
+  // avukatlar ayakta (konuşan yürüyerek anlatır)
+  const law = (seed, fem, shirt, x) => { const P = buildPerson(seed, 'prog', L0(seed, 'prog', fem, shirt, 'blazer'), false, {chair:0}); const W = buildWalker(P); W.root.visible = true; W.root.position.set(x, 0, 4.7); g.add(W.root); return {W, t0:P.t0, home:x}; };
+  g.userData.our = law(9804 + (info.lawSeed || 0), !!info.lawF, '#1e3a8a', cx + 0.75);
+  g.userData.their = law(9811, !!info.oppF, '#3f3f46', cx - 0.75);
+  // seyirciler
+  const nAud = Math.max(3, Math.min(12, info.audience || 6));
+  const spots = []; for (const z of [7.3, 8.7]) for (let i = 0; i < 8; i++) spots.push([1.3 + i*1.35, z]);
+  spots.forEach(([x, z], i) => { g.add(boxP(1.2, 0.08, 0.5, woodD, x, 0.45, z + 0.05)); g.add(boxP(1.2, 0.5, 0.06, woodD, x, 0.7, z + 0.3)); });
+  spots.sort(() => Math.random() - 0.5).slice(0, nAud).forEach(([x, z], i) => { const role = pick(['prog','tas','test']); seat(9820 + i, role, empLook(9820 + i*13, role, i % 2 === 0), x, z, 0, 0, 0); });
+  // ışık: sıcak tavan ışığı
+  const key = new THREE.PointLight(0xffe2b3, 5, 16, 1.3); key.position.set(cx, 3.4, 4); g.add(key);
+  const back = new THREE.PointLight(0xffd59a, 2.2, 10, 1.4); back.position.set(cx, 2.6, 1.6); g.add(back);
+  g.traverse(c => { if (c.isMesh) c.castShadow = false; });
+  return g;
+}
+// duruşma animasyonu: sırası gelen avukat masasının önünde gezinerek konuşur, karar anında tokmak iner
+function courtTick(t, dt, u, lt){
+  const cx = LRW/2, ph = u.phase;
+  for (const [k, A] of [['biz', u.our], ['onlar', u.their]]){
+    const talk = ph === k, W = A.W;
+    const tx = talk ? cx + (k === 'biz' ? 0.6 : -0.6) + Math.sin((t - u.phT)*0.55)*1.0 : A.home, tz = talk ? 3.3 : 4.7;
+    const dx = tx - W.root.position.x, dz = tz - W.root.position.z, d = Math.hypot(dx, dz);
+    if (d > 0.02){ const st = Math.min(d, dt*(talk ? 0.9 : 1.4)); W.root.position.x += dx/d*st; W.root.position.z += dz/d*st; }
+    const walking = d > 0.25;
+    W.root.rotation.y = walking ? Math.atan2(-dx, -dz) : (talk ? Math.sin((t - u.phT)*0.4)*0.35 : 0);
+    poseWalker(W, walking ? 'walk' : talk ? 'chat' : 'stand', t + A.t0, walking ? 1 : 0, 0); W.root.position.y = 0;
+  }
+  // tokmak
+  const gv = u.gav; if (u.gavel > 0){ u.gavel -= dt; gv.rotation.x = -Math.abs(Math.sin(u.gavel*9))*0.9; } else gv.rotation.x = 0;
+}
+/* ---- GÖREV ÇUBUKLARI: dil öğrenen, eğitimdeki, mentorluk ya da Ar-Ge yapan çalışanın başının üstünde süre çubuğu ---- */
+const taskBars = new Map();
+let taskBarT = 0;
+function taskBarInfo(e){
+  const t = e.task; if (!t) return null;
+  const frac = (S.dayFrac || 0);
+  if (t.type === 'arge'){ const i = (typeof INNOV !== 'undefined') && INNOV.find(x => x.id === t.innov), st = (S.innov || {})[t.innov] || {pts:0}; if (!i) return null; return {k:Math.min(1, st.pts/i.puan), txt:`Ar-Ge: ${i.ad}`, sub:`%${Math.floor(st.pts/i.puan*100)}`, col:'#8b5cf6'}; }
+  if (!t.until || !['ogren', 'egitim', 'mentor'].includes(t.type)) return null;
+  const L = t.type === 'ogren' && typeof LEARN_BY !== 'undefined' ? LEARN_BY[t.item] : null;
+  const total = t.from != null ? Math.max(1, t.until - t.from) : L ? L.gun : t.type === 'mentor' ? 10 : 5;
+  const left = Math.max(0, t.until - S.day - frac), k = Math.max(0, Math.min(1, 1 - left/total));
+  const m = t.type === 'mentor' && S.emps.find(x => x.id === t.target);
+  const txt = L ? `${L.ad} öğreniyor` : t.type === 'egitim' ? 'Eğitimde' : `Mentor: ${m ? m.name.split(' ')[0] : ''}`;
+  return {k, txt, sub:`${Math.ceil(left)} gün kaldı`, col:t.type === 'ogren' ? '#2563eb' : t.type === 'egitim' ? '#0d9488' : '#d97706'};
+}
+function taskBarDraw(B, I){
+  const c = B.cv, x = c.getContext('2d'), w = c.width, h = c.height;
+  x.clearRect(0, 0, w, h);
+  x.fillStyle = 'rgba(15,23,42,.88)'; x.beginPath(); x.roundRect(4, 4, w - 8, h - 8, 22); x.fill();
+  x.fillStyle = '#fff'; x.font = '800 30px Nunito, system-ui, sans-serif'; x.textBaseline = 'middle'; const tw = x.measureText(I.txt).width; x.fillText(I.txt, 22, 34, w - 200);
+  x.fillStyle = '#cbd5e1'; x.font = '700 24px Nunito, system-ui, sans-serif'; x.textAlign = 'right'; x.fillText(I.sub, w - 22, 34); x.textAlign = 'left';
+  x.fillStyle = 'rgba(255,255,255,.18)'; x.beginPath(); x.roundRect(22, 62, w - 44, 18, 9); x.fill();
+  x.fillStyle = I.col; x.beginPath(); x.roundRect(22, 62, Math.max(18, (w - 44)*I.k), 18, 9); x.fill();
+  B.tex.needsUpdate = true;
+}
+function taskBarTick(t){
+  if (t - taskBarT < 0.5) return; taskBarT = t;
+  if (typeof S === 'undefined' || !S || !S.emps) return;
+  const hide = !!(meetG || launchG), seen = new Set();
+  for (const e of S.emps){
+    const P = chars.get(String(e.id)), I = !hide && P && P.root.visible !== false ? taskBarInfo(e) : null;
+    if (!I) continue;
+    seen.add(e.id);
+    let B = taskBars.get(e.id);
+    if (!B){ const cv = document.createElement('canvas'); cv.width = 580; cv.height = 96; const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+      const spr = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false, transparent:true})); spr.scale.set(2.75, 0.46, 1); spr.renderOrder = 999; scene3.add(spr);
+      B = {cv, tex, spr, key:''}; taskBars.set(e.id, B); }
+    const key = I.txt + I.sub + Math.round(I.k*50);
+    if (B.key !== key){ B.key = key; taskBarDraw(B, I); }
+    P.root.updateWorldMatrix(true, false); const v = new THREE.Vector3(); P.root.getWorldPosition(v);
+    B.spr.position.set(v.x, v.y + 2.05, v.z); B.spr.visible = true;
+  }
+  for (const [id, B] of taskBars) if (!seen.has(id)){ scene3.remove(B.spr); B.tex.dispose(); B.spr.material.dispose(); taskBars.delete(id); }
 }
 /* ---- OFİS DEKORU: pencerelerin üstündeki duvar şeridine asılır (eşyalarla çakışmaz) ---- */
 let decorG = null, envG = null, envForceH = null, envForceM = null, envT = 0;
@@ -1891,7 +2025,7 @@ function buildEnv(){
   const m = envForceM != null ? envForceM : (typeof monthIdx === 'function' ? monthIdx() : 5), se = SEASON(m), W = roomBox.W, D = roomBox.D;
   envG = new THREE.Group(); envG.userData = {se, parts:[]};
   const gcol = {kis:'#eef3fa', ilkbahar:'#9ad49a', yaz:'#a8d67e', sonbahar:'#c4c27a'}[se];
-  const ground = new THREE.Mesh(new THREE.BoxGeometry(W + 40, 0.1, D + 40), new THREE.MeshLambertMaterial({color:gcol})); ground.position.set(W/2, -0.24, D/2); ground.receiveShadow = false; envG.add(ground);
+  const ground = new THREE.Mesh(new THREE.BoxGeometry(W + 40, 0.1, D + 40), new THREE.MeshLambertMaterial({color:gcol})); ground.position.set(W/2, -0.24, D/2); ground.receiveShadow = false; envG.add(ground); envG.userData.ground = ground;
   const lamp = new THREE.PointLight(0xffc98a, 0, 40, 1.1); lamp.position.set(W/2, 2.4, D/2); envG.add(lamp); envG.userData.lamp = lamp;
   if (se !== 'yaz'){
     const col = {kis:0xffffff, ilkbahar:0xf9a8d4, sonbahar:0xea7a2a}[se], mat = new THREE.MeshBasicMaterial({color:col});
@@ -1906,13 +2040,17 @@ function buildEnv(){
 function envTick(t, dt){
   if (!envG) return;
   envG.visible = !meetG && !launchG;
+  // gece-gündüz ve mevsim görünümü isteğe bağlı (Ayarlar); kapalıyken ofis hep aydınlık ve arka plan açık renk
+  const fx = envForceH != null || envForceM != null || (typeof S !== 'undefined' && S && S.envFx === true);
+  if (envG.userData.ground) envG.userData.ground.visible = fx;
+  for (const p of envG.userData.parts) p.visible = fx;
   for (const p of envG.userData.parts){ p.position.y -= p.userData.sp*dt*(envG.userData.se === 'kis' ? 0.8 : 0.6); p.position.x += Math.sin(t*1.2 + p.userData.ph)*dt*0.25; p.rotation.x += dt*2; if (p.position.y < -0.2) p.position.y = 5; }
   envT -= dt; if (envT > 0 || alarmG) return; envT = 1;
-  if (launchG){ canvas.style.filter = ''; scene3.background = new THREE.Color(0x1a1440); return; }
+  if (launchG){ canvas.style.filter = ''; scene3.background = new THREE.Color(launchG.userData.bg || 0x1a1440); return; }
   { const m = envForceM != null ? envForceM : (typeof monthIdx === 'function' ? monthIdx() : 5); if (SEASON(m) !== envG.userData.se){ buildEnv(); return; } }
   const d = new Date(), h = envForceH != null ? envForceH : d.getHours() + d.getMinutes()/60;
-  const day = h >= 7 && h <= 17 ? 1 : h > 17 && h < 20 ? 1 - (h - 17)/3 : h > 6 && h < 7 ? h - 6 : 0;
-  const dayCol = new THREE.Color(envG.userData.se === 'kis' ? 0xdde8f3 : 0xd3e6f7), nightCol = new THREE.Color(0x0d1633);
+  const day = !fx ? 1 : h >= 7 && h <= 17 ? 1 : h > 17 && h < 20 ? 1 - (h - 17)/3 : h > 6 && h < 7 ? h - 6 : 0;
+  const dayCol = new THREE.Color(fx && envG.userData.se === 'kis' ? 0xdde8f3 : 0xd3e6f7), nightCol = new THREE.Color(0x0d1633);
   scene3.background = nightCol.clone().lerp(dayCol, day);
   sun.intensity = 0.3 + day*1.55; if (hemi) hemi.intensity = 0.5 + day*0.65;
   envG.userData.lamp.intensity = (1 - day)*3.2;
@@ -1959,6 +2097,10 @@ const api = {
   ok:false,
   alarm(on){ alarmOn(!!on); },
   launch(on, info){ launchOn(!!on, info); },
+  court(on, info){ launchOn(!!on, Object.assign({mode:'court'}, info || {})); },
+  courtPhase(k){ if (launchG && launchG.userData.mode === 'court'){ launchG.userData.phase = k; launchG.userData.phT = clock.elapsedTime; } },
+  courtGavel(){ if (launchG && launchG.userData.mode === 'court') launchG.userData.gavel = 1.2; },
+  inCourt(){ return !!(launchG && launchG.userData.mode === 'court'); },
   launchClap(){ if (launchG){ launchG.userData.clap = true; launchG.userData.clapT = clock.elapsedTime - launchG.userData.t0; } },
   env(h, m){ envForceH = h; envForceM = m; buildEnv(); },
   meeting(on){ meetingOn(!!on); },

@@ -30,7 +30,7 @@ const FEAT = {
   odeme:      {ad:'Kartla ödeme',         ikon:'💳', need:'kartla güvenli ödeme alabilmeliyiz', t:['web','mobil']},
   cokdil:     {ad:'Çoklu dil',            ikon:'🌍', need:'yabancı ziyaretçiler de rahatça anlayabilmeli', t:['web','mobil']},
   destek:     {ad:'Canlı destek',         ikon:'💬', need:'müşterilere anında cevap verebilmeliyiz', t:['web','mobil']},
-  takip:      {ad:'Kargo takibi',         ikon:'📦', need:'gönderiler anlık olarak takip edilebilmeli', t:['web','mobil']},
+  takip:      {ad:'Kargo takibi',         ikon:'📦', need:'müşteriler kargolarının nerede olduğunu anlık görebilmeli', t:['web','mobil']},
   bildirim:   {ad:'Anlık bildirim',       ikon:'🔔', need:'kampanyalarımızı anında duyurabilmeliyiz', t:['mobil']},
   qr:         {ad:'QR kod okuyucu',       ikon:'🔳', need:'QR kodla hızlıca işlem yapılabilmeli', t:['mobil']},
   skor:       {ad:'Skor tablosu',         ikon:'🏆', need:'oyuncular birbirleriyle yarışabilmeli', t:['oyun']},
@@ -141,7 +141,7 @@ function reviewLetter(p, q, R){
     else if (r.st === 0.5) L.push(`Tasarım fena değil ama biz daha çok ${STYLES[b.st].ad.toLowerCase()} bir hava istemiştik.`);
     else L.push(`Biz ${STYLES[b.st].ad.toLowerCase()} bir tasarım istemiştik, siz ${STYLES[c.st].ad.toLowerCase()} bir şey yapmışsınız. Bu kesinlikle bizim tarzımız değil.`);
     for (const w of r.hit) L.push(`${FEAT[w].ikon} ${FEAT[w].ad} özelliği harika çalışıyor, tam istediğimiz gibi.`);
-    for (const w of r.miss) L.push(`${FEAT[w].ikon} ${FEAT[w].ad} özelliğini özellikle istemiştik ama yok! Bunu nasıl atladınız anlamadık.`);
+    for (const w of r.miss) L.push(`Brifte açıkça “${FEAT[w].need}” demiştik. Bunun için ${FEAT[w].ad.toLocaleLowerCase('tr-TR')} gerekiyordu ama eklememişsiniz, bunu nasıl atladınız anlamadık.`);
     for (const w of r.extra) L.push(`${FEAT[w].ad} eklemişsiniz; ihtiyacımız yoktu ama yine de teşekkürler.`);
     L.push(r.f ? PRIOS[b.f].ok : PRIOS[b.f].bad);
   }
@@ -357,6 +357,8 @@ function founderMenu(){
     ${meetBtnHTML()}
     ${tatilBtnHTML()}
     ${exHackHTML()}
+    ${typeof dvBtnHTML === 'function' ? dvBtnHTML() : ''}
+    ${typeof blBtnHTML === 'function' ? blBtnHTML() : ''}
     <button class="btn teal block" data-act="close">Kapat</button>`);
 }
 /* ---- TOPLU TATİL: iş yokken bütün ekip tatile gider, dinlenip döner ---- */
@@ -1315,6 +1317,7 @@ function setupRender(){
       <div><div class="pxlbl">Şirket adı</div><div class="row"><input type="text" id="cname" maxlength="24" placeholder="Örn. Mavi Yazılım" value="${esc(s.co)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="co" aria-label="Rastgele şirket adı">${DICE_SVG}</button></div></div>
       <div><div class="pxlbl">Senin adın</div><div class="row"><input type="text" id="bname" maxlength="16" placeholder="Patronun adı" value="${esc(s.boss)}"><button class="btn purple sm sudice" data-act="su-dice" data-k="boss" aria-label="Rastgele isim">${DICE_SVG}</button></div></div>
     </div>
+    ${!s.edit && typeof difSetupHTML === 'function' ? difSetupHTML(s) : ''}
     ${s.edit ? `<div class="grid2" style="gap:10px;margin-top:12px"><button class="pxghost" data-act="close">Vazgeç</button><button class="npgo" data-act="su-save">Kaydet</button></div>`
              : `<button class="npgo" style="margin-top:12px" data-act="begin">Şirketi kur ${typeof NP_ICON!=='undefined' ? NP_ICON.ok : ''}</button>`}`;
 }
@@ -1605,12 +1608,13 @@ function tutorShow(){
   let o = document.getElementById('tutor');
   if (!o){ o = document.createElement('div'); o.id = 'tutor'; app.appendChild(o); }
   let el = st.sel ? document.querySelector(st.sel) : null; if (el && st.up) el = el.closest(st.up);
+  const viaMenu = window.PC && st.sel && st.sel.startsWith('#dock') && (!el || !el.offsetWidth); if (viaMenu) el = document.getElementById('pcMenuBtn');
   const box = el && el.offsetWidth ? tutOffset(el) : null, W = app.clientWidth, H = app.clientHeight, pad = 6;
   const last = tutI === TUTOR.length-1;
   const dots = TUTOR.map((_,i) => `<i class="${i===tutI?'on':i<tutI?'done':''}"></i>`).join('');
   o.innerHTML = `${box ? `<div class="tspot" style="left:${box.x-pad}px;top:${box.y-pad}px;width:${box.w+pad*2}px;height:${box.h+pad*2}px"></div>` : '<div class="tdim"></div>'}
     <div class="tcard"><div class="ttop"><span class="npey">ADIM ${tutI+1} / ${TUTOR.length}</span><button class="tskip" data-act="tut-end">Rehberi kapat ✕</button></div>
-      <h3>${st.t}</h3><p>${st.d}</p><div class="tdots">${dots}</div>
+      <h3>${st.t}</h3><p>${viaMenu ? `<b>Menü düğmesinden ${st.t === 'Hadi başlayalım!' ? 'Yeni Proje' : st.t} seçilir.</b> ` : ''}${st.d}</p><div class="tdots">${dots}</div>
       <div class="tbtns">${tutI>0 ? '<button class="pxghost" data-act="tut-prev">Geri</button>' : '<span></span>'}<button class="npgo" data-act="tut-next">${last ? 'Oynamaya başla' : 'İleri'} ${typeof NP_ICON!=='undefined' ? NP_ICON.ok : '›'}</button></div></div>`;
   // kartı vurgunun yanına yerleştir
   const card = o.querySelector('.tcard'), cw = Math.min(340, W-24);
@@ -1743,7 +1747,7 @@ function mgrDay(){
     for (const e of pool){
       if (sent.length >= Math.min(max, room)) break;
       if (e.skill < lim){ const c = trainCost(e); if (S.money - c < keep) continue; S.money -= c; e.task = {type:'egitim', until:S.day + 4}; sent.push(`${firstName(e)} (yetenek eğitimi, ${tl(c)})`); }
-      else { const it = learnable(e.know, e.role).sort((a,b) => learnCost(a) - learnCost(b))[0]; if (!it) continue; const c = learnCost(it); if (S.money - c < keep) continue; S.money -= c; e.task = {type:'ogren', item:it.id, until:S.day + it.gun}; sent.push(`${firstName(e)} (${it.ad}, ${tl(c)})`); }
+      else { const it = learnable(e.know, e.role).sort((a,b) => learnCost(a) - learnCost(b))[0]; if (!it) continue; const c = learnCost(it); if (S.money - c < keep) continue; S.money -= c; e.task = {type:'ogren', item:it.id, until:S.day + it.gun, from:S.day}; sent.push(`${firstName(e)} (${it.ad}, ${tl(c)})`); }
     }
     if (sent.length){ sceneKey = ''; toast(`Yöneticin ${esc(first)} eğitime gönderdi: ${sent.map(esc).join(', ')}`); }
   }

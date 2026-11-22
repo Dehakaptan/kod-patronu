@@ -270,7 +270,9 @@ const EX_ACH = [
 function exAchDay(){
   const s = exS(), a = (s.ach = s.ach || {});
   if (S.loans && S.loans.length) s.loan = true;
-  for (const A of EX_ACH) if (!a[A.id] && A.c()){ a[A.id] = S.day; toast(`Başarım kazandın: ${A.ad}!`); snd('ok'); }
+  const yeni = [];
+  for (const A of EX_ACH){ let ok = false; try { ok = A.c(); } catch (e) {} if (!a[A.id] && ok){ a[A.id] = S.day; yeni.push(A); } }
+  if (yeni.length){ if (typeof baUnlockMany === 'function') baUnlockMany(yeni); else { for (const A of yeni) toast(`Başarım kazandın: ${A.ad}!`); snd('ok'); } }
 }
 function exAchHTML(){
   const a = exS().ach || {}, n = EX_ACH.filter(A => a[A.id]).length;

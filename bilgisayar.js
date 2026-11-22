@@ -253,13 +253,14 @@ function osStore(){
 /* ---------------- Masaüstü ---------------- */
 function osHTML(){
   const app = osView.app, s = S.os || {};
-  const dock = OS_APPS.map(([k, a]) => `<button class="osapp ${app===k?'on':''}" data-act="os" data-k="app" data-v="${k}">${OS_ICON[k]}<span>${a}${k==='isbag' && s.unread ? ` <i class="osbadge">${s.unread}</i>` : ''}</span></button>`).join('');
+  const dock = OS_APPS.map(([k, a]) => `<button class="osapp ${app===k?'on':''}" data-act="os" data-k="app" data-v="${k}">${OS_ICON[k]}<span>${a}${k==='isbag' && s.unread ? ` <i class="osbadge">${s.unread}</i>` : k==='civil' && typeof smUnread === 'function' && smUnread() ? ` <i class="osbadge">${smUnread()}</i>` : ''}</span></button>`).join('');
   let main;
   if (app === 'isbag') main = osIsbag();
   else if (app === 'web') main = osWeb();
   else if (app === 'port') main = osPort();
   else if (app === 'store') main = osStore();
   else if (app === 'dark' && typeof exDarkHTML === 'function') main = exDarkHTML();
+  else if (window.OS_EXT && OS_EXT[app]) main = OS_EXT[app]();
 
   else main = `<div class="oshome"><div class="oswel">Hoş geldin, ${esc(S.boss || 'Patron')}</div><div class="osdate">${S.day}. gün · ${esc(S.name)}</div>
       <div class="osicons">${OS_APPS.map(([k, a]) => `<button class="osbig" data-act="os" data-k="app" data-v="${k}">${OS_ICON[k]}<span>${a}</span></button>`).join('')}</div></div>`;

@@ -1,6 +1,6 @@
 // Bytetown – internetsiz çalışma desteği
-const CACHE = 'kod-patronu-v103';
-const FILES = ['./', './index.html', './ofis.js', './brif.js', './hikaye.js', './bilgisayar.js', './ekstra.js', './sehir.js', './ekstra.js', './ikon.js', './ofis3d.js', './lib/three.module.js', './lib/three.core.js', './stil.css', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable.png', './sehir.svg'];
+const CACHE = 'kod-patronu-v107';
+const FILES = ['./', './index.html', './ofis.js', './brif.js', './hikaye.js', './bilgisayar.js', './ekstra.js', './sehir.js', './pc.js', './dava.js', './basarim.js', './musteri.js', './ayar.js', './kariyer.js', './olay.js', './sosyal.js', './buyume.js', './ikon.js', './ofis3d.js', './lib/three.module.js', './lib/three.core.js', './stil.css', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable.png', './sehir.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

@@ -7,7 +7,7 @@
    ===================================================================== */
 const hkSt = () => (S.st = S.st || {});
 const hkRand = n => Math.floor(Math.random()*n);
-const hkFree = () => !window.cyShowing && typeof page !== 'undefined' && !page && $('modal').classList.contains('hidden') && !document.getElementById('boot') && !$('app').classList.contains('nogame');
+const hkFree = () => !window.cyShowing && !window.pzShowing && typeof page !== 'undefined' && !page && $('modal').classList.contains('hidden') && !document.getElementById('boot') && !$('app').classList.contains('nogame');
 const hkLeave = (e, why) => { S.emps = S.emps.filter(x => x !== e); sceneKey = ''; if (why) toast(why); };
 const hkAv = e => `<span class="hkav">${avatarSVG(e.id, e.role, e.emo)}</span>`;
 function hkPickW(list){ let r = Math.random()*list.reduce((a,x) => a + x[0], 0); for (const x of list){ r -= x[0]; if (r <= 0) return x; } return list[list.length-1]; }
